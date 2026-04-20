@@ -5,7 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Login | UniManage</title>
+<title>Login | AmazingTrack</title>
+<link rel="icon" type="image/png" href="{{ asset('logo/icon.png') }}">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -123,6 +124,13 @@ body {
     font-size: 13.5px;
     color: #64748b;
     margin-top: 4px;
+}
+
+.tagline {
+    font-size: 12.5px;
+    color: #94a3b8;
+    margin-top: 2px;
+    font-style: italic;
 }
 
 /* ── form ── */
@@ -286,8 +294,9 @@ body {
                 <div class="brand-icon">
                     <img src="{{ asset('logo/logo.png') }}" alt="Logo" style="height:40px;">
                 </div>
-                <h4 class="logo">UniManage</h4>
+                <h4 class="logo">AmazingTrack</h4>
                 <p class="subtitle">Program Management System</p>
+                <p class="tagline">"Empowering Amazing Performance"</p>
             </div>
 
             {{-- Error --}}
@@ -369,8 +378,8 @@ body {
     </div>
 
     <p class="login-footer">
-        &copy; {{ date('Y') }} UniManage — All rights reserved<br>
-        Developed by Bahagian Teknologi Maklumat UPTM
+        &copy; {{ date('Y') }} AmazingTrack — All rights reserved<br>
+        Developed by Information & Communication Technology Division UPTM
     </p>
 
 </div>

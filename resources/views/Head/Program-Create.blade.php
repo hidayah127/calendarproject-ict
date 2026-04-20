@@ -308,6 +308,7 @@ textarea.form-control {
                         <div>
                             <label class="form-label">Start Date & Time <span class="req">*</span></label>
                             <input type="datetime-local"
+                                   id="start_date"
                                    name="start_date"
                                    class="form-control @error('start_date') is-invalid @enderror"
                                    value="{{ old('start_date') }}"
@@ -324,6 +325,7 @@ textarea.form-control {
                         <div>
                             <label class="form-label">End Date & Time <span class="req">*</span></label>
                             <input type="datetime-local"
+                                   id="end_date"
                                    name="end_date"
                                    class="form-control @error('end_date') is-invalid @enderror"
                                    value="{{ old('end_date') }}"
@@ -418,3 +420,43 @@ textarea.form-control {
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDateInput = document.getElementById('start_date');
+        const endDateInput = document.getElementById('end_date');
+
+        // 1. Get current date and time in YYYY-MM-DDTHH:MM format
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+        // 2. Set min attribute for Start Date to "now"
+        startDateInput.setAttribute('min', currentDateTime);
+
+        // 3. When Start Date changes, update the min attribute for End Date
+        startDateInput.addEventListener('change', function() {
+            if (startDateInput.value) {
+                // Set the minimum end date to match the start date
+                endDateInput.setAttribute('min', startDateInput.value);
+                
+                // If the current end date value is now invalid (earlier than new start), clear it
+                if (endDateInput.value && endDateInput.value < startDateInput.value) {
+                    endDateInput.value = startDateInput.value;
+                }
+            }
+        });
+        
+        // Handle case where old() values exist (validation failed)
+        if (startDateInput.value) {
+            endDateInput.setAttribute('min', startDateInput.value);
+        }
+    });
+</script>
+@endpush

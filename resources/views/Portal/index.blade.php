@@ -93,11 +93,21 @@ body {
 /* ── Body ── */
 .portal-body { padding:32px 36px 36px; }
 
+.portal-tagline {
+    font-size: 12px;
+    color: rgba(255,255,255,.75);
+    margin-top: 4px;
+    font-style: italic;
+    letter-spacing: .3px;
+}
+
 .form-label-custom {
     font-size:12px;font-weight:700;color:#475569;
     text-transform:uppercase;letter-spacing:.5px;
     display:block;margin-bottom:8px;
 }
+
+
 
 .id-input {
     border:2px solid #e2e8f0;
@@ -205,6 +215,9 @@ body {
         </div>
         <h1>Staff Portal</h1>
         <p>Check in to programs & claim your Amazing merit points</p>
+        <p class="portal-tagline">
+            "Empowering Amazing Performance"
+        </p>
     </div>
 
     {{-- Body --}}

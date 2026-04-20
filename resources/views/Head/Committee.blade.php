@@ -481,6 +481,33 @@
                     Committee Members
                 </div>
                 <span class="member-count">{{ $totalMembers }}</span>
+
+                 {{-- ✅ Notify Committee Button --}}
+                <form method="POST"
+                    action="{{ route('head.committee.notify', $program->id) }}">
+
+                    @csrf
+
+                    {{-- <button type="submit"
+                            class="btn-import-csv"
+                            style="background:linear-gradient(135deg,#9333ea,#7e22ce);">
+
+                        <i class="fa fa-bell"></i>
+                        Notify Committee
+
+                    </button> --}}
+
+                    <button type="button"
+                            class="btn-import-csv"
+                            style="background:linear-gradient(135deg,#9333ea,#7e22ce);"
+                            data-bs-toggle="modal"
+                            data-bs-target="#notifyCommitteeModal"
+                            {{ $program->committee->isEmpty() ? 'disabled' : '' }}>
+                        <i class="fa fa-bell"></i>
+                        Notify Committee
+                    </button>
+
+                </form>
             </div>
 
             {{-- Search Box --}}
@@ -608,7 +635,7 @@
                 @csrf
 
                 {{-- Staff select --}}
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label class="form-label">Select Staff</label>
                     @if($availableStaff->isEmpty())
                         <div style="background:#f8faff;border:1.5px solid #e2e8f0;border-radius:11px;padding:14px;text-align:center;font-size:13px;color:#94a3b8;">
@@ -619,11 +646,29 @@
                         <select name="staff_id" class="form-select" required>
                             <option value="" disabled selected>Choose a staff member…</option>
                             @foreach($availableStaff as $s)
-                                {{-- <option value="{{ $s->id }}">{{ $s->name }} — {{ $s->position ?? $s->staff_id }}</option> --}}
                                 <option value="{{ $s->id }}">
                                     {{ $s->name }}
                                     — {{ $s->department->name ?? 'No Department' }}
-                                    {{-- — {{ $s->position ?? $s->staff_id }} --}}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
+                </div> --}}
+
+                <div class="form-group">
+                    <label class="form-label">Select Staff</label>
+                    @if($availableStaff->isEmpty())
+                        <div style="background:#f8faff;border:1.5px solid #e2e8f0;border-radius:11px;padding:14px;text-align:center;font-size:13px;color:#94a3b8;">
+                            <i class="fa fa-circle-check me-1" style="color:#16a34a;"></i>
+                            All department staff have been added.
+                        </div>
+                    @else
+                        {{-- Added id="staff-select" here --}}
+                        <select name="staff_id" id="staff-select" class="form-select" required>
+                            <option value="" disabled selected>Choose a staff member…</option>
+                            @foreach($availableStaff as $s)
+                                <option value="{{ $s->id }}">
+                                    {{ $s->name }} — {{ $s->department->name ?? 'No Department' }}
                                 </option>
                             @endforeach
                         </select>
@@ -648,7 +693,7 @@
                 </div>
 
                 {{-- Is Lead toggle --}}
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label class="lead-toggle" for="addIsLead">
                         <input type="checkbox" name="is_lead" value="1" id="addIsLead">
                         <div class="toggle-track">
@@ -659,7 +704,7 @@
                             <span class="toggle-sub">Sets this person as the primary lead</span>
                         </div>
                     </label>
-                </div>
+                </div> --}}
 
                 <button type="submit" class="btn-add-member" {{ $availableStaff->isEmpty() ? 'disabled' : '' }}>
                     <i class="fa fa-user-plus"></i> Add to Committee
@@ -840,27 +885,252 @@
                     <p style="font-size:12px;margin-top:10px;color:#64748b;">
                         CSV format:
                         <br>
-                        <strong>staff_id,role,responsibility,is_lead</strong>
+                        <strong>staff_id,role,responsibility</strong>
                     </p>
 
                 </div>
 
+                {{-- old no download template --}}
+                {{-- <div class="modal-footer justify-content-between">
+
+                    <button type="button"
+                            class="btn-cancel"
+                            data-bs-dismiss="modal">
+                    Cancel
+                    </button>
+
+                    <button type="submit"
+                            class="btn-save">
+
+                    <i class="fa fa-upload me-1"></i>
+                        Import Members
+                    </button>
+                </div> --}}
+
                 <div class="modal-footer justify-content-between">
+
+                    {{-- ✅ Download Template --}}
+                        <a href="{{ asset('templates/committee_template.csv') }}"
+                            class="btn-import-csv"
+                            style="background:linear-gradient(135deg,#0f2d6e,#1a56db);"
+                            download>
+
+                                <i class="fa fa-download"></i>
+                                Template
+
+                        </a>
+
+                    <div>
+
+                        <button type="button"
+                                class="btn-cancel"
+                                data-bs-dismiss="modal">
+
+                            Cancel
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn-save">
+
+                            <i class="fa fa-upload me-1"></i>
+                            Import Members
+
+                        </button>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ═══ NOTIFY ALL COMMITTEE MODAL ═══ --}}
+<div class="modal fade" id="notifyCommitteeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="m-stripe"
+                style="background:linear-gradient(90deg,#7e22ce,#9333ea,#a855f7);">
+            </div>
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    <span class="m-icon"
+                        style="background:#f3e8ff;color:#7e22ce;">
+
+                        <i class="fa fa-envelope-open-text"></i>
+
+                    </span>
+
+                    Hantar Notifikasi Jawatankuasa
+
+                </h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                {{-- Info banner --}}
+                <div style="
+                    background:#f3e8ff;
+                    border:1.5px solid #d8b4fe;
+                    border-radius:12px;
+                    padding:13px 16px;
+                    display:flex;
+                    gap:10px;
+                    margin-bottom:18px;
+                ">
+
+                    <i class="fa fa-circle-info"
+                       style="color:#7e22ce;
+                       flex-shrink:0;
+                       margin-top:2px;">
+                    </i>
+
+                    <p style="
+                        margin:0;
+                        font-size:13px;
+                        color:#4c1d95;
+                        line-height:1.5;
+                    ">
+
+                        Notifikasi pelantikan jawatankuasa akan dihantar kepada
+                        <strong>{{ $totalMembers }} ahli</strong>
+                        di bawah secara serentak melalui emel.
+
+                    </p>
+
+                </div>
+
+                {{-- Member list preview --}}
+                <div style="
+                    max-height:320px;
+                    overflow-y:auto;
+                    display:flex;
+                    flex-direction:column;
+                    gap:8px;
+                ">
+
+                    @foreach($program->committee->sortByDesc('pivot.is_lead') as $member)
+
+                    @php
+                        $role = $member->pivot->role;
+                    @endphp
+
+                    <div style="
+                        background:#f8faff;
+                        border:1.5px solid #e8effe;
+                        border-radius:12px;
+                        padding:11px 14px;
+                        display:flex;
+                        align-items:center;
+                        gap:12px;
+                    ">
+
+                        <div class="member-avatar"
+                            style="
+                                width:36px;
+                                height:36px;
+                                font-size:12px;
+                                border-radius:10px;
+                                flex-shrink:0;
+                            ">
+
+                            {{ strtoupper(substr($member->name, 0, 2)) }}
+
+                        </div>
+
+                        <div style="flex:1;min-width:0;">
+
+                            <div style="
+                                font-size:13.5px;
+                                font-weight:700;
+                                color:#0f172a;
+                            ">
+
+                                {{ $member->name }}
+
+                            </div>
+
+                            <div style="
+                                font-size:12px;
+                                color:#94a3b8;
+                            ">
+
+                                {{ $member->email }}
+
+                            </div>
+
+                        </div>
+
+                        <span class="role-tag role-{{ $role }}"
+                              style="flex-shrink:0;">
+
+                            <i class="fa {{ $roleIcons[$role] ?? 'fa-user' }}"
+                               style="font-size:9px;">
+                            </i>
+
+                            {{ $roleLabels[$role] ?? ucfirst($role) }}
+
+                        </span>
+
+                        <i class="fa fa-envelope"
+                           style="
+                                color:#a78bfa;
+                                font-size:13px;
+                                flex-shrink:0;
+                           "
+                           title="Will receive email">
+                        </i>
+
+                    </div>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer justify-content-between">
 
                 <button type="button"
                         class="btn-cancel"
                         data-bs-dismiss="modal">
-                Cancel
+
+                    Batal
+
                 </button>
 
-                <button type="submit"
-                        class="btn-save">
+                <form method="POST"
+                      action="{{ route('head.committee.notify', $program->id) }}">
 
-                <i class="fa fa-upload me-1"></i>
-                    Import Members
-                </button>
-                </div>
-            </form>
+                    @csrf
+
+                    <button type="submit"
+                            class="btn-save"
+                            style="
+                                background:linear-gradient(135deg,#7e22ce,#9333ea);
+                            ">
+
+                        <i class="fa fa-paper-plane me-1"></i>
+
+                        Hantar Notifikasi
+                        ({{ $totalMembers }} Ahli)
+
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
     </div>
 </div>
@@ -941,5 +1211,13 @@ document.getElementById('memberSearch')
     });
 
 });
+
+$(document).ready(function() {
+        $('#staff-select').select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Choose a staff member...',
+            width: '100%'
+        });
+    });
 </script>
 @endpush

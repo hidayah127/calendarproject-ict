@@ -8,7 +8,7 @@
     font-weight: 500;
     letter-spacing: .2px;
 ">
-    Developed by <strong style="color:#64748b;font-weight:700;">Information & Communication Technology Department</strong>,
+    Developed by <strong style="color:#64748b;font-weight:700;">Information & Communication Technology Division</strong>,
     <span style="color:#1a56db;font-weight:700;">UPTM</span>
     &nbsp;&middot;&nbsp;
     <span>&copy; {{ date('Y') }}</span>

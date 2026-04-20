@@ -84,7 +84,8 @@ return [
     |
     */
 
-    'locale' => 'en',
+    // 'locale' => 'en',
+    'locale' => 'ms',  // set to your actual locale
 
     /*
     |--------------------------------------------------------------------------
@@ -110,7 +111,8 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+        // 'faker_locale' => 'en_US',
+    'faker_locale' => 'ms_MY',  // set to your actual locale
 
     /*
     |--------------------------------------------------------------------------

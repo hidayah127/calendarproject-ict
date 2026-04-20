@@ -49,6 +49,25 @@
 .dept-chk{width:16px;height:16px;border-radius:5px;border:2px solid #e2e8f0;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:transparent;transition:all .18s;}
 .dept-row.active .dept-chk{background:#1a56db;border-color:#1a56db;color:#fff;}
 
+
+#deptList::-webkit-scrollbar {
+    width: 8px;
+}
+
+#deptList::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+#deptList::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+#deptList::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
 .up-item{display:flex;align-items:flex-start;gap:10px;padding:11px 18px;border-bottom:1px solid #f8faff;transition:background .15s;}
 .up-item:last-child{border-bottom:none;}
 .up-item:hover{background:#f8faff;}
@@ -168,7 +187,7 @@
         </div>
 
         {{-- Dept filter --}}
-        <div class="side-panel">
+        {{-- <div class="side-panel">
             <div class="side-panel-hdr">
                 <i class="fa fa-building" style="background:#e0e7ff;color:#4338ca;"></i>
                 Department
@@ -181,6 +200,67 @@
                 <span class="dept-chk"><i class="fa fa-check"></i></span>{{ $dept->name }}
             </div>
             @endforeach
+        </div> --}}
+
+        <div class="side-panel">
+
+            <div class="side-panel-hdr">
+                <i class="fa fa-building"
+                style="background:#e0e7ff;color:#4338ca;"></i>
+                Department
+            </div>
+
+            {{-- 🔍 Search Box --}}
+            <div style="padding:10px 14px;border-bottom:1px solid #f1f5f9;">
+
+                <input type="text"
+                    id="deptSearch"
+                    placeholder="Search department..."
+                    class="form-control"
+                    style="
+                            font-size:12.5px;
+                            padding:8px 12px;
+                    ">
+
+            </div>
+
+            {{-- 📜 Scrollable List --}}
+            <div id="deptList"
+                style="
+                    max-height:260px;
+                    overflow-y:auto;
+                ">
+
+                <div class="dept-row active"
+                    data-d="all">
+
+                    <span class="dept-chk">
+                        <i class="fa fa-check"></i>
+                    </span>
+
+                    All Departments
+
+                </div>
+
+                @foreach($departments as $dept)
+
+                <div class="dept-row"
+                    data-d="{{ $dept->id }}">
+
+                    <span class="dept-chk">
+                        <i class="fa fa-check"></i>
+                    </span>
+
+                    <span class="dept-name">
+                        {{ $dept->name }}
+                    </span>
+
+                </div>
+
+                @endforeach
+
+            </div>
+
         </div>
 
         {{-- Coming up --}}
@@ -294,6 +374,30 @@ document.addEventListener('DOMContentLoaded',function(){
             cal.removeAllEvents();cal.addEventSource(getEv());
         });
     });
+
+    // 🔍 Department Search Filter
+document.getElementById('deptSearch')
+.addEventListener('keyup', function () {
+
+    let keyword = this.value.toLowerCase();
+
+    document.querySelectorAll('#deptList .dept-row')
+    .forEach(function(row) {
+
+        let name = row.textContent.toLowerCase();
+
+        if (name.includes(keyword)) {
+            row.style.display = '';
+        }
+        else {
+            row.style.display = 'none';
+        }
+
+    });
+
 });
+});
+
+
 </script>
 @endpush

@@ -103,6 +103,7 @@ Route::prefix('head')
     Route::put( 'programs/{program}/committee/{staff}',     [CommitteeController::class, 'update']) ->name('committee.update');
     Route::delete('programs/{program}/committee/{staff}',   [CommitteeController::class, 'destroy'])->name('committee.destroy');
     Route::post('/programs/{program}/committee/import-csv', [CommitteeController::class, 'importCSV'])->name('committee.import.csv');
+    Route::post('programs/{program}/committee/notify',      [CommitteeController::class, 'notifyAll'])->name('committee.notify');
 
     Route::get('merit-claims',                     [MeritClaimController::class, 'index'])->name('merit-claims');
     Route::patch('merit-claims/{claim}/approve',   [MeritClaimController::class, 'approve'])->name('merit-claims.approve');

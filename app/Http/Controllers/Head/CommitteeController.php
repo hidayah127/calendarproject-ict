@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\head;
+namespace App\Http\Controllers\Head;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,6 +9,8 @@ use App\Models\Staff;
 use App\Models\ProgramStaff;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CommitteeAppointmentMail;
 
 class CommitteeController extends Controller
 {
@@ -211,6 +213,46 @@ class CommitteeController extends Controller
         if ($program->created_by !== Auth::id()) {
             abort(403, 'You are not authorised to manage this committee.');
         }
+    }
+
+    public function notifyAll(Program $program)
+    {
+        $this->authorise($program);
+
+        $program->load(['committee', 'department']);
+
+        if ($program->committee->isEmpty()) {
+            return redirect()->back()->with('error', 'No committee members to notify.');
+        }
+
+        $roleLabels = [
+            'committee_head'   => 'Ketua Jawatankuasa',
+            'coordinator'      => 'Penyelaras',
+            'secretary'        => 'Setiausaha',
+            'treasurer'        => 'Bendahari',
+            'facilitator'      => 'Fasilitator',
+            'committee_member' => 'Ahli Jawatankuasa',
+        ];
+
+        $sent = 0;
+
+        foreach ($program->committee as $member) {
+            $role = $roleLabels[$member->pivot->role] ?? ucfirst($member->pivot->role);
+
+            Mail::to($member->email)->send(
+                new CommitteeAppointmentMail(
+                    staff:          $member,
+                    program:        $program,
+                    role:           $role,
+                    responsibility: $member->pivot->responsibility,
+                    isLead:         (bool) $member->pivot->is_lead,
+                )
+            );
+
+            $sent++;
+        }
+
+        return redirect()->back()->with('success', "Surat lantikan berjaya dihantar kepada {$sent} ahli jawatankuasa.");
     }
 
    
