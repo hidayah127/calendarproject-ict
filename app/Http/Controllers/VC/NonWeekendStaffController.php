@@ -13,6 +13,7 @@ class NonWeekendStaffController extends Controller
 {
     public function index(Request $request)
     {
+        $selectedYear  = $request->input('year', now()->year);
         $selectedMonth = $request->input('month', now()->format('Y-m'));
         $selectedDept  = $request->input('dept', '');
 
@@ -82,17 +83,58 @@ class NonWeekendStaffController extends Controller
         $nonWeekendPct       = $totalAllStaff > 0 ? round(($totalNonWeekend / $totalAllStaff) * 100) : 0;
 
         // Build month options (current year ± 1 year)
-        $monthOptions = [];
-        $start = now()->subYear()->startOfMonth();
-        $end   = now()->addYear()->endOfMonth();
-        $cur   = $start->copy();
-        while ($cur->lte($end)) {
-            $monthOptions[] = [
-                'value' => $cur->format('Y-m'),
-                'label' => $cur->format('F Y'),
-            ];
-            $cur->addMonth();
+        // $monthOptions = [];
+        // $start = now()->subYear()->startOfMonth();
+        // $end   = now()->addYear()->endOfMonth();
+        // $cur   = $start->copy();
+        // while ($cur->lte($end)) {
+        //     $monthOptions[] = [
+        //         'value' => $cur->format('Y-m'),
+        //         'label' => $cur->format('F Y'),
+        //     ];
+        //     $cur->addMonth();
+        // }
+
+        /* ── Year Options ── */
+        $currentYear = now()->year;
+
+        $yearOptions = [];
+
+        for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
+            $yearOptions[] = $y;
         }
+
+
+        /* ── Month Options based on selected year ── */
+
+        $monthOptions = [];
+
+        if ($selectedYear == $currentYear) {
+
+            // Current year → Jan until current month
+            $lastMonth = now()->month;
+
+        } else {
+
+            // Other year → Full Jan to Dec
+            $lastMonth = 12;
+
+        }
+
+        for ($m = 1; $m <= $lastMonth; $m++) {
+
+            $date = Carbon::createFromDate(
+                $selectedYear,
+                $m,
+                1
+            );
+
+            $monthOptions[] = [
+                'value' => $date->format('Y-m'),
+                'label' => $date->format('F Y'),
+            ];
+        }
+
 
         // Weekend days in selected month (for context)
         $weekendDaysInMonth = $this->getWeekendDaysInMonth($monthStart, $monthEnd);
@@ -112,6 +154,8 @@ class NonWeekendStaffController extends Controller
             'weekendPrograms',
             'weekendDaysInMonth',
             'monthOptions',
+            'yearOptions',
+            'selectedYear'
         ));
     }
 

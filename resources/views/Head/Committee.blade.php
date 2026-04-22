@@ -549,7 +549,7 @@
 
                     <div style="flex:1;min-width:0;">
                         <div class="member-name">{{ $member->name }}</div>
-                        <div class="member-pos">{{ $member->position ?? $member->staff_id }}</div>
+                        <div class="member-pos">{{ $member->staff_id }}</div>
 
                         <span class="role-tag role-{{ $role }}">
                             <i class="fa {{ $roleIcons[$role] ?? 'fa-user' }}" style="font-size:9px;"></i>

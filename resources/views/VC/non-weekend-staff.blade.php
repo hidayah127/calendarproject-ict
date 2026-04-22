@@ -386,7 +386,7 @@
 {{-- Filter card --}}
 <form method="GET" action="{{ route('vc.non-weekend-staff') }}">
 <div class="filter-card fu d1">
-    <div>
+    {{-- <div>
         <span class="filter-label">Month</span>
         <select name="month" class="filter-select">
             @foreach($monthOptions as $opt)
@@ -395,7 +395,34 @@
             </option>
             @endforeach
         </select>
+    </div> --}}
+
+    {{-- Year Filter --}}
+    <div>
+        <span class="filter-label">Year</span>
+        <select name="year" class="filter-select">
+            @foreach($yearOptions as $year)
+            <option value="{{ $year }}"
+                {{ $selectedYear == $year ? 'selected' : '' }}>
+                {{ $year }}
+            </option>
+            @endforeach
+        </select>
     </div>
+
+    {{-- Month Filter --}}
+    <div>
+        <span class="filter-label">Month</span>
+        <select name="month" class="filter-select">
+            @foreach($monthOptions as $opt)
+            <option value="{{ $opt['value'] }}"
+                {{ $selectedMonth === $opt['value'] ? 'selected' : '' }}>
+                {{ $opt['label'] }}
+            </option>
+            @endforeach
+        </select>
+    </div>
+
     <div>
         <span class="filter-label">Department</span>
         <select name="dept" class="filter-select">
