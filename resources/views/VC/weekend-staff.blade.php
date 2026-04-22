@@ -436,7 +436,9 @@
             {{-- Name + dept --}}
             <div class="freq-info">
                 <div class="freq-name">{{ $staff['name'] }}</div>
-                <div class="freq-dept">{{ $staff['department'] }} · {{ $staff['position'] }}</div>
+                <div class="freq-dept">{{ $staff['department'] }} </div>
+                {{-- <div class="freq-dept">{{ $staff['department'] }} · {{ $staff['position'] }}</div> --}}
+
             </div>
 
             {{-- Progress bar --}}
@@ -479,30 +481,103 @@
 
 {{-- Filter bar --}}
 <div class="filter-bar fu d3">
+
+    {{-- LEFT SIDE (keep existing style) --}}
     <div class="filter-left">
-        <span style="font-size:13.5px;font-weight:700;color:#0f172a;">Staff Details</span>
+        <span style="font-size:13.5px;font-weight:700;color:#0f172a;">
+            Staff Details
+        </span>
+
         <button class="f-pill on" data-f="all">All</button>
+
         <button class="f-pill" data-f="high">
-            <i class="fa fa-fire" style="font-size:11px;"></i> High (4+ days)
+            <i class="fa fa-fire" style="font-size:11px;"></i>
+            High (4+ days)
         </button>
-        <button class="f-pill" data-f="medium">Medium (2–3)</button>
-        <button class="f-pill" data-f="low">Low (1)</button>
-        <button class="f-pill" data-f="saturday">Saturday</button>
-        <button class="f-pill" data-f="sunday">Sunday</button>
+
+        <button class="f-pill" data-f="medium">
+            Medium (2–3)
+        </button>
+
+        <button class="f-pill" data-f="low">
+            Low (1)
+        </button>
+
+        <button class="f-pill" data-f="saturday">
+            Saturday
+        </button>
+
+        <button class="f-pill" data-f="sunday">
+            Sunday
+        </button>
     </div>
+
+
+    {{-- RIGHT SIDE (NEW + EXISTING FILTERS) --}}
+    <form method="GET" action="{{ route('vc.weekend-staff') }}">
     <div class="filter-right">
-        <select id="deptFilter" class="dept-sel">
-            <option value="">All Departments</option>
-            @foreach($departments as $dept)
-                <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+
+        {{-- Year --}}
+        <select name="year"
+                class="dept-sel"
+                onchange="this.form.submit()">
+
+            @foreach($yearOptions as $year)
+            <option value="{{ $year }}"
+                {{ $selectedYear == $year ? 'selected' : '' }}>
+                {{ $year }}
+            </option>
             @endforeach
+
         </select>
+
+
+        {{-- Month --}}
+        <select name="month"
+                class="dept-sel"
+                onchange="this.form.submit()">
+
+            @foreach($monthOptions as $opt)
+            <option value="{{ $opt['value'] }}"
+                {{ $selectedMonth == $opt['value'] ? 'selected' : '' }}>
+                {{ $opt['label'] }}
+            </option>
+            @endforeach
+
+        </select>
+
+
+        {{-- Department (KEEP EXISTING) --}}
+        <select id="deptFilter"
+                name="dept"
+                class="dept-sel">
+
+            <option value="">All Departments</option>
+
+            @foreach($departments as $dept)
+                <option value="{{ $dept->id }}">
+                    {{ $dept->name }}
+                </option>
+            @endforeach
+
+        </select>
+
+
+        {{-- Search (KEEP EXISTING) --}}
         <div class="search-wrap">
             <i class="fa fa-magnifying-glass"></i>
-            <input type="text" id="staffSearch" class="search-inp" placeholder="Search staff or program…">
+
+            <input type="text"
+                   id="staffSearch"
+                   class="search-inp"
+                   placeholder="Search staff or program…">
         </div>
+
     </div>
+    </form>
+
 </div>
+
 
 {{-- Staff grid --}}
 @if(empty($weekendStaff))
@@ -550,12 +625,12 @@
                         {{ $fl['label'] }}
                     </span>
                 </div>
-                <div class="staff-meta">
+                {{-- <div class="staff-meta">
                     <i class="fa fa-id-badge me-1"></i>{{ $staff['staff_id'] }}
                     @if($staff['position'] !== '—')
                         &nbsp;·&nbsp; {{ $staff['position'] }}
                     @endif
-                </div>
+                </div> --}}
                 <span class="staff-dept">
                     <i class="fa fa-building" style="font-size:10px;"></i>
                     {{ $staff['department'] }}

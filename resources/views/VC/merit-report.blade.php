@@ -607,7 +607,7 @@
                     <span class="toolbar-title">Full Rankings</span>
                     <span class="count-pill">{{ $totalStaffWithMerit }} staff</span>
                 </div>
-                <div class="filter-group">
+                {{-- <div class="filter-group">
                     <select id="deptFilter" class="dept-sel">
                         <option value="">All Departments</option>
                         @foreach($departments as $dept)
@@ -618,7 +618,53 @@
                         <i class="fa fa-magnifying-glass"></i>
                         <input type="text" id="staffSearch" class="search-inp" placeholder="Search staff…">
                     </div>
-                </div>
+                </div> --}}
+
+                <form method="GET" action="{{ route('vc.reports') }}">
+                    <div class="filter-group">
+                        {{-- Year Filter --}}
+                        <select name="year"
+                                class="dept-sel"
+                                onchange="this.form.submit()">
+
+                            @foreach($yearOptions as $year)
+                            <option value="{{ $year }}"
+                                {{ $selectedYear == $year ? 'selected' : '' }}>
+                                {{ $year }}
+                            </option>
+                            @endforeach
+
+                        </select>
+
+
+                        {{-- Department Filter (keep existing style) --}}
+                        <select id="deptFilter"
+                                name="dept"
+                                class="dept-sel">
+
+                            <option value="">All Departments</option>
+
+                            @foreach($departments as $dept)
+                            <option value="{{ $dept->id }}"
+                                {{ request('dept') == $dept->id ? 'selected' : '' }}>
+                                {{ $dept->name }}
+                            </option>
+                            @endforeach
+
+                        </select>
+
+
+                        {{-- Search --}}
+                        <div class="search-wrap">
+                            <i class="fa fa-magnifying-glass"></i>
+
+                            <input type="text"
+                                id="staffSearch"
+                                class="search-inp"
+                                placeholder="Search staff…">
+                        </div>
+                    </div>
+                </form>
             </div>
 
             {{-- Rows --}}
@@ -657,9 +703,9 @@
                         <div class="staff-name">{{ $staff['name'] }}</div>
                         <div class="staff-meta">
                             <i class="fa fa-id-badge me-1"></i>{{ $staff['staff_id'] }}
-                            @if($staff['position'] !== '—')
+                            {{-- @if($staff['position'] !== '—')
                                 &nbsp;·&nbsp; {{ $staff['position'] }}
-                            @endif
+                            @endif --}}
                         </div>
                         <span class="staff-dept">
                             <i class="fa fa-building" style="font-size:10px;"></i>

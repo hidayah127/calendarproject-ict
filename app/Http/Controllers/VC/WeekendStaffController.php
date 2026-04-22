@@ -6,19 +6,95 @@ use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\Program;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class WeekendStaffController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        /* ── Selected Year & Month ── */
+        $selectedYear = $request->input('year', now()->year);
+
+        $selectedMonth = $request->input(
+            'month',
+            Carbon::createFromDate(
+                $selectedYear,
+                now()->month,
+                1
+            )->format('Y-m')
+        );
+
+        $monthDate  = Carbon::parse($selectedMonth . '-01');
+        $monthStart = $monthDate->copy()->startOfMonth();
+        $monthEnd   = $monthDate->copy()->endOfMonth();
+        
         $departments = Department::orderBy('name')->get();
 
+        /* ── Year Options ── */
+        $currentYear = now()->year;
+
+        $yearOptions = [];
+
+        for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
+            $yearOptions[] = $y;
+        }
+
+        /* ── Month Options ── */
+        $monthOptions = [];
+
+        if ($selectedYear == $currentYear) {
+
+            $lastMonth = now()->month;
+
+        } else {
+
+            $lastMonth = 12;
+
+        }
+
+        for ($m = 1; $m <= $lastMonth; $m++) {
+
+            $date = Carbon::createFromDate(
+                $selectedYear,
+                $m,
+                1
+            );
+
+            $monthOptions[] = [
+                'value' => $date->format('Y-m'),
+                'label' => $date->format('F Y'),
+            ];
+        }
+
         // Get all programs that have at least one day falling on a weekend
+        // $programs = Program::with(['department', 'committee', 'staffInCharge'])
+        //     ->get()  
+        //     ->filter(function ($p) {
+        //         return $this->programTouchesWeekend($p);
+        //     });
+
         $programs = Program::with(['department', 'committee', 'staffInCharge'])
-            ->get()
-            ->filter(function ($p) {
-                return $this->programTouchesWeekend($p);
+
+        ->where(function ($q) use ($monthStart, $monthEnd) {
+
+            $q->whereBetween('start_date', [$monthStart, $monthEnd])
+
+            ->orWhereBetween('end_date', [$monthStart, $monthEnd])
+
+            ->orWhere(function ($q2) use ($monthStart, $monthEnd) {
+
+                $q2->where('start_date', '<=', $monthStart)
+                    ->where('end_date', '>=', $monthEnd);
+
             });
+
+        })
+
+        ->get()
+
+        ->filter(function ($p) {
+            return $this->programTouchesWeekend($p);
+        });
 
         // Build weekend staff data grouped by staff
         $weekendStaff = [];
@@ -84,6 +160,11 @@ class WeekendStaffController extends Controller
             'totalWeekendPrograms',
             'totalWeekendDays',
             'mostWeekendStaff',
+            'yearOptions',
+            'monthOptions',
+            'selectedYear',
+            'selectedMonth',
+            'monthDate'
         ));
     }
 

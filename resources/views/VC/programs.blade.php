@@ -18,7 +18,7 @@
 .d4  { animation-delay:.24s; }
 .d5  { animation-delay:.30s; }
 .d6  { animation-delay:.36s; }
-
+ 
 /* ── Hero ── */
 .vc-hero {
     background:linear-gradient(128deg,#0a1f52 0%,#0f2d6e 50%,#1e40af 100%);
@@ -420,7 +420,7 @@
             <button class="filter-pill" data-f="ongoing">Ongoing</button>
             <button class="filter-pill" data-f="completed">Completed</button>
         </div>
-        <div class="toolbar-right">
+        {{-- <div class="toolbar-right">
             <select id="deptSel" class="dept-sel">
                 <option value="">All Departments</option>
                 @foreach($departments as $d)
@@ -431,7 +431,67 @@
                 <i class="fa fa-magnifying-glass"></i>
                 <input id="progSearch" type="text" class="search-inp" placeholder="Search...">
             </div>
-        </div>
+        </div> --}}
+
+        <form method="GET" action="{{ route('vc.programs') }}">
+
+            <div class="toolbar-right">
+
+                {{-- Year --}}
+                <select name="year"
+                        class="dept-sel"
+                        onchange="this.form.submit()">
+
+                    @foreach($yearOptions as $year)
+                    <option value="{{ $year }}"
+                        {{ $selectedYear == $year ? 'selected' : '' }}>
+                        {{ $year }}
+                    </option>
+                    @endforeach
+
+                </select>
+
+
+                {{-- Month --}}
+                <select name="month"
+                        class="dept-sel"
+                        onchange="this.form.submit()">
+
+                    <option value="">All Months</option>
+
+                    @foreach($monthOptions as $m)
+                    <option value="{{ $m['value'] }}"
+                        {{ $selectedMonth == $m['value'] ? 'selected' : '' }}>
+                        {{ $m['label'] }}
+                    </option>
+                    @endforeach
+
+                </select>
+
+
+                {{-- Department (existing) --}}
+                <select id="deptSel" class="dept-sel">
+                    <option value="">All Departments</option>
+
+                    @foreach($departments as $d)
+                    <option value="{{ $d->id }}">
+                        {{ $d->name }}
+                    </option>
+                    @endforeach
+                </select>
+
+
+                {{-- Search --}}
+                <div class="search-wrap">
+                    <i class="fa fa-magnifying-glass"></i>
+
+                    <input id="progSearch"
+                        type="text"
+                        class="search-inp"
+                        placeholder="Search...">
+                </div>
+            </div>
+        </form>
     </div>
 
     {{-- Table — NO cm-expand-row rows inside here at all --}}

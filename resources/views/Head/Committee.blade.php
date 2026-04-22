@@ -577,7 +577,7 @@
                                 data-is-lead="{{ $isLead ? '1' : '0' }}">
                             <i class="fa fa-pen"></i>
                         </button>
-
+  
                         {{-- Remove --}}
                         <button class="act-btn act-remove"
                                 title="Remove member"

@@ -400,7 +400,7 @@
     {{-- Year Filter --}}
     <div>
         <span class="filter-label">Year</span>
-        <select name="year" class="filter-select">
+        <select name="year" class="filter-select" onchange="this.form.submit()">
             @foreach($yearOptions as $year)
             <option value="{{ $year }}"
                 {{ $selectedYear == $year ? 'selected' : '' }}>
@@ -555,9 +555,9 @@
                             <div>
                                 <div class="sc-name">{{ $s['name'] }}</div>
                                 <div class="sc-id">{{ $s['staff_id'] }}</div>
-                                @if($s['position'] !== '—')
+                                {{-- @if($s['position'] !== '—')
                                 <div class="sc-pos">{{ $s['position'] }}</div>
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                         @endforeach
@@ -661,6 +661,22 @@ document.getElementById('staffSearch').addEventListener('input', function(){
             .some(function(c){ return c.style.display !== 'none'; });
         section.style.display = visible ? '' : 'none';
     });
+});
+
+document.querySelector('select[name="year"]')
+.addEventListener('change', function(){
+
+    let monthSelect =
+        document.querySelector('select[name="month"]');
+
+    if (monthSelect.options.length > 0) {
+
+        // Select first month of that year
+        monthSelect.selectedIndex = 0;
+
+    }
+
+    this.form.submit();
 });
 
 </script>

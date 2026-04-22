@@ -18,7 +18,7 @@
     border-radius: 20px;
     letter-spacing: .3px;
 }
-
+  
 /* ── Program card ── */
 .program-card {
     border: 1.5px solid #e2e8f0 !important;
@@ -417,6 +417,7 @@ nav[role="navigation"] p {
 
 {{-- ══ Search / Sort / Filter Bar ══ --}}
 @if(!$programs->isEmpty())
+<form method="GET" action="{{ route('head.programs.index') }}">
 <div class="filter-bar">
     <div class="row g-3 align-items-end">
 
@@ -432,6 +433,49 @@ nav[role="navigation"] p {
                        class="filter-input"
                        placeholder="Search title, venue, staff...">
             </div>
+        </div>
+
+        {{-- Year --}}
+        <div class="col-6 col-md-2">
+            <label class="filter-label">
+                <i class="fa fa-calendar me-1"></i> Year
+            </label>
+
+            <select name="year"
+                    class="filter-select"
+                    onchange="this.form.submit()">
+
+                @foreach($yearOptions as $year)
+                <option value="{{ $year }}"
+                    {{ $selectedYear == $year ? 'selected' : '' }}>
+                    {{ $year }}
+                </option>
+                @endforeach
+
+            </select>
+        </div>
+
+
+        {{-- Month --}}
+        <div class="col-6 col-md-2">
+            <label class="filter-label">
+                <i class="fa fa-calendar-days me-1"></i> Month
+            </label>
+
+            <select name="month"
+                    class="filter-select"
+                    onchange="this.form.submit()">
+
+                <option value="">All Months</option>
+
+                @foreach($monthOptions as $m)
+                <option value="{{ $m['value'] }}"
+                    {{ $selectedMonth == $m['value'] ? 'selected' : '' }}>
+                    {{ $m['label'] }}
+                </option>
+                @endforeach
+
+            </select>
         </div>
 
         {{-- Filter by status --}}
@@ -475,6 +519,7 @@ nav[role="navigation"] p {
         <span id="filterTags" style="display:flex;gap:6px;flex-wrap:wrap;"></span>
     </div>
 </div>
+</form>
 
 {{-- Results count --}}
 <div id="resultsCount" class="results-count" style="display:none;">

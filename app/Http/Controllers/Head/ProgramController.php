@@ -11,19 +11,130 @@ use App\Services\NotificationService;
 
 class ProgramController extends Controller
 {
-/*
+/* 
     |--------------------------------------------------------------------------
     | Index — list all programs created by this head
     |--------------------------------------------------------------------------
     */
-    public function index()
-    {
-        $programs = Program::with(['staffInCharge', 'department'])
-            ->where('created_by', Auth::id())
-            ->latest()
-            ->paginate(10);
+    // public function index(Request $request)
+    // {
 
-        return view('head.Program', compact('programs'));
+    //     $selectedYear  = $request->input('year', now()->year);
+    //     $selectedMonth = $request->input('month', '');
+
+    //     $query = Program::with(['staffInCharge'])
+    //         ->whereYear('start_date', $selectedYear);
+
+    //     if ($selectedMonth) {
+    //         $query->whereMonth('start_date', $selectedMonth);
+    //     }
+
+    //     // $programs = $query
+    //     //     ->latest()
+    //     //     ->paginate(9);
+
+    //     $programs = Program::with(['staffInCharge', 'department'])
+    //         ->where('created_by', Auth::id())
+    //         ->latest()
+    //         ->paginate(10);
+
+    //         $currentYear = now()->year;
+
+    //     $yearOptions = [];
+
+    //     for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
+    //         $yearOptions[] = $y;
+    //     }
+
+    //     $monthOptions = [];
+
+    //     for ($m = 1; $m <= 12; $m++) {
+    //         $monthOptions[] = [
+    //             'value' => $m,
+    //             'label' => date('F', mktime(0,0,0,$m,1))
+    //         ];
+    //     }
+
+    //     return view('head.Program', compact(
+    //         'programs',
+    //         'yearOptions',
+    //         'monthOptions',
+    //         'selectedYear',
+    //         'selectedMonth'
+
+    //     ));
+    // }
+
+    public function index(Request $request)
+    {
+        /* ── Selected Filters ── */
+
+        $selectedYear  = $request->input('year', now()->year);
+        $selectedMonth = $request->input('month', '');
+
+
+        /* ── Build Query ── */
+
+        $query = Program::with(['staffInCharge'])
+            ->whereYear('start_date', $selectedYear);
+
+
+        if ($selectedMonth) {
+
+            $query->whereMonth(
+                'start_date',
+                $selectedMonth
+            );
+
+        }
+
+
+        $programs = $query
+            ->latest()
+            ->paginate(9)
+            ->withQueryString();
+
+
+        /* ── Year Options ── */
+
+        $currentYear = now()->year;
+
+        $yearOptions = [];
+
+        for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
+
+            $yearOptions[] = $y;
+
+        }
+
+
+        /* ── Month Options ── */
+
+        $monthOptions = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+
+            $monthOptions[] = [
+                'value' => $m,
+                'label' => date(
+                    'F',
+                    mktime(0,0,0,$m,1)
+                )
+            ];
+
+        }
+
+
+        return view(
+            'head.Program',
+            compact(
+                'programs',
+                'yearOptions',
+                'monthOptions',
+                'selectedYear',
+                'selectedMonth'
+            )
+        );
     }
 
     /*

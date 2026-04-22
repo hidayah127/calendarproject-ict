@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\MeritClaim;
 use App\Models\Staff;
-
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 class MeritReportController extends Controller
 {
 
@@ -57,13 +58,24 @@ class MeritReportController extends Controller
         return $staffMerits;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $selectedYear = $request->input('year', now()->year);
+
         $departments = Department::orderBy('name')->get();
+
+        $currentYear = now()->year;
+
+        $yearOptions = [];
+
+        for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
+            $yearOptions[] = $y;
+        }
 
         // All approved claims grouped by staff
         $approvedClaims = MeritClaim::with(['staff', 'staff.department', 'program'])
             ->where('status', 'approved')
+            ->whereYear('created_at', $selectedYear)
             ->get();
 
         // Build staff merit data
@@ -132,6 +144,8 @@ class MeritReportController extends Controller
             'meritPoints',
             'roleLabels',
             'roleIcons',
+            'yearOptions',
+            'selectedYear'
         ));
     }
 

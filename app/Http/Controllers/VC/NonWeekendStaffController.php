@@ -14,7 +14,14 @@ class NonWeekendStaffController extends Controller
     public function index(Request $request)
     {
         $selectedYear  = $request->input('year', now()->year);
-        $selectedMonth = $request->input('month', now()->format('Y-m'));
+        $selectedMonth = $request->input(
+            'month', 
+            Carbon::createFromDate(
+                $selectedYear, 
+                now()->month, 1
+                )->format('Y-m')
+        );
+
         $selectedDept  = $request->input('dept', '');
 
         $monthDate  = Carbon::parse($selectedMonth . '-01');

@@ -84,6 +84,7 @@ textarea.form-control {
     min-height: 100px;
 }
 
+
 /* validation errors */
 .form-control.is-invalid,
 .form-select.is-invalid {
@@ -94,6 +95,29 @@ textarea.form-control {
 .invalid-feedback {
     font-size: 12.5px !important;
     color: #b91c1c !important;
+}
+
+/* Customizing Select2 to match your theme */
+.select2-container--default .select2-selection--single {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    height: 48px !important;
+    background: #f8faff !important;
+    display: flex;
+    align-items: center;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 46px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #1e293b !important;
+    padding-left: 14px !important;
+}
+.select2-dropdown {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
 }
 
 /* ── Date range visual connector ── */
@@ -280,7 +304,7 @@ textarea.form-control {
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div>  
 
                     <div class="mb-4">
                         <label class="form-label">Venue <span class="req">*</span></label>
@@ -342,7 +366,7 @@ textarea.form-control {
                     <div class="mb-4">
                         <label class="form-label">Staff in Charge</label>
                         <select name="staff_in_charge_id"
-                                class="form-select @error('staff_in_charge_id') is-invalid @enderror">
+                                class="form-select select-search @error('staff_in_charge_id') is-invalid @enderror">
                             <option value="">— Select staff member (optional) —</option>
                             @foreach($staffList as $staff)
                                 <option value="{{ $staff->id }}"
@@ -423,6 +447,16 @@ textarea.form-control {
 
 @push('scripts')
 <script>
+
+    $(document).ready(function() {
+        $('.select-search').select2({
+            placeholder: "— Search for a staff member —",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+
+    
     document.addEventListener('DOMContentLoaded', function() {
         const startDateInput = document.getElementById('start_date');
         const endDateInput = document.getElementById('end_date');
