@@ -178,6 +178,29 @@ body {
     border-radius: 50%;
 }
 
+/* ── Desktop Sidebar Toggle ── */
+
+/* Collapse sidebar column */
+body.sidebar-collapsed .sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    flex: 0 0 0 !important;
+    overflow: hidden;
+    padding: 0 !important;
+}
+
+/* Expand main content */
+body.sidebar-collapsed main {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+
+/* Smooth animation */
+.sidebar,
+main {
+    transition: all 0.3s ease;
+}
+
 /* ── Navbar ── */
 .navbar {
     background: var(--surface) !important;
@@ -555,6 +578,32 @@ body {
             });
 
     }
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const toggleBtn = document.getElementById("desktopSidebarToggle");
+
+        if (toggleBtn) {
+
+            toggleBtn.addEventListener("click", function () {
+
+                // Toggle sidebar
+                document.body.classList.toggle("sidebar-collapsed");
+
+                // Save state
+                if (document.body.classList.contains("sidebar-collapsed")) {
+                    localStorage.setItem("sidebar", "collapsed");
+                } else {
+                    localStorage.setItem("sidebar", "expanded");
+                }
+
+            });
+
+        }
+
+    });
     </script>
 
 </body>

@@ -246,7 +246,7 @@
 <div class="page-hdr fu">
     <div>
         <h2 style="font-size:1.3rem;font-weight:800;color:#0f172a;margin:0 0 6px;">
-            <i class="fa fa-star me-2" style="color:#f59e0b;"></i>Merit Claims Review
+           Merit Claims Review
         </h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">

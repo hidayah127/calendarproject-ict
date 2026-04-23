@@ -279,10 +279,11 @@
 {{-- Page Header --}}
 <div class="page-header">
     <div>
-        <h2><i class="fa fa-calendar-days me-2 text-primary"></i>My Calendar</h2>
+        <h2><i class="text-primary"></i>My Calendar</h2>
         <nav aria-label="breadcrumb" class="mt-1">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('head.dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('head.dashboard') }}"
+                    class="text-decoration-none">Dashboard</a></li>
                 <li class="breadcrumb-item active">Calendar</li>
             </ol>
         </nav>

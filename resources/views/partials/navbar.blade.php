@@ -398,6 +398,12 @@
         <i class="fa fa-bars"></i>
     </button>
 
+    {{-- Desktop sidebar toggle --}}
+    <button class="nav-menu-btn d-none d-lg-flex"
+            id="desktopSidebarToggle">
+        <i class="fa fa-bars"></i>
+    </button>
+
     {{-- Page title --}}
     <span class="nav-page-title">@yield('page-title', 'Dashboard')</span>
 

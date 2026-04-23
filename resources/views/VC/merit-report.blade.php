@@ -494,11 +494,11 @@
                 @endif
             </div>
         </div>
-        <div style="position:relative;z-index:1;">
+        {{-- <div style="position:relative;z-index:1;">
             <div style="width:70px;height:70px;border-radius:18px;background:rgba(255,255,255,.10);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:30px;color:#f59e0b;">
                 <i class="fa fa-trophy"></i>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 

@@ -357,7 +357,7 @@
                 </span>
             </div>
         </div>
-        <div class="hero-emblem"><i class="fa fa-umbrella-beach"></i></div>
+        {{-- <div class="hero-emblem"><i class="fa fa-umbrella-beach"></i></div> --}}
     </div>
     <div class="hero-bar">
         <div class="hb-item">

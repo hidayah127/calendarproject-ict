@@ -32,8 +32,8 @@ class MeritClaim extends Model
     |--------------------------------------------------------------------------
     */
     public static array $meritPoints = [
-        'attendee'         => 1,
-        'committee_member' => 3,
+        'attendee'         => 5,
+        'committee_member' => 10,
         // 'facilitator'      => 4,
         // 'secretary'        => 4,
         // 'treasurer'        => 4,
