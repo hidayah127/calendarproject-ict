@@ -91,7 +91,7 @@ class StaffController extends Controller
     {
 
         $request->validate([
-            'role' => 'required|in:admin,vc,hd,ld'
+            'role' => 'required|in:admin,vc,hd,ld,az'
         ]);
 
         $staff = Staff::findOrFail($id);

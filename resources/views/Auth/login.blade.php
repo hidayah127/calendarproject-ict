@@ -368,7 +368,7 @@ body {
                 class="btn-staff-portal mt-3">
 
                     <i class="fa fa-users"></i>
-                    Go To Staff Portal
+                    Be An Amazing You Portal
 
                 </a>
 

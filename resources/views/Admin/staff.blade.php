@@ -870,7 +870,7 @@
                             <option value="ld">Head of Department</option>
                             <option value="vc">Vice Chancellor</option>
                             <option value="hd">Programme Secretariat</option>
-                            {{-- <option value="admin">Admin</option> --}}
+                            <option value="az">Be An Amazing You</option>
                         </select>
                     </div>
                 </div>

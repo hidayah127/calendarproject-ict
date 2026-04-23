@@ -234,6 +234,8 @@
 .role-admin { background: #e0e7ff; color: #3730a3; }
 .role-hd    { background: #fef9c3; color: #b45309; }
 .role-vc    { background: #f0fdf4; color: #15803d; }
+.role-ld    { background: #ffd9d9; color: #c41a1a; }
+.role-az    { background: #ffe4e6; color: #c026d3; }
 .role-other { background: #f1f5f9; color: #475569; }
 
 .status-active {
@@ -383,6 +385,7 @@
     $hdCount     = collect($users)->where('role','hd')->count();
     $vcCount     = collect($users)->where('role','vc')->count();
     $ldCount     = collect($users)->where('role','ld')->count();
+    $azCount     = collect($users)->where('role','az')->count();
 @endphp
 
 {{-- Page Header --}}
@@ -414,7 +417,7 @@
         </div>
     </div>
 
-    <div class="stat-chip">
+    {{-- <div class="stat-chip">
         <div class="stat-chip-icon" style="background:#e0e7ff;">
             <i class="fa fa-user-gear" style="color:#3730a3;"></i>
         </div>
@@ -422,7 +425,7 @@
             <div class="stat-chip-val">{{ $adminCount }}</div>
             <div class="stat-chip-label">Admins</div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="stat-chip">
         <div class="stat-chip-icon" style="background:#fef9c3;">
@@ -527,6 +530,7 @@
                                 'hd'    => 'role-hd',
                                 'vc'    => 'role-vc',
                                 'ld'    => 'role-ld',
+                                'az'    => 'role-az',
                                 default => 'role-other',
                             };
                             $roleIcon = match($user->role) {
@@ -534,6 +538,7 @@
                                 'hd'    => 'fa-crown',
                                 'vc'    => 'fa-star',
                                 'ld'    => 'fa-user-tie',
+                                'az'    => 'fa-star',
                                 default => 'fa-user',
                             };
                             $roleLabel = match($user->role) {
@@ -541,6 +546,7 @@
                                 'hd'    => 'Programme Secretariat',
                                 'vc'    => 'Vice Chancellor',
                                 'ld'    => 'Head of Department',
+                                'az'    => 'Be An Amazing You',
                                 default => strtoupper($user->role),
                             };
                         @endphp
