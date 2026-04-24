@@ -92,7 +92,8 @@
 
 
     {{-- Programme Secretariat --}}
-    @if(auth()->user()->role == 'hd')
+    {{-- @if(auth()->user()->role == 'hd') --}}
+    @if(in_array(auth()->user()->role, ['hd','az']))
 
         <a href="{{ route('head.dashboard') }}" class="{{ Request::routeIs('head.dashboard*') ? 'active' : '' }}">
             <i class="fa fa-home me-2"></i> Dashboard
@@ -223,7 +224,8 @@
 
 
         {{-- Programme secretariat --}}
-        @if(auth()->user()->role == 'hd')
+        {{-- @if(auth()->user()->role == 'hd') --}}
+        @if(in_array(auth()->user()->role, ['hd','az']))
 
             <a href="{{ route('head.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-users me-2"></i> Dashboard

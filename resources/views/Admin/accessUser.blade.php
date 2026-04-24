@@ -546,7 +546,7 @@
                                 'hd'    => 'Programme Secretariat',
                                 'vc'    => 'Vice Chancellor',
                                 'ld'    => 'Head of Department',
-                                'az'    => 'Be An Amazing You',
+                                'az'    => 'Amazing You Committee',
                                 default => strtoupper($user->role),
                             };
                         @endphp

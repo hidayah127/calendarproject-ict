@@ -84,7 +84,7 @@ use App\Http\Controllers\Head\MeritClaimController;
 
 Route::prefix('head')
     ->name('head.')
-    ->middleware('auth', 'role:hd')
+    ->middleware('auth', 'role:hd,az')
     ->group(function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');  
@@ -110,9 +110,6 @@ Route::prefix('head')
     Route::patch('merit-claims/{claim}/reject',    [MeritClaimController::class, 'reject'])->name('merit-claims.reject');
     Route::patch('/head/merit-claims/bulk-approve',[MeritClaimController::class, 'bulkApprove'])->name('merit-claims.bulk-approve');
     Route::patch('/head/merit-claims/bulk-reject', [MeritClaimController::class, 'bulkReject'])->name('merit-claims.bulk-reject');
-
-
-
 });
 
 // Vice Chancellor Routes

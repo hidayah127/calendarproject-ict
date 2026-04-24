@@ -313,11 +313,11 @@ body {
 
                 {{-- Staff ID --}}
                 <div class="mb-3">
-                    <label class="form-label">Staff ID</label>
+                    <label class="form-label">Username</label>
                     <input type="text"
                            name="staff_id"
                            class="form-control"
-                           placeholder="Enter your staff ID"
+                           placeholder="Enter your username"
                            value="{{ old('staff_id') }}"
                            autocomplete="username"
                            required>

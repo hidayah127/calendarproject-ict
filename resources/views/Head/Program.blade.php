@@ -583,6 +583,25 @@ nav[role="navigation"] p {
 
                     {{-- Meta chips --}}
                     <div class="d-flex flex-wrap gap-2 mb-3">
+                        {{-- Category Badge (Only for AZ programs) --}}
+                       @php
+                        $categoryColors = [
+                            'mind' => '#2563eb',
+                            'fitness' => '#16a34a',
+                            'spiritual' => '#7c3aed',
+                            'social' => '#ea580c',
+                        ];
+                        @endphp
+
+                        @if($program->category)
+                        <span class="date-chip">
+                            <i class="fa fa-layer-group"
+                            style="color:{{ $categoryColors[$program->category] ?? '#64748b' }};">
+                            </i>
+                            {{ ucfirst($program->category) }}
+                        </span>
+                        @endif
+
                         <span class="date-chip">
                             <i class="fa fa-location-dot" style="color:#1a56db;"></i>
                             {{ $program->venue }}
@@ -616,6 +635,7 @@ nav[role="navigation"] p {
                                 data-title="{{ $program->title }}"
                                 data-description="{{ $program->description }}"
                                 data-venue="{{ $program->venue }}"
+                                data-category="{{ $program->category }}"
                                 data-start="{{ $program->start_date->format('Y-m-d\TH:i') }}"
                                 data-end="{{ $program->end_date->format('Y-m-d\TH:i') }}"
                                 data-staff="{{ $program->staff_in_charge_id }}">
@@ -706,6 +726,26 @@ nav[role="navigation"] p {
                             <label class="form-label">Venue</label>
                             <input type="text" name="venue" id="edit_venue" class="form-control" required>
                         </div>
+
+                        @if(auth()->user()->role === 'az')
+                        <div class="col-12">
+                            <label class="form-label">Category</label>
+
+                            <select name="category"
+                                    id="edit_category"
+                                    class="form-select">
+
+                                <option value="">— Select Category —</option>
+
+                                <option value="mind">Mind</option>
+                                <option value="fitness">Fitness</option>
+                                <option value="spiritual">Spiritual</option>
+                                <option value="social">Social</option>
+
+                            </select>
+                        </div>
+                        @endif
+
                         <div class="col-md-6">
                             <label class="form-label">Start Date & Time</label>
                             <input type="datetime-local" name="start_date" id="edit_start" class="form-control" required>
@@ -875,6 +915,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit_start').value       = btn.dataset.start;
         document.getElementById('edit_end').value         = btn.dataset.end;
         document.getElementById('edit_staff').value       = btn.dataset.staff;
+        if (document.getElementById('edit_category')) {
+            document.getElementById('edit_category').value =
+                btn.dataset.category;
+        }
     });
 
     document.getElementById('rescheduleModal').addEventListener('show.bs.modal', e => {

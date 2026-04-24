@@ -70,12 +70,56 @@ class PublicPortalController extends Controller
             $c->program_id . '_' . $c->claim_type => true
         ]);
 
+    //    $categorySummary = $claims
+    //     ->where('status', 'approved')
+    //     ->groupBy(function ($claim) {
+    //         return $claim->program->category ?? 'Others';
+    //     })
+    //     ->map(function ($catClaims) {
+    //         return $catClaims->sum('merit_points');
+    //     });
+
+       // Define all categories (always show these)
+        $allCategories = [
+            'social',
+            'mind',
+            'fitness',
+            'spiritual'
+        ];
+
+        // Get approved claims grouped by category
+        $approvedClaims = $claims
+            ->where('status', 'approved')
+            ->groupBy(function ($claim) {
+                return $claim->program->category ?? 'Others';
+            });
+
+        // Build summary with default 0
+        $categorySummary = collect();
+
+        foreach ($allCategories as $category) {
+
+            $points = isset($approvedClaims[$category])
+                ? $approvedClaims[$category]->sum('merit_points')
+                : 0;
+
+            $categorySummary[$category] = $points;
+        }
+
+        $categoryBreakdown = $claims
+        ->where('status', 'approved')
+        ->groupBy(function ($claim) {
+            return $claim->program->category ?? 'Others';
+        });
+
         return view('portal.dashboard', compact(
             'staff',
             'programs',
             'claims',
             'totalMerits',
             'claimedKeys',
+            'categorySummary',
+            'categoryBreakdown'
         ));
     }
 

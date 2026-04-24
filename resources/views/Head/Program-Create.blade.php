@@ -325,6 +325,59 @@ textarea.form-control {
                         @enderror
                     </div>
 
+                    @php
+                        $role = auth()->user()->role;
+                    @endphp
+
+                    @if ($role == 'az')
+                          <p class="section-label">
+                        <i class="fa fa-layer-group" style="color:#1a56db;"></i>
+                        Program Category
+                    </p>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Category <span class="req">*</span>
+                        </label>
+
+                        <select name="category"
+                                class="form-select @error('category') is-invalid @enderror"
+                                required>
+
+                            <option value="">— Select Category —</option>
+
+                            <option value="mind"
+                                {{ old('category') == 'mind' ? 'selected' : '' }}>
+                                Mind
+                            </option>
+
+                            <option value="fitness"
+                                {{ old('category') == 'fitness' ? 'selected' : '' }}>
+                                Fitness
+                            </option>
+
+                            <option value="spiritual"
+                                {{ old('category') == 'spiritual' ? 'selected' : '' }}>
+                                Spiritual
+                            </option>
+
+                            <option value="social"
+                                {{ old('category') == 'social' ? 'selected' : '' }}>
+                                Social
+                            </option>
+
+                        </select>
+
+                        @error('category')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    @endif
+                    {{-- category section --}}
+                  
+
                     {{-- ── Schedule ── --}}
                     <p class="section-label"><i class="fa fa-calendar" style="color:#1a56db;"></i> Schedule</p>
 

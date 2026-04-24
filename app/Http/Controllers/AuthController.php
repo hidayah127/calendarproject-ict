@@ -94,7 +94,11 @@ class AuthController extends Controller
             return redirect()->route('vc.dashboard');
         }
 
-        if ($user->role === 'hd') {
+        // if ($user->role === 'hd') {
+        //     return redirect()->route('head.dashboard');
+        // }
+
+        if (in_array($user->role, ['hd', 'az'])) {
             return redirect()->route('head.dashboard');
         }
 
@@ -110,111 +114,6 @@ class AuthController extends Controller
         return redirect()->route('404');
     }
     
-    // public function loginProcess(Request $request)
-    // {
-
-    //     $request->validate([
-    //     'staff_id' => 'required',
-    //     'password' => 'required'
-    //     ]);
-
-    //     // find staff using staff_id code
-    //     $staff = Staff::where('staff_id',$request->staff_id)->first();
-
-    //     if(!$staff){
-    //     return back()->with('error','Staff ID not found');
-    //     }
-
-    //     // find user account linked to staff
-    //     $user = User::where('staff_id',$staff->id)->first();
-
-    //     if(!$user){
-    //     return back()->with('error','No system access assigned');
-    //     }
-
-    //     // check password
-    //     if(!Hash::check($request->password,$user->password)){
-    //     return back()->with('error','Invalid password');
-    //     }
-
-    //     Auth::login($user);
-
-    //     $request->session()->regenerate();
-
-    //     /*
-    //     |--------------------------------------------------------------------------
-    //     | Role Based Redirect
-    //     |--------------------------------------------------------------------------
-    //     */
-
-    //     if ($user->role === 'vc') {
-    //         return redirect()->route('vc.dashboard');
-    //     }
-
-    //     if ($user->role === 'hd') {
-    //         return redirect()->route('head.dashboard');
-    //     }
-
-    //     if ($user->role === 'admin') {
-    //         return redirect()->route('admin.dashboard');
-    //     }
-
-    //     if ($user->role === 'ld') {
-    //         return redirect()->route('ld.dashboard');
-    //      }
-
-    //     // fallback
-    //     return redirect()->route('404');
-    // }
-
-    // public function loginProcess(Request $request)
-    // {
-    //     $request->validate([
-    //         'staff_id' => 'required',
-    //         'password' => 'required',
-    //     ]);
-
-    //     $login = $request->staff_id;
-    //     $password = $request->password;
-
-    //     /*
-    //     ======================
-    //     CHECK ADMIN FIRST
-    //     ======================
-    //     */
-
-    //     $admin = Admin::where('username', $login)->first();
-
-    //     if ($admin && Hash::check($password, $admin->password)) {
-
-    //         Auth::guard('admin')->login($admin);
-
-    //         return redirect()
-    //                 ->route('admin.dashboard');
-    //     }
-
-    //     /*
-    //     ======================
-    //     CHECK STAFF
-    //     ======================
-    //     */
-
-    //     $user = User::where('staff_id', $login)->first();
-
-    //     if ($user && Hash::check($password, $user->password)) {
-
-    //         Auth::login($user);
-
-    //         return redirect()
-    //                 ->route('dashboard');
-    //     }
-
-    //     return back()->with(
-    //         'error',
-    //         'Invalid Staff ID or Password'
-    //     );
-    // }
-
 
     public function logout(Request $request)
     {

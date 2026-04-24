@@ -17,6 +17,7 @@ class Program extends Model
         'start_date',
         'end_date',
         'status',
+        'category',
         'department_id',
         'created_by',
         'staff_in_charge_id',
@@ -67,7 +68,7 @@ class Program extends Model
         if ($value === 'cancelled') {
             return 'cancelled';
         }
-
+ 
         $now = Carbon::now();
 
         if ($this->end_date && $now->gt($this->end_date)) {

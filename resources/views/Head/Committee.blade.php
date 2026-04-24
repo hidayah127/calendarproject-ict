@@ -656,7 +656,7 @@
                 </div> --}}
 
                 <div class="form-group">
-                    <label class="form-label">Select Staff</label>
+                    {{-- <label class="form-label">Select Staff</label> --}}
                     @if($availableStaff->isEmpty())
                         <div style="background:#f8faff;border:1.5px solid #e2e8f0;border-radius:11px;padding:14px;text-align:center;font-size:13px;color:#94a3b8;">
                             <i class="fa fa-circle-check me-1" style="color:#16a34a;"></i>
@@ -664,33 +664,91 @@
                         </div>
                     @else
                         {{-- Added id="staff-select" here --}}
-                        <select name="staff_id" id="staff-select" class="form-select" required>
+                        {{-- <select name="staff_id" id="staff-select" class="form-select" required>
                             <option value="" disabled selected>Choose a staff member…</option>
                             @foreach($availableStaff as $s)
                                 <option value="{{ $s->id }}">
                                     {{ $s->name }} — {{ $s->department->name ?? 'No Department' }}
                                 </option>
                             @endforeach
-                        </select>
+                        </select> --}}
+
+                        {{-- bundle add staff --}}
+                        <div id="member-rows">
+
+                            <div class="member-row mb-2">
+
+                                {{-- Staff --}}
+                                <label class="form-label">Select Staff</label>
+                                <select name="staff_id[]" class="form-select mb-2" required>
+                                    <option value="">Choose staff...</option>
+
+                                    @foreach($availableStaff as $s)
+                                        <option value="{{ $s->id }}">
+                                            {{ $s->name }} — {{ $s->department->name ?? 'No Department' }}
+                                        </option>
+                                    @endforeach
+
+                                </select>
+
+                                {{-- Role --}}
+                                <label class="form-label">Committee Role</label>
+                                <select name="role[]" class="form-select mb-2" required>
+
+                                    @foreach($roles as $val => $label)
+                                        <option value="{{ $val }}">{{ $label }}</option>
+                                    @endforeach
+
+                                </select>
+
+                                {{-- Responsibility --}}
+                                <label class="form-label">Responsibility <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
+                                <input type="text"
+                                    name="responsibility[]"
+                                    class="form-control mb-2"
+                                    placeholder="Responsibility">
+
+                                {{-- Remove Row --}}
+                                <button type="button"
+                                        class="btn btn-danger btn-sm remove-row">
+
+                                    Remove
+
+                                </button>
+
+                                <hr>
+
+                            </div>
+
+                        </div>
+
+                        {{-- Add Row Button --}}
+                        <button type="button"
+                                id="add-row"
+                                class="btn btn-secondary btn-sm mb-3">
+
+                            ➕ Add Another Member
+
+                        </button>
                     @endif
                 </div>
 
                 {{-- Role --}}
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label class="form-label">Committee Role</label>
                     <select name="role" class="form-select" required>
                         @foreach($roles as $val => $label)
                             <option value="{{ $val }}">{{ $label }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
 
                 {{-- Responsibility --}}
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label class="form-label">Responsibility <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
                     <input type="text" name="responsibility" class="form-control"
                            placeholder="e.g. Manage registrations, Oversee venue…">
-                </div>
+                </div> --}}
 
                 {{-- Is Lead toggle --}}
                 {{-- <div class="form-group">
@@ -785,7 +843,7 @@
 
                     <div class="form-group mb-0">
                         <label class="lead-toggle" for="editIsLead">
-                            <input type="checkbox" name="is_lead" value="1" id="editIsLead">
+                            <input type="checkbox" name="is_lead[]" value="1" id="editIsLead">
                             <div class="toggle-track">
                                 <div class="toggle-thumb"></div>
                             </div>
@@ -1209,6 +1267,51 @@ document.getElementById('memberSearch')
         }
 
     });
+
+});
+
+// bundle add member rows
+document.getElementById('add-row')
+.addEventListener('click', function() {
+
+    let container =
+        document.getElementById('member-rows');
+
+    let firstRow =
+        container.querySelector('.member-row');
+
+    let newRow =
+        firstRow.cloneNode(true);
+
+    // Clear values
+    newRow.querySelectorAll('select, input')
+    .forEach(function(el) {
+
+        el.value = '';
+
+    });
+
+    container.appendChild(newRow);
+
+});
+
+
+/* Remove row */
+
+document.addEventListener('click', function(e) {
+
+    if (e.target.classList.contains('remove-row')) {
+
+        let rows =
+            document.querySelectorAll('.member-row');
+
+        if (rows.length > 1) {
+
+            e.target.closest('.member-row').remove();
+
+        }
+
+    }
 
 });
 

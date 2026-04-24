@@ -388,6 +388,7 @@
                 'vc' => 'Vice Chancellor',
                 'hd' => 'Programme Secretariat',
                 'ld' => 'Head of Department',
+                'az' => 'Amazing You Committee',
             ];
         @endphp
 
@@ -442,7 +443,8 @@
                     @if(!$isAdmin && $role == 'vc')
                         <a href="{{ route('vc.programs') }}">View all programs →</a>
 
-                    @elseif(!$isAdmin && $role == 'hd')
+                    {{-- @elseif(!$isAdmin && $role == 'hd') --}}
+                    @elseif(!$isAdmin && in_array($role, ['hd','az']))
                         <a href="{{ route('head.programs.index') }}">View all programs →</a>
                     @endif
                 </div>

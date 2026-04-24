@@ -47,47 +47,109 @@ class CommitteeController extends Controller
 
         return view('head.committee', compact('program', 'availableStaff', 'roles'));
     }
-
+  
     /**
      * Add a staff member to the committee.
      */
+
+    // public function store(Request $request, Program $program)
+    // {
+    //     $this->authorise($program);
+
+    //     $request->validate([
+    //         'staff_id'       => 'required|exists:staff,id',
+    //         'role'           => 'required|in:committee_member,committee_head,coordinator,facilitator,secretary,treasurer',
+    //         'responsibility' => 'nullable|string|max:255',
+    //         'is_lead'        => 'boolean',
+    //     ]);
+
+    //     // ✅ Query pivot table directly — no JOIN, no ambiguity
+    //     $alreadyExists = DB::table('program_staff')
+    //         ->where('program_id', $program->id)
+    //         ->where('staff_id', $request->staff_id)
+    //         ->exists();
+
+    //     if ($alreadyExists) {
+    //         return redirect()->back()->with('error', 'This staff member is already in the committee.');
+    //     }
+
+    //     // Strip existing lead if new one is being set
+    //     if ($request->boolean('is_lead')) {
+    //         DB::table('program_staff')
+    //             ->where('program_id', $program->id)
+    //             ->where('is_lead', true)
+    //             ->update(['is_lead' => false]);
+    //     }
+
+    //     $program->committee()->attach($request->staff_id, [
+    //         'role'           => $request->role,
+    //         'responsibility' => $request->responsibility,
+    //         'is_lead'        => $request->boolean('is_lead'),
+    //     ]);
+
+    //     return redirect()->back()->with('success', 'Committee member added successfully.');
+    // }
 
     public function store(Request $request, Program $program)
     {
         $this->authorise($program);
 
         $request->validate([
-            'staff_id'       => 'required|exists:staff,id',
-            'role'           => 'required|in:committee_member,committee_head,coordinator,facilitator,secretary,treasurer',
-            'responsibility' => 'nullable|string|max:255',
-            'is_lead'        => 'boolean',
+            'staff_id'       => 'required|array',
+            'staff_id.*'     => 'exists:staff,id',
+
+            'role'           => 'required|array',
+            'role.*'         => 'required|in:committee_member,committee_head,coordinator,facilitator,secretary,treasurer',
+
+            'responsibility' => 'array',
+            'responsibility.*' => 'nullable|string|max:255',
+
+            'is_lead'        => 'array',
         ]);
 
-        // ✅ Query pivot table directly — no JOIN, no ambiguity
-        $alreadyExists = DB::table('program_staff')
-            ->where('program_id', $program->id)
-            ->where('staff_id', $request->staff_id)
-            ->exists();
+        foreach ($request->staff_id as $index => $staffId) {
 
-        if ($alreadyExists) {
-            return redirect()->back()->with('error', 'This staff member is already in the committee.');
-        }
-
-        // Strip existing lead if new one is being set
-        if ($request->boolean('is_lead')) {
-            DB::table('program_staff')
+            /* ✅ Check duplicate */
+            $alreadyExists = DB::table('program_staff')
                 ->where('program_id', $program->id)
-                ->where('is_lead', true)
-                ->update(['is_lead' => false]);
+                ->where('staff_id', $staffId)
+                ->exists();
+
+            if ($alreadyExists) {
+                continue; // skip duplicate
+            }
+
+            /* ✅ Handle lead */
+            $isLead = isset($request->is_lead[$index]);
+
+            if ($isLead) {
+
+                DB::table('program_staff')
+                    ->where('program_id', $program->id)
+                    ->where('is_lead', true)
+                    ->update(['is_lead' => false]);
+
+            }
+
+            /* ✅ Attach member */
+            $program->committee()->attach($staffId, [
+
+                'role' =>
+                    $request->role[$index],
+
+                'responsibility' =>
+                    $request->responsibility[$index] ?? null,
+
+                'is_lead' =>
+                    $isLead,
+
+            ]);
+
         }
 
-        $program->committee()->attach($request->staff_id, [
-            'role'           => $request->role,
-            'responsibility' => $request->responsibility,
-            'is_lead'        => $request->boolean('is_lead'),
-        ]);
-
-        return redirect()->back()->with('success', 'Committee member added successfully.');
+        return redirect()->back()
+            ->with('success',
+                'Committee members added successfully.');
     }
 
     /**

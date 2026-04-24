@@ -11,59 +11,6 @@ use App\Services\NotificationService;
 
 class ProgramController extends Controller
 {
-/* 
-    |--------------------------------------------------------------------------
-    | Index — list all programs created by this head
-    |--------------------------------------------------------------------------
-    */
-    // public function index(Request $request)
-    // {
-
-    //     $selectedYear  = $request->input('year', now()->year);
-    //     $selectedMonth = $request->input('month', '');
-
-    //     $query = Program::with(['staffInCharge'])
-    //         ->whereYear('start_date', $selectedYear);
-
-    //     if ($selectedMonth) {
-    //         $query->whereMonth('start_date', $selectedMonth);
-    //     }
-
-    //     // $programs = $query
-    //     //     ->latest()
-    //     //     ->paginate(9);
-
-    //     $programs = Program::with(['staffInCharge', 'department'])
-    //         ->where('created_by', Auth::id())
-    //         ->latest()
-    //         ->paginate(10);
-
-    //         $currentYear = now()->year;
-
-    //     $yearOptions = [];
-
-    //     for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
-    //         $yearOptions[] = $y;
-    //     }
-
-    //     $monthOptions = [];
-
-    //     for ($m = 1; $m <= 12; $m++) {
-    //         $monthOptions[] = [
-    //             'value' => $m,
-    //             'label' => date('F', mktime(0,0,0,$m,1))
-    //         ];
-    //     }
-
-    //     return view('head.Program', compact(
-    //         'programs',
-    //         'yearOptions',
-    //         'monthOptions',
-    //         'selectedYear',
-    //         'selectedMonth'
-
-    //     ));
-    // }
 
     public function index(Request $request)
     {
@@ -76,6 +23,7 @@ class ProgramController extends Controller
         /* ── Build Query ── */
 
         $query = Program::with(['staffInCharge'])
+            ->where('created_by', Auth::id())
             ->whereYear('start_date', $selectedYear);
 
 
@@ -156,19 +104,50 @@ class ProgramController extends Controller
     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        //     'title'              => 'required|string|max:255',
+        //     'description'        => 'nullable|string',
+        //     'venue'              => 'required|string|max:255',
+        //     'start_date'         => 'required|date',
+        //     'end_date'           => 'required|date|after_or_equal:start_date',
+        //     'staff_in_charge_id' => 'nullable|exists:staff,id',
+        // ]);
+
+        // $user = Auth::user();
+
+        $user = Auth::user();
+
+        $rules = [
             'title'              => 'required|string|max:255',
             'description'        => 'nullable|string',
             'venue'              => 'required|string|max:255',
             'start_date'         => 'required|date',
             'end_date'           => 'required|date|after_or_equal:start_date',
             'staff_in_charge_id' => 'nullable|exists:staff,id',
-        ]);
+        ];
 
-        $user = Auth::user();
+        /* Only AZ role requires category */
+        if ($user->role === 'az') {
+            $rules['category'] = 'required|in:mind,fitness,spiritual,social';
+        }
+
+        $validated = $request->validate($rules);
+
+        // $program = Program::create([
+        //     ...$validated,
+        //     'created_by'    => $user->id,
+        //     'department_id' => $user->staff->department_id ?? null,
+        //     'status'        => 'upcoming',
+        // ]);
 
         $program = Program::create([
             ...$validated,
+
+            // If not AZ, force category null
+            'category'      => $user->role === 'az'
+                                ? $request->category
+                                : null,
+
             'created_by'    => $user->id,
             'department_id' => $user->staff->department_id ?? null,
             'status'        => 'upcoming',
@@ -200,20 +179,60 @@ class ProgramController extends Controller
     | Update — save edited program details
     |--------------------------------------------------------------------------
     */
+    // public function update(Request $request, Program $program)
+    // {
+    //     $this->authorise($program);
+
+    //     $validated = $request->validate([
+    //         'title'              => 'required|string|max:255',
+    //         'description'        => 'nullable|string',
+    //         'venue'              => 'required|string|max:255',
+    //         'start_date'         => 'required|date',
+    //         'end_date'           => 'required|date|after_or_equal:start_date',
+    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
+    //     ]);
+
+    //     $program->update($validated);
+
+    //     return redirect()
+    //         ->route('head.programs.index')
+    //         ->with('success', 'Program updated successfully.');
+    // }
+
     public function update(Request $request, Program $program)
     {
         $this->authorise($program);
 
-        $validated = $request->validate([
+        $user = Auth::user();
+
+        /* ── Validation Rules ── */
+
+        $rules = [
             'title'              => 'required|string|max:255',
             'description'        => 'nullable|string',
             'venue'              => 'required|string|max:255',
             'start_date'         => 'required|date',
             'end_date'           => 'required|date|after_or_equal:start_date',
             'staff_in_charge_id' => 'nullable|exists:staff,id',
-        ]);
+        ];
 
-        $program->update($validated);
+        /* Only AZ role needs category */
+        if ($user->role === 'az') {
+            $rules['category'] = 'required|in:mind,fitness,spiritual,social';
+        }
+
+        $validated = $request->validate($rules);
+
+        /* ── Update Program ── */
+
+        $program->update([
+            ...$validated,
+
+            // Save category only for AZ
+            'category' => $user->role === 'az'
+                            ? $request->category
+                            : null,
+        ]);
 
         return redirect()
             ->route('head.programs.index')
