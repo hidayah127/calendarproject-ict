@@ -99,6 +99,7 @@ class StaffController extends Controller
         // Create a user account for the staff
         User::create([
             'name' => $staff->name,
+            'username' => $staff->staff_id, // Use staff_id as username
             'email' => $staff->email,
             'password' => Hash::make('Free@gaza'), // Set a default password or generate one
             'role' => $request->role, // Set the role to staff

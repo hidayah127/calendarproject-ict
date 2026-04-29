@@ -124,12 +124,13 @@ class ProgramController extends Controller
             'start_date'         => 'required|date',
             'end_date'           => 'required|date|after_or_equal:start_date',
             'staff_in_charge_id' => 'nullable|exists:staff,id',
+            'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,Meeting,Event',
         ];
 
         /* Only AZ role requires category */
-        if ($user->role === 'az') {
-            $rules['category'] = 'required|in:mind,fitness,spiritual,social';
-        }
+        // if ($user->role === 'az') {
+        //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
+        // }
 
         $validated = $request->validate($rules);
 
@@ -140,13 +141,17 @@ class ProgramController extends Controller
         //     'status'        => 'upcoming',
         // ]);
 
+        /* Category required for ALL roles */
+
         $program = Program::create([
             ...$validated,
 
             // If not AZ, force category null
-            'category'      => $user->role === 'az'
-                                ? $request->category
-                                : null,
+            // 'category'      => $user->role === 'az'
+            //                     ? $request->category
+            //                     : null,
+
+            'category' => $request->category,
 
             'created_by'    => $user->id,
             'department_id' => $user->staff->department_id ?? null,
@@ -217,9 +222,12 @@ class ProgramController extends Controller
         ];
 
         /* Only AZ role needs category */
-        if ($user->role === 'az') {
-            $rules['category'] = 'required|in:mind,fitness,spiritual,social';
-        }
+        // if ($user->role === 'az') {
+        //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
+        // }
+
+        /* Category required for ALL roles */
+        $rules['category'] = 'required|in:mind,fitness,spiritual,social,Marketing,Meeting,Event';
 
         $validated = $request->validate($rules);
 
@@ -229,9 +237,11 @@ class ProgramController extends Controller
             ...$validated,
 
             // Save category only for AZ
-            'category' => $user->role === 'az'
-                            ? $request->category
-                            : null,
+            // 'category' => $user->role === 'az'
+            //                 ? $request->category
+            //                 : null,
+
+            'category' => $request->category,
         ]);
 
         return redirect()

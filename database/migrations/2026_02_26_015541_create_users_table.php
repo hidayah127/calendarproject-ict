@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'vc', 'hd', 'ld'])->default('hd');
-            $table->foreignId('staff_id')->nullable()->contrained('staffs');
+            $table->foreignId('staff_id')->nullable()->constrained('staffs');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function loginProcess(Request $request)
     {
         $request->validate([
-            'staff_id' => 'required',
+            'username' => 'required',
             'password' => 'required'
         ]);
 
@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         $admin = Admin::where(
             'username',
-            $request->staff_id
+            $request->username
         )->first();
 
         // dd($admin);
@@ -56,19 +56,19 @@ class AuthController extends Controller
         */
 
         // find staff using staff_id code
-        $staff = Staff::where(
-            'staff_id',
-            $request->staff_id
-        )->first();
+        // $staff = Staff::where(
+        //     'staff_id',
+        //     $request->staff_id
+        // )->first();
 
-        if (!$staff) {
-            return back()->with('error','Staff ID not found');
-        }
+        // if (!$staff) {
+        //     return back()->with('error','Staff ID not found');
+        // }
 
         // find user account linked to staff
         $user = User::where(
-            'staff_id',
-            $staff->id
+            'username',
+            $request->username
         )->first();
 
         if (!$user) {

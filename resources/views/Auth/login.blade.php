@@ -315,10 +315,10 @@ body {
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text"
-                           name="staff_id"
+                           name="username"
                            class="form-control"
                            placeholder="Enter your username"
-                           value="{{ old('staff_id') }}"
+                           value="{{ old('username') }}"
                            autocomplete="username"
                            required>
                 </div>

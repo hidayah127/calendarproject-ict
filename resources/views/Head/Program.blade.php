@@ -590,6 +590,9 @@ nav[role="navigation"] p {
                             'fitness' => '#16a34a',
                             'spiritual' => '#7c3aed',
                             'social' => '#ea580c',
+                            'Marketing' => '#db2777',
+                            'Meeting' => '#0ea5e9',
+                            'Event' => '#db2777',
                         ];
                         @endphp
 
@@ -727,7 +730,7 @@ nav[role="navigation"] p {
                             <input type="text" name="venue" id="edit_venue" class="form-control" required>
                         </div>
 
-                        @if(auth()->user()->role === 'az')
+                        {{-- @if(auth()->user()->role === 'az') --}}
                         <div class="col-12">
                             <label class="form-label">Category</label>
 
@@ -741,10 +744,13 @@ nav[role="navigation"] p {
                                 <option value="fitness">Fitness</option>
                                 <option value="spiritual">Spiritual</option>
                                 <option value="social">Social</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Event">Event</option>
 
                             </select>
                         </div>
-                        @endif
+                        {{-- @endif --}}
 
                         <div class="col-md-6">
                             <label class="form-label">Start Date & Time</label>

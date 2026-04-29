@@ -197,6 +197,7 @@
 
 .user-name  { font-weight: 700; color: #0f172a; font-size: 14px; }
 .user-email { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+.user-username { font-size: 11px; color: #838588; margin-top: 1px; }
 
 /* ── Badges ── */
 .sid-badge {
@@ -505,6 +506,7 @@
                             <div>
                                 <div class="user-name">{{ $user->name }}</div>
                                 <div class="user-email">{{ $user->email }}</div>
+                                <div class="user-username">{{ $user->username }}</div>
                             </div>
                         </div>
                     </td>

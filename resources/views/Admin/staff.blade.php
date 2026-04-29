@@ -864,6 +864,24 @@
                         Granting system access to <strong id="giveAccessName" style="color:#0f172a;"></strong>.
                         They will receive login credentials.
                     </p>
+                    {{-- username textbox --}}
+                    <div class="mb-3">
+                        <label class="form-label">Assign Username</label>
+
+                        <input 
+                            type="text" 
+                            name="username"
+                            class="form-control"
+                            placeholder="Enter username"
+                            required
+                        >
+
+                        <small class="text-muted">
+                            Username will be used for login.
+                        </small>
+                    </div>
+
+                    {{-- Role Selection --}}
                     <div>
                         <label class="form-label">Assign Role</label>
                         <select name="role" class="form-select">

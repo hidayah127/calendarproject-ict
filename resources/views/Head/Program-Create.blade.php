@@ -325,11 +325,11 @@ textarea.form-control {
                         @enderror
                     </div>
 
-                    @php
+                    {{-- @php
                         $role = auth()->user()->role;
                     @endphp
 
-                    @if ($role == 'az')
+                    @if ($role == 'az') --}}
                           <p class="section-label">
                         <i class="fa fa-layer-group" style="color:#1a56db;"></i>
                         Program Category
@@ -366,6 +366,21 @@ textarea.form-control {
                                 Social
                             </option>
 
+                             <option value="Marketing"
+                                {{ old('category') == 'marketing' ? 'selected' : '' }}>
+                                Marketing
+                            </option>
+
+                             <option value="Meeting"
+                                {{ old('category') == 'meeting' ? 'selected' : '' }}>
+                                Meeting
+                            </option>
+                                
+                            <option value="Event"
+                                {{ old('category') == 'event' ? 'selected' : '' }}>
+                                Event
+                            </option>
+
                         </select>
 
                         @error('category')
@@ -374,7 +389,7 @@ textarea.form-control {
                             </div>
                         @enderror
                     </div>
-                    @endif
+                    {{-- @endif --}}
                     {{-- category section --}}
                   
 
