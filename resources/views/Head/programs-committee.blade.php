@@ -15,7 +15,7 @@
 .d3 { animation-delay:.20s; }
 .d4 { animation-delay:.27s; }
 .d5 { animation-delay:.34s; }
-
+ 
 /* ── Hero ── */
 .pc-hero {
     background: linear-gradient(128deg,#0a1f52 0%,#0f2d6e 50%,#1e40af 100%);

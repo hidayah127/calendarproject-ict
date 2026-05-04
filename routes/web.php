@@ -137,9 +137,12 @@ Route::prefix('vc')
 
 // Head of Department Routes
 use App\Http\Controllers\HOD\DepartmentOverviewController;
+use App\Http\Controllers\HOD\ProgramController as HODProgramController;
+
 Route::prefix('ld')
     ->name('ld.')
     ->middleware('auth', 'role:ld')
     ->group(function () {
         Route::get('dashboard', [DepartmentOverviewController::class, 'index'])->name('dashboard');
+        Route::get('programs',  [HODProgramController::class, 'index'])->name('programs');
     }); 

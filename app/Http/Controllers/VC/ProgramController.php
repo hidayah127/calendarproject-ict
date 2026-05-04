@@ -9,7 +9,7 @@ use App\Models\Department;
 
 class ProgramController extends Controller
 {
-
+ 
 
     public function index(Request $request)
     {
@@ -82,6 +82,39 @@ class ProgramController extends Controller
             ];
         }
 
+        // WEEKLY
+        // $weeklyPrograms = [];
+
+        // foreach ($programs as $p) {
+        //     $week = ceil($p->start_date->day / 7);
+        //     $label = 'Week ' . $week;
+
+        //     $weeklyPrograms[$label][] = $p;
+        // }
+
+        $weeklyPrograms = [
+            'Week 1' => [],
+            'Week 2' => [],
+            'Week 3' => [],
+            'Week 4' => [],
+        ];
+
+        foreach ($programs as $p) {
+
+            // only process if month is selected
+            if ($selectedMonth && $p->start_date->month != $selectedMonth) {
+                continue;
+            }
+
+            $week = ceil($p->start_date->day / 7);
+            $label = 'Week ' . $week;
+
+            $weeklyPrograms[$label][] = $p;
+        }
+
+        // MONTHLY
+        $monthlyPrograms = $programs->sortBy('start_date');
+
         return view('vc.programs', compact(
             'programs', 
             'departments', 
@@ -89,9 +122,11 @@ class ProgramController extends Controller
             'yearOptions', 
             'monthOptions',
             'selectedYear',
-            'selectedMonth'
+            'selectedMonth',
+            'weeklyPrograms',
+            'monthlyPrograms'
 
-            ));
+        ));
     }
 
     public function calendar()

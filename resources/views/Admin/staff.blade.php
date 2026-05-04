@@ -874,7 +874,7 @@
                             class="form-control"
                             placeholder="Enter username"
                             required
-                        >
+                        >  
 
                         <small class="text-muted">
                             Username will be used for login.

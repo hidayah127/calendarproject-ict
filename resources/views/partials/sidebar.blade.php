@@ -47,17 +47,16 @@
             <i class="fa fa-calendar me-2"></i> All Programs
         </a>
 
+        <a href="{{ route('vc.calendar') }}" class="{{ Request::routeIs('vc.calendar*') ? 'active' : '' }}">
+            <i class="fa fa-chart-line me-2"></i> Calendar
+        </a>
+
         <a href="{{ route('vc.weekend-staff') }}" class="{{ Request::routeIs('vc.weekend-staff') ? 'active' : '' }}">
             <i class="fa fa-calendar-week"></i> Weekend Staff
         </a>
 
-
         <a href="{{ route('vc.non-weekend-staff') }}" class="{{ Request::routeIs('vc.no-weekend-staff') ? 'active' : '' }}">
             <i class="fa fa-user-times"></i> No Weekend Staff
-        </a>
-
-        <a href="{{ route('vc.calendar') }}" class="{{ Request::routeIs('vc.calendar*') ? 'active' : '' }}">
-            <i class="fa fa-chart-line me-2"></i> Calendar
         </a>
 
         <a href="{{ route('vc.reports') }}" class="{{ Request::routeIs('vc.reports*') ? 'active' : '' }}">
@@ -107,16 +106,16 @@
             <i class="fa fa-calendar-check me-2"></i> My Programs
         </a>
 
+        <a href="{{ route('head.calendar.index') }}" class="{{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
+             <i class="fa fa-calendar-alt me-2"></i> Calendar
+        </a>
+
         {{-- <a href="{{ route('head.committee.index', $program->id) }}" class="{{ Request::routeIs('head.committee*') ? 'active' : '' }}">
             <i class="fa fa-users-gear me-2"></i> Manage Committee
         </a> --}}
 
         <a href="{{ route('head.programs.committee') }}" class="{{ Request::routeIs('head.programs.committee*') ? 'active' : '' }}">
             <i class="fa fa-users-gear"></i> Programs & Committee
-        </a>
-
-        <a href="{{ route('head.calendar.index') }}" class="{{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
-             <i class="fa fa-calendar-alt me-2"></i> Calendar
         </a>
         
         <a href="{{ route('head.merit-claims') }}" class="{{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
@@ -130,6 +129,10 @@
 
         <a href="{{ route('ld.dashboard') }}" class="{{ Request::routeIs('ld.dashboard*') ? 'active' : '' }}">
             <i class="fa fa-home me-2"></i> Dashboard
+        </a>
+
+        <a href="{{ route('ld.programs') }}" class="{{ Request::routeIs('ld.programs*') ? 'active' : '' }}">
+            <i class="fa fa-calendar-check me-2"></i> My Programs   
         </a>
     @endif
 
@@ -179,16 +182,16 @@
                 <i class="fa fa-calendar me-2"></i> All Programs
             </a>
 
+            <a href="{{ route('vc.calendar') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.calendar*') ? 'active' : '' }}">
+                <i class="fa fa-chart-line me-2"></i> Calendar
+            </a>
+
             <a href="{{ route('vc.non-weekend-staff') }}" class="{{ Request::routeIs('vc.non-weekend-staff') ? 'active' : '' }}">
                 <i class="fa fa-calendar-week"></i> Non-Weekend Staff
             </a>
 
             <a href="{{ route('vc.non-weekend-staff') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.non-weekend-staff*') ? 'active' : '' }}">
                 <i class="fa fa-user-times me-2"></i> Non-Weekend Staff
-            </a>
-
-            <a href="{{ route('vc.calendar') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.calendar*') ? 'active' : '' }}">
-                <i class="fa fa-chart-line me-2"></i> Calendar
             </a>
 
             <a href="{{ route('vc.reports') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.reports*') ? 'active' : '' }}">
@@ -257,6 +260,10 @@
 
             <a href="{{ route('ld.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('ld.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-home me-2"></i> Dashboard
+            </a>
+
+            <a href="{{ route('ld.programs') }}" class="d-block text-white mb-3 {{ Request::routeIs('ld.programs*') ? 'active' : '' }}">
+                <i class="fa fa-calendar-check me-2"></i> My Programs
             </a>
         @endif
 
