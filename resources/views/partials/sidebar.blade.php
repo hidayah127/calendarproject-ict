@@ -43,12 +43,12 @@
             <i class="fa fa-home me-2"></i> Dashboard
         </a>
 
-        <a href="{{ route('vc.programs') }}" class="{{ Request::routeIs('vc.programs*') ? 'active' : '' }}">
-            <i class="fa fa-calendar me-2"></i> All Programs
-        </a>
-
         <a href="{{ route('vc.calendar') }}" class="{{ Request::routeIs('vc.calendar*') ? 'active' : '' }}">
             <i class="fa fa-chart-line me-2"></i> Calendar
+        </a>
+
+        <a href="{{ route('vc.programs') }}" class="{{ Request::routeIs('vc.programs*') ? 'active' : '' }}">
+            <i class="fa fa-calendar me-2"></i> All Programs
         </a>
 
         <a href="{{ route('vc.weekend-staff') }}" class="{{ Request::routeIs('vc.weekend-staff') ? 'active' : '' }}">
@@ -102,12 +102,12 @@
             <i class="fa fa-users me-2"></i> Department Staff
         </a>
 
-        <a href="{{ route('head.programs.index') }}" class="{{ Request::routeIs('head.programs*') ? 'active' : '' }}">
-            <i class="fa fa-calendar-check me-2"></i> My Programs
-        </a>
-
         <a href="{{ route('head.calendar.index') }}" class="{{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
              <i class="fa fa-calendar-alt me-2"></i> Calendar
+        </a>
+
+        <a href="{{ route('head.programs.index') }}" class="{{ Request::routeIs('head.programs*') ? 'active' : '' }}">
+            <i class="fa fa-calendar-check me-2"></i> My Programs
         </a>
 
         {{-- <a href="{{ route('head.committee.index', $program->id) }}" class="{{ Request::routeIs('head.committee*') ? 'active' : '' }}">
@@ -132,7 +132,7 @@
         </a>
 
         <a href="{{ route('ld.programs') }}" class="{{ Request::routeIs('ld.programs*') ? 'active' : '' }}">
-            <i class="fa fa-calendar-check me-2"></i> My Programs   
+            <i class="fa fa-calendar-check me-2"></i> My Program Reports   
         </a>
     @endif
 
@@ -178,12 +178,12 @@
                 <i class="fa fa-home me-2"></i> Dashboard
             </a>
 
-            <a href="{{ route('vc.programs') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.programs*') ? 'active' : '' }}">
-                <i class="fa fa-calendar me-2"></i> All Programs
-            </a>
-
             <a href="{{ route('vc.calendar') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.calendar*') ? 'active' : '' }}">
                 <i class="fa fa-chart-line me-2"></i> Calendar
+            </a>
+
+            <a href="{{ route('vc.programs') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.programs*') ? 'active' : '' }}">
+                <i class="fa fa-calendar me-2"></i> All Programs
             </a>
 
             <a href="{{ route('vc.non-weekend-staff') }}" class="{{ Request::routeIs('vc.non-weekend-staff') ? 'active' : '' }}">
@@ -237,16 +237,16 @@
                 <i class="fa fa-users me-2"></i> Department Staff
             </a>
 
+            <a href="{{ route('head.calendar.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
+                <i class="fa fa-calendar-alt me-2"></i> Calendar
+            </a>
+
             <a href="{{ route('head.programs.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.programs*') ? 'active' : '' }}">
                 <i class="fa fa-calendar-check me-2"></i> My Programs
             </a>
 
             <a href="{{ route('head.programs.committee') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.programs.committee*') ? 'active' : '' }}">
                 <i class="fa fa-users-gear me-2"></i> Manage Committee
-            </a>
-
-            <a href="{{ route('head.calendar.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
-                <i class="fa fa-calendar-alt me-2"></i> Calendar
             </a>
 
               <a href="{{ route('head.merit-claims') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
@@ -263,7 +263,7 @@
             </a>
 
             <a href="{{ route('ld.programs') }}" class="d-block text-white mb-3 {{ Request::routeIs('ld.programs*') ? 'active' : '' }}">
-                <i class="fa fa-calendar-check me-2"></i> My Programs
+                <i class="fa fa-calendar-check me-2"></i> My Program Reports
             </a>
         @endif
 
