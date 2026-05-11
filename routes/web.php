@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 
 
 // Authentication Routes
-Route::get('/',       [AuthController::class,'login'])->name('login');
+Route::get('/index',       [AuthController::class,'login'])->name('login');
 Route::post('/login', [AuthController::class,'loginProcess'])->name('login.process');
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
