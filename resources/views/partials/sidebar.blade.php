@@ -119,7 +119,7 @@
         </a>
         
         <a href="{{ route('head.merit-claims') }}" class="{{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
-            <i class="fa fa-trophy me-2"></i> Merit Claims
+            <i class="fa fa-trophy me-2"></i> Amazing Merit Claims
         </a>
 
     @endif
@@ -250,7 +250,7 @@
             </a>
 
               <a href="{{ route('head.merit-claims') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
-                <i class="fa fa-trophy me-2"></i> Merit Claims
+                <i class="fa fa-trophy me-2"></i> Amazing Merit Claims
             </a>
 
         @endif

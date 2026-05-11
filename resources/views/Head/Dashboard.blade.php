@@ -516,6 +516,17 @@
                 <i class="fa fa-chevron-right quick-action-arrow"></i>
             </a>
 
+            <a href="{{ route('head.merit-claims') }}" class="quick-action">
+                <div class="quick-action-icon" style="background:#fff7ed;">
+                    <i class="fa fa-trophy" style="color:#ea580c;"></i>
+                </div>
+                <div class="quick-action-text">
+                    <strong>Amazing Merit Claims</strong>
+                    <span>View and manage merit claims</span>
+                </div>
+                <i class="fa fa-chevron-right quick-action-arrow"></i>
+            </a>
+
         </div>
 
     </div>
