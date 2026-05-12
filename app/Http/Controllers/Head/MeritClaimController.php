@@ -36,7 +36,7 @@ class MeritClaimController extends Controller
         $approvedCount = $claims->where('status', 'approved')->count();
         $rejectedCount = $claims->where('status', 'rejected')->count();
 
-        return view('head.merit-claims', compact(
+        return view('Head.merit-claims', compact(
             'claims',
             'programs',
             'pendingCount',

@@ -176,7 +176,7 @@ class ProgramController extends Controller
 
         $staffList = Staff::orderBy('name')->get();
 
-        return view('head.programs.edit', compact('program', 'staffList'));
+        return view('Head.programs.edit', compact('program', 'staffList'));
     }
 
     /*
@@ -328,7 +328,7 @@ class ProgramController extends Controller
             ->orderBy('start_date', 'desc')
             ->get();
 
-        return view('head.Programs-Committee', compact('programs'));
+        return view('Head.Programs-Committee', compact('programs'));
     }
 
 
