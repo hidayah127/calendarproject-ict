@@ -188,6 +188,35 @@ body {
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 
+.btn-back-home{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
+    background:#f8faff;
+    color:#1a56db;
+
+    border:1.5px solid #dbeafe;
+    border-radius:12px;
+
+    padding:11px 18px;
+
+    text-decoration:none;
+
+    font-size:13px;
+    font-weight:700;
+
+    transition:all .22s ease;
+}
+
+.btn-back-home:hover{
+    background:#1a56db;
+    color:white;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 20px rgba(26,86,219,.18);
+}
 /* ── Error ── */
 .alert-custom {
     background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;
@@ -230,23 +259,35 @@ body {
         </div>
         @endif
 
+       
         <form method="POST" action="{{ route('portal.lookup') }}">
             @csrf
 
             <label class="form-label-custom">Enter Your Staff ID</label>
-            <input type="text"
-                   name="staff_id"
-                   class="id-input {{ $errors->has('staff_id') ? 'is-invalid' : '' }}"
-                   placeholder="e.g. FP04428"
-                   value="{{ old('staff_id') }}"
-                   autocomplete="off"
-                   spellcheck="false"
-                   autofocus>
 
+            <input type="text"
+                name="staff_id"
+                class="id-input {{ $errors->has('staff_id') ? 'is-invalid' : '' }}"
+                placeholder="e.g. FP04428"
+                value="{{ old('staff_id') }}"
+                autocomplete="off"
+                spellcheck="false"
+                autofocus>
+
+            {{-- Submit --}}
             <button type="submit" class="btn-lookup">
                 <i class="fa fa-arrow-right-to-bracket"></i>
                 Access My Dashboard
             </button>
+
+            {{-- Back Home --}}
+            <div style="text-align:center; margin-top:14px;">
+                <a href="{{ url('/') }}" class="btn-back-home">
+                    <i class="fa fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+
         </form>
 
         {{-- <div class="info-pills fu d2">

@@ -3,9 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+// index page
+Route::get('/index', function () {
+    return view('index');
+})->name('index');
+
 
 // Authentication Routes
-Route::get('/index',       [AuthController::class,'login'])->name('login');
+Route::get('/login',       [AuthController::class,'login'])->name('login');
 Route::post('/login', [AuthController::class,'loginProcess'])->name('login.process');
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 

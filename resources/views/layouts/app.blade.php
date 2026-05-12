@@ -544,7 +544,7 @@ main {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 @stack('scripts')
@@ -605,6 +605,132 @@ main {
 
     });
     </script>
+
+    <script>
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+
+    // Prevent automatic mini-infobar
+    e.preventDefault();
+
+    // Save event
+    deferredPrompt = e;
+
+    // Create install button
+    const installBox = document.createElement('div');
+
+    installBox.innerHTML = `
+        <div id="pwaInstallBox" style="
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 9999;
+            border: 1px solid #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        ">
+
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+
+                <div style="
+                    width:48px;
+                    height:48px;
+                    border-radius:12px;
+                    background:linear-gradient(135deg,#0f2d6e,#1a56db);
+                    color:white;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:20px;
+                    flex-shrink:0;
+                ">
+                    <i class="fa fa-download"></i>
+                </div>
+
+                <div style="flex:1;">
+                    <div style="
+                        font-weight:700;
+                        font-size:15px;
+                        color:#0f172a;
+                        margin-bottom:4px;
+                    ">
+                        Install AmazingTrack
+                    </div>
+
+                    <div style="
+                        font-size:13px;
+                        color:#64748b;
+                        line-height:1.5;
+                        margin-bottom:14px;
+                    ">
+                        Install this app for faster access and a better experience.
+                    </div>
+
+                    <div style="display:flex; gap:8px;">
+
+                        <button id="installPWAButton" style="
+                            border:none;
+                            background:linear-gradient(135deg,#0f2d6e,#1a56db);
+                            color:white;
+                            padding:9px 14px;
+                            border-radius:10px;
+                            font-size:13px;
+                            font-weight:600;
+                            cursor:pointer;
+                        ">
+                            Install
+                        </button>
+
+                        <button id="closePWAButton" style="
+                            border:none;
+                            background:#f1f5f9;
+                            color:#475569;
+                            padding:9px 14px;
+                            border-radius:10px;
+                            font-size:13px;
+                            font-weight:600;
+                            cursor:pointer;
+                        ">
+                            Later
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(installBox);
+
+    // Install button click
+    document.getElementById('installPWAButton')
+        .addEventListener('click', async () => {
+
+            document.getElementById('pwaInstallBox').remove();
+
+            deferredPrompt.prompt();
+
+            const { outcome } = await deferredPrompt.userChoice;
+
+            console.log('PWA install outcome:', outcome);
+
+            deferredPrompt = null;
+        });
+
+    // Close button
+    document.getElementById('closePWAButton')
+        .addEventListener('click', () => {
+            document.getElementById('pwaInstallBox').remove();
+        });
+
+});
+</script>
 
 </body>
 </html>

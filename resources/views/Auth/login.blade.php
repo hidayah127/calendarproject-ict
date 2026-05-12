@@ -358,19 +358,21 @@ body {
                 </button>
 
                 {{-- staff portal link --}}
-                {{-- <div class="mt-4 text-center">
-                    <a href="{{ route('portal.index') }}" style="font-size:13px; color:#1a56db; text-decoration:none; font-weight:500;">
-                        <i class="fa fa-user"></i> Go To Staff Portal
+                <div class="mt-4 text-center">
+                    <a href="{{ route('index') }}" style="font-size:13px; color:#1a56db; text-decoration:none; font-weight:500;">
+                        <i class="fa fa-home"></i> Back to Home
                     </a>
-                </div> --}}
+                </div>
 
-                <a href="{{ route('portal.index') }}"
+                {{-- <a href="{{ route('portal.index') }}"
                 class="btn-staff-portal mt-3">
 
                     <i class="fa fa-users"></i>
                     Be An Amazing You Portal
 
-                </a>
+                </a> --}}
+
+                {{-- <a href="{{ route('index') }}">Home</a> --}}
 
             </form>
 

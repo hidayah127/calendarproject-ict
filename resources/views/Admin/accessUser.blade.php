@@ -183,7 +183,7 @@
 
 .users-table tbody tr:last-child td { border-bottom: none; }
 
-/* ── User cell ── */
+/* ── User cell ── */  
 .user-avatar {
     width: 38px; height: 38px;
     border-radius: 11px;
