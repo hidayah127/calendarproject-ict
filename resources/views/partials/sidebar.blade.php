@@ -41,7 +41,7 @@
 
 
     {{-- Vice Chancellor --}}
-    @if(auth()->user()->role == 'vc')
+    @if($user?->role == 'vc')
 
         <a href="{{ route('vc.dashboard') }}" class="{{ Request::routeIs('vc.dashboard*') ? 'active' : '' }}">
             <i class="fa fa-home me-2"></i> Dashboard
@@ -176,7 +176,7 @@
 
 
         {{-- Vice Chancellor --}}
-        @if(auth()->user()->role == 'vc')
+        @if($user?->role == 'vc')
 
             <a href="{{ route('vc.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-home me-2"></i> Dashboard
