@@ -45,6 +45,6 @@ class CalendarController extends Controller
                 ];
             });
 
-        return view('Head.calendar', compact('programs'));
+        return view('Head.Calendar', compact('programs'));
     }
 }
