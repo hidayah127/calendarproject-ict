@@ -1,3 +1,7 @@
+@php
+    $user = auth()->user();
+@endphp
+
 {{-- Desktop Sidebar --}}
 <nav class="col-lg-2 d-none d-lg-block sidebar text-white p-0">
 
@@ -92,7 +96,7 @@
 
     {{-- Programme Secretariat --}}
     {{-- @if(auth()->user()->role == 'hd') --}}
-    @if(in_array(auth()->user()->role, ['hd','az']))
+    @if(in_array($user?->role, ['hd','az']))
 
         <a href="{{ route('head.dashboard') }}" class="{{ Request::routeIs('head.dashboard*') ? 'active' : '' }}">
             <i class="fa fa-home me-2"></i> Dashboard
@@ -125,7 +129,7 @@
     @endif
 
     {{-- Head of Department --}}
-    @if(auth()->user()->role == 'ld')
+    @if($user?->role == 'ld')
 
         <a href="{{ route('ld.dashboard') }}" class="{{ Request::routeIs('ld.dashboard*') ? 'active' : '' }}">
             <i class="fa fa-home me-2"></i> Dashboard
@@ -228,7 +232,7 @@
 
         {{-- Programme secretariat --}}
         {{-- @if(auth()->user()->role == 'hd') --}}
-        @if(in_array(auth()->user()->role, ['hd','az']))
+        @if(in_array($user?->role, ['hd','az']))
 
             <a href="{{ route('head.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-users me-2"></i> Dashboard
@@ -256,7 +260,7 @@
         @endif
 
         {{-- Head of Department --}}
-        @if(auth()->user()->role == 'ld')
+        @if($user?->role == 'ld')
 
             <a href="{{ route('ld.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('ld.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-home me-2"></i> Dashboard
