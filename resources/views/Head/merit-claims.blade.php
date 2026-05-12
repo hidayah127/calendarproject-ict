@@ -153,6 +153,135 @@
     display:inline-flex; align-items:center; gap:5px;
 }
 
+/* =========================================
+   Ultra Compact Proof Files
+========================================= */
+
+.proof-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+
+    margin-top:10px;
+}
+
+.proof-card{
+    width:145px;
+
+    background:#fff;
+
+    border:1px solid #edf2f7;
+
+    border-radius:12px;
+
+    padding:8px 9px;
+
+    text-decoration:none;
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    position:relative;
+
+    transition:all .16s ease;
+
+    box-shadow:0 1px 5px rgba(15,23,42,.03);
+}
+
+.proof-card:hover{
+    transform:translateY(-1px);
+
+    border-color:#c7d2fe;
+
+    box-shadow:0 5px 14px rgba(99,102,241,.08);
+}
+
+.proof-icon-wrap{
+    width:30px;
+    height:30px;
+
+    border-radius:9px;
+
+    background:#eef2ff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#4f46e5;
+
+    font-size:13px;
+
+    flex-shrink:0;
+}
+
+.proof-content{
+    flex:1;
+
+    min-width:0;
+}
+
+.proof-name{
+    font-size:10.5px;
+    font-weight:700;
+
+    color:#0f172a;
+
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+
+    line-height:1.2;
+}
+
+.proof-meta{
+    font-size:9px;
+
+    color:#94a3b8;
+
+    margin-top:1px;
+}
+
+.proof-open{
+    position:absolute;
+
+    top:6px;
+    right:6px;
+
+    color:#cbd5e1;
+
+    font-size:8px;
+}
+
+/* Desktop */
+@media(max-width:1400px){
+
+    .proof-card{
+        width:calc(20% - 7px);
+        min-width:135px;
+    }
+
+}
+
+/* Tablet */
+@media(max-width:768px){
+
+    .proof-card{
+        width:calc(33.33% - 6px);
+    }
+
+}
+
+/* Mobile */
+@media(max-width:500px){
+
+    .proof-card{
+        width:calc(50% - 4px);
+    }
+
+}
 /* ── Action buttons ── */
 .action-row { display:flex; align-items:center; gap:8px; margin-top:12px; flex-wrap:wrap; }
 
@@ -479,15 +608,52 @@
 
             {{-- Proof + rejection reason --}}
             <div class="proof-section">
-                @if($claim->proof_path)
-                    <a href="{{ Storage::url($claim->proof_path) }}" target="_blank" class="proof-link">
-                        <i class="fa fa-file-circle-check"></i>
-                        View Proof — {{ $claim->proof_original_name ?? 'Uploaded file' }}
-                    </a>
-                @else
-                    <span class="proof-missing">
-                        <i class="fa fa-file-circle-xmark"></i> No proof uploaded yet
-                    </span>
+                @if($claim->files->count())
+
+                    <div class="proof-grid">
+
+                        @foreach($claim->files as $file)
+
+                            @php
+                                $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
+
+                                $icon = match($extension) {
+                                    'pdf' => 'fa-file-pdf',
+                                    'jpg', 'jpeg', 'png' => 'fa-file-image',
+                                    default => 'fa-file',
+                                };
+                            @endphp
+
+                            <a href="{{ asset('storage/' . $file->file_path) }}"
+                            target="_blank"
+                            class="proof-card">
+
+                                <div class="proof-icon-wrap">
+                                    <i class="fa {{ $icon }}"></i>
+                                </div>
+
+                                <div class="proof-content">
+
+                                    <div class="proof-name">
+                                        {{ Str::limit($file->original_name, 24) }}
+                                    </div>
+
+                                    <div class="proof-meta">
+                                        {{ strtoupper($extension) }} Attachment
+                                    </div>
+
+                                </div>
+
+                                <div class="proof-open">
+                                    <i class="fa fa-arrow-up-right-from-square"></i>
+                                </div>
+
+                            </a>
+
+                        @endforeach
+
+                    </div>
+
                 @endif
 
                 @if($claim->status === 'rejected' && $claim->rejection_reason)

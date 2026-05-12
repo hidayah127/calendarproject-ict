@@ -730,6 +730,121 @@ body {
 .empty i { font-size: 32px; display: block; margin-bottom: 12px; }
 .empty p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
 
+/* Proof Files */
+/* ─────────────────────────────
+   Proof Files
+───────────────────────────── */
+
+.proof-files-wrapper{
+    margin-top:12px;
+
+    display:flex;
+    flex-wrap:wrap;
+
+    gap:10px;
+}
+
+.proof-file-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    width:calc(50% - 5px);
+    /* width:calc(25% - 8px); */
+    /* min-width:180px; */
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    padding:10px 12px;
+
+    text-decoration:none;
+
+    transition:all .2s ease;
+}
+
+.proof-file-card:hover{
+    transform:translateY(-2px);
+
+    border-color:#c7d2fe;
+
+    box-shadow:0 8px 18px rgba(99,102,241,.10);
+}
+
+.proof-file-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    min-width:0;
+}
+
+.proof-file-icon{
+    width:36px;
+    height:36px;
+
+    border-radius:10px;
+
+    background:#eef2ff;
+
+    color:#4f46e5;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:15px;
+
+    flex-shrink:0;
+}
+
+.proof-file-info{
+    min-width:0;
+}
+
+.proof-file-name{
+    font-size:12px;
+    font-weight:700;
+
+    color:#111827;
+
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+
+    max-width:140px;
+}
+
+.proof-file-meta{
+    font-size:10px;
+
+    color:#9ca3af;
+
+    margin-top:2px;
+}
+
+.proof-file-action{
+    color:#9ca3af;
+
+    font-size:11px;
+
+    margin-left:8px;
+
+    flex-shrink:0;
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+    .proof-file-card{
+        width:100%;
+    }
+
+}
+
 /* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 640px) {
     .topbar-inner { height: auto; padding: 12px 16px; flex-wrap: wrap; }
@@ -739,6 +854,33 @@ body {
     .prog-row, .claim-row { padding: 13px 16px; }
     .claim-form-wrap { padding: 0 16px; }
     .claim-form-wrap.open { padding: 0 16px 16px; }
+}
+
+/* Tablet */
+@media(max-width:1200px){
+
+    .proof-file-card{
+        width:calc(33.33% - 7px);
+    }
+
+}
+
+/* Small tablet */
+@media(max-width:768px){
+
+    .proof-file-card{
+        width:calc(50% - 5px);
+    }
+
+}
+
+/* Mobile */
+@media(max-width:500px){
+
+    .proof-file-card{
+        width:100%;
+    }
+
 }
 </style>
 </head>
@@ -996,17 +1138,46 @@ body {
                                 @endforeach
                             </div>
 
-                            <div class="upload-area"
+                            {{-- <div class="upload-area"
                                  onclick="document.getElementById('proof-{{ $program->id }}').click()">
                                 <input type="file"
                                        id="proof-{{ $program->id }}"
-                                       name="proof"
+                                       name="proof[]"
+                                       multiple
                                        accept=".jpg,.jpeg,.png,.pdf"
-                                       onchange="showPreview('{{ $program->id }}', this)">
+                                       onchange="showPreview('{{ $program->id }}', this)" required>
                                 <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
-                                <div class="upload-area-text">Upload Proof (optional)</div>
+                                <div class="upload-area-text">Upload Proof (required)</div>
                                 <div class="upload-area-sub">JPG · PNG · PDF &nbsp;·&nbsp; Max 5 MB</div>
                                 <div class="upload-preview" id="preview-{{ $program->id }}"></div>
+                            </div> --}}
+
+                            <div id="uploadWrapper-{{ $program->id }}">
+
+                                <div class="upload-area"
+                                    onclick="document.getElementById('proof-{{ $program->id }}-0').click()">
+
+                                    <input type="file"
+                                        id="proof-{{ $program->id }}-0"
+                                        name="proof[]"
+                                        accept=".jpg,.jpeg,.png,.pdf"
+                                        onchange="addNewInput('{{ $program->id }}', this)"
+                                        hidden>
+
+                                    <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
+
+                                    <div class="upload-area-text">
+                                        Upload Proof
+                                    </div>
+
+                                    <div class="upload-area-sub">
+                                        JPG · PNG · PDF
+                                    </div>
+
+                                </div>
+
+                                <div id="previewList-{{ $program->id }}"></div>
+
                             </div>
 
                             <button type="submit"
@@ -1090,11 +1261,84 @@ body {
                                 <i class="fa fa-cloud-arrow-up"></i> Upload Proof
                             </button>
                         </form>
-                        @elseif($claim->proof_path)
+                        {{-- @elseif($claim->proof_path)
                         <div style="font-size:11px;color:var(--green);margin-top:5px;">
                             <i class="fa fa-file-circle-check me-1"></i>
                             {{ $claim->proof_original_name ?? 'Proof uploaded' }}
-                        </div>
+                        </div> --}}
+                        @endif
+
+                        {{-- @if($claim->files->count())
+
+                            @foreach($claim->files as $file)
+
+                                <div class="mb-1">
+
+                                    <a href="{{ asset('storage/' . $file->file_path) }}"
+                                    target="_blank">
+
+                                        <i class="fa fa-file me-1"></i>
+
+                                        {{ $file->original_name }}
+
+                                    </a>
+
+                                </div>
+
+                            @endforeach
+
+                        @endif --}}
+
+                        @if($claim->files->count())
+
+                            <div class="proof-files-wrapper">
+
+                                @foreach($claim->files as $file)
+
+                                    @php
+                                        $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
+
+                                        $icon = match($extension) {
+                                            'pdf' => 'fa-file-pdf',
+                                            'jpg', 'jpeg', 'png' => 'fa-file-image',
+                                            default => 'fa-file',
+                                        };
+                                    @endphp
+
+                                    <a href="{{ asset('storage/' . $file->file_path) }}"
+                                    target="_blank"
+                                    class="proof-file-card">
+
+                                        <div class="proof-file-left">
+
+                                            <div class="proof-file-icon">
+                                                <i class="fa {{ $icon }}"></i>
+                                            </div>
+
+                                            <div class="proof-file-info">
+
+                                                <div class="proof-file-name">
+                                                    {{ Str::limit($file->original_name, 38) }}
+                                                </div>
+
+                                                <div class="proof-file-meta">
+                                                    {{ strtoupper($extension) }} File
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="proof-file-action">
+                                            <i class="fa fa-arrow-up-right-from-square"></i>
+                                        </div>
+
+                                    </a>
+
+                                @endforeach
+
+                            </div>
+
                         @endif
                     </div>
 
@@ -1215,12 +1459,93 @@ function selectRole(programId, role, card) {
 }
 
 /* file preview */
-function showPreview(programId, input) {
-    const preview = document.getElementById('preview-' + programId);
-    if (input.files && input.files[0]) {
-        preview.textContent = '✓ ' + input.files[0].name;
+// function showPreview(programId, input) {
+//     const preview = document.getElementById('preview-' + programId);
+//     if (input.files && input.files[0]) {
+//         // preview.textContent = '✓ ' + input.files[0].name;
+//         let html = '';
+
+//         for(let i = 0; i < input.files.length; i++){
+
+//             html += '✓ ' + input.files[i].name + '<br>';
+
+//         }
+
+//         preview.innerHTML = html;
+//     }
+// }
+
+
+let uploadIndex = {};
+
+function addNewInput(programId, input){
+
+    if(!uploadIndex[programId]){
+        uploadIndex[programId] = 1;
     }
+
+    const previewList = document.getElementById('previewList-' + programId);
+
+    if(input.files[0]){
+
+        // Show selected file
+        const div = document.createElement('div');
+
+        div.style.marginTop = '8px';
+
+        div.innerHTML = `
+            <div style="
+                background:#f8fafc;
+                border:1px solid #e2e8f0;
+                border-radius:10px;
+                padding:10px 14px;
+                font-size:13px;
+                display:flex;
+                align-items:center;
+                gap:8px;
+            ">
+                <i class="fa fa-file" style="color:#2563eb;"></i>
+                ${input.files[0].name}
+            </div>
+        `;
+
+        previewList.appendChild(div);
+
+        // Create NEW hidden input automatically
+        const newInput = document.createElement('input');
+
+        newInput.type = 'file';
+
+        newInput.name = 'proof[]';
+
+        newInput.accept = '.jpg,.jpeg,.png,.pdf';
+
+        newInput.hidden = true;
+
+        const currentIndex = uploadIndex[programId];
+
+        newInput.id = `proof-${programId}-${currentIndex}`;
+
+        newInput.onchange = function(){
+            addNewInput(programId, this);
+        };
+
+        document.getElementById('uploadWrapper-' + programId)
+            .appendChild(newInput);
+
+        // Make upload area click newest input
+        document.querySelector(`#uploadWrapper-${programId} .upload-area`)
+            .setAttribute(
+                'onclick',
+                `document.getElementById('proof-${programId}-${currentIndex}').click()`
+            );
+
+        uploadIndex[programId]++;
+
+    }
+
 }
+
 
 /* search */
 document.getElementById('progSearch').addEventListener('input', function () {

@@ -104,4 +104,9 @@ class MeritClaim extends Model
         };
     }
 
+    public function files()
+    {
+        return $this->hasMany(MeritClaimFile::class);
+    }
+
 }

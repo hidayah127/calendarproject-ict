@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //add username column
-            $table->string('username')->unique()->after('email');
+            // $table->string('username')->unique()->after('email');
+            if (!Schema::hasColumn('users', 'username')) {
+                $table->string('username')->after('email');
+            }
         });
     }
 

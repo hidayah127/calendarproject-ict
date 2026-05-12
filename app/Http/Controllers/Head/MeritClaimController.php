@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Head;
 
 use App\Http\Controllers\Controller;
 use App\Models\MeritClaim;
+use App\Models\MeritClaimFile;
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class MeritClaimController extends Controller
         // Get all programs created by this HD
         $programIds = Program::where('created_by', Auth::id())->pluck('id');
 
-        $claims = MeritClaim::with(['staff', 'staff.department', 'program'])
+        $claims = MeritClaim::with(['staff', 'staff.department', 'program', 'files'])
             ->whereIn('program_id', $programIds)
             ->when($request->status, fn($q, $s) => $q->where('status', $s))
             ->when($request->program_id, fn($q, $p) => $q->where('program_id', $p))

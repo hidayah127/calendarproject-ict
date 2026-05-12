@@ -59,7 +59,7 @@ class PublicPortalController extends Controller
             ->orderBy('start_date', 'desc')
             ->get();
 
-        $claims = MeritClaim::with('program')
+        $claims = MeritClaim::with('program', 'files')
             ->where('staff_id', $staff->id)
             ->orderByDesc('created_at')
             ->get();
@@ -134,7 +134,9 @@ class PublicPortalController extends Controller
             'staff_id'   => 'required|exists:staff,id',
             'program_id' => 'required|exists:programs,id',
             'claim_type' => 'required|in:attendee,committee_member,committee_head,coordinator,secretary,treasurer,facilitator',
-            'proof'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            // 'proof'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'proof' => 'required|array',
+            'proof.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $exists = MeritClaim::where('staff_id',  $request->staff_id)
@@ -146,23 +148,64 @@ class PublicPortalController extends Controller
             return $this->backToDashboard($request->staff_id, 'error', 'You have already submitted this claim.');
         }
 
-        $proofPath = $proofOriginalName = null;
+        // $proofPath = $proofOriginalName = null;
 
-        if ($request->hasFile('proof')) {
-            $file              = $request->file('proof');
-            $proofOriginalName = $file->getClientOriginalName();
-            $proofPath         = $file->store('merit-proofs', 'public');
+        // if ($request->hasFile('proof')) {
+        //     $file              = $request->file('proof');
+        //     $proofOriginalName = $file->getClientOriginalName();
+        //     $proofPath         = $file->store('merit-proofs', 'public');
+        // }
+
+        $uploadedFiles = [];
+
+        if($request->hasFile('proof')){
+
+            foreach($request->file('proof') as $file){
+
+                $path = $file->store('merit-proofs', 'public');
+
+                $uploadedFiles[] = [
+                    'path' => $path,
+                    'name' => $file->getClientOriginalName(),
+                ];
+
+            }
+
         }
 
-        MeritClaim::create([
-            'staff_id'            => $request->staff_id,
-            'program_id'          => $request->program_id,
-            'claim_type'          => $request->claim_type,
-            'merit_points'        => MeritClaim::$meritPoints[$request->claim_type] ?? 1,
-            'proof_path'          => $proofPath,
-            'proof_original_name' => $proofOriginalName,
-            'status'              => 'pending',
+        // MeritClaim::create([
+        //     'staff_id'            => $request->staff_id,
+        //     'program_id'          => $request->program_id,
+        //     'claim_type'          => $request->claim_type,
+        //     'merit_points'        => MeritClaim::$meritPoints[$request->claim_type] ?? 1,
+        //     // 'proof_path'          => $proofPath,
+        //     // 'proof_original_name' => $proofOriginalName,
+        //     'proof_path' => json_encode($uploadedFiles),
+        //     'status'              => 'pending',
+        // ]);
+
+        $claim = MeritClaim::create([
+            'staff_id'     => $request->staff_id,
+            'program_id'   => $request->program_id,
+            'claim_type'   => $request->claim_type,
+            'merit_points' => MeritClaim::$meritPoints[$request->claim_type] ?? 1,
+            'status'       => 'pending',
         ]);
+
+        if($request->hasFile('proof')){
+
+            foreach($request->file('proof') as $file){
+
+                $path = $file->store('merit-proofs', 'public');
+
+                $claim->files()->create([
+                    'file_path'     => $path,
+                    'original_name' => $file->getClientOriginalName(),
+                ]);
+
+            }
+
+        }
 
         $staffIdCode = Staff::find($request->staff_id)->staff_id;
         return $this->backToDashboard($staffIdCode, 'success', 'Your claim has been submitted and is pending review.');
