@@ -146,7 +146,7 @@ class NonWeekendStaffController extends Controller
         // Weekend days in selected month (for context)
         $weekendDaysInMonth = $this->getWeekendDaysInMonth($monthStart, $monthEnd);
 
-        return view('vc.non-weekend-staff', compact(
+        return view('VC.non-weekend-staff', compact(
             'nonWeekendStaff',
             'byDepartment',
             'departments',

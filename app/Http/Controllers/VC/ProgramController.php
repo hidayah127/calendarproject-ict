@@ -115,7 +115,7 @@ class ProgramController extends Controller
         // MONTHLY
         $monthlyPrograms = $programs->sortBy('start_date');
 
-        return view('vc.programs', compact(
+        return view('VC.programs', compact(
             'programs', 
             'departments', 
             'programsJson', 

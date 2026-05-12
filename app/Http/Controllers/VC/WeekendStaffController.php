@@ -153,7 +153,7 @@ class WeekendStaffController extends Controller
         $totalWeekendDays     = array_sum(array_column($weekendStaff, 'total_days'));
         $mostWeekendStaff     = $totalWeekendStaff > 0 ? $weekendStaff[0] : null;
 
-        return view('vc.weekend-staff', compact(
+        return view('VC.weekend-staff', compact(
             'weekendStaff',
             'departments',
             'totalWeekendStaff',

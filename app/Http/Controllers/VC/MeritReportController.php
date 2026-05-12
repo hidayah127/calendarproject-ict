@@ -133,7 +133,7 @@ class MeritReportController extends Controller
         $roleLabels  = MeritClaim::$claimLabels;
         $roleIcons   = MeritClaim::$claimIcons;
 
-        return view('vc.merit-report', compact(
+        return view('VC.merit-report', compact(
             'staffMerits',
             'departments',
             'totalStaffWithMerit',
