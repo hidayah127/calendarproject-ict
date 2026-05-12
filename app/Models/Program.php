@@ -56,7 +56,7 @@ class Program extends Model
     public function committee()
     {
         return $this->belongsToMany(Staff::class, 'program_staff')
-            ->using(ProgramStaff::class)
+            ->using(Programstaff::class)
             ->withPivot(['role', 'responsibility', 'is_lead'])
             ->withTimestamps();
     }
