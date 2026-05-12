@@ -254,7 +254,7 @@
             </a>
 
             <!-- STAFF PORTAL -->
-            <a href="{{ route('portal.index') }}" class="btn btn-secondary">
+            <a href="{{ route('Portal.index') }}" class="btn btn-secondary">
                 <i class="fa-solid fa-users"></i>
                 Staff Portal
             </a>

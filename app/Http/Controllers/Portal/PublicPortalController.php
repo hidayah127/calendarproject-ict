@@ -19,7 +19,7 @@ class PublicPortalController extends Controller
     */
     public function index()
     {
-        return view('portal.index');
+        return view('Portal.index');
     }
  
     /*
@@ -44,7 +44,7 @@ class PublicPortalController extends Controller
         }
 
         // ✅ Store staff ID in session and redirect to a GET route
-        return redirect()->route('portal.dashboard', ['staff' => $staff->staff_id]);
+        return redirect()->route('Portal.dashboard', ['staff' => $staff->staff_id]);
     }
 
     //  Dashboard — shows staff info, claims, and programs
