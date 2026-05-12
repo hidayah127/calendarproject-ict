@@ -94,7 +94,7 @@ class ProgramController extends Controller
     {
         $staffList = Staff::orderBy('name')->get();
 
-        return view('head.Program-Create', compact('staffList'));
+        return view('Head.Program-Create', compact('staffList'));
     }
 
     /*
@@ -328,10 +328,10 @@ class ProgramController extends Controller
             ->orderBy('start_date', 'desc')
             ->get();
 
-        return view('Head.Programs-Committee', compact('programs'));
+        return view('Head.Programs-committee', compact('programs'));
     }
 
-
+ 
     /*
     |--------------------------------------------------------------------------
     | Helper — ensure head owns the program
