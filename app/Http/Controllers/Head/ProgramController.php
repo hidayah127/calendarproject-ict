@@ -74,7 +74,7 @@ class ProgramController extends Controller
 
 
         return view(
-            'head.Program',
+            'Head.Program',
             compact(
                 'programs',
                 'yearOptions',
@@ -328,7 +328,7 @@ class ProgramController extends Controller
             ->orderBy('start_date', 'desc')
             ->get();
 
-        return view('Head.Programs-committee', compact('programs'));
+        return view('Head.programs-committee', compact('programs'));
     }
 
  
