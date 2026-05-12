@@ -23,7 +23,7 @@ class DashboardController extends Controller
         // ── Weekend staff alert data ──
         $weekendAlert = $this->getWeekendAlert();
 
-        return view('vc.dashboard', compact('programs', 'departments', 'weekendAlert'));
+        return view('VC.Dashboard', compact('programs', 'departments', 'weekendAlert'));
 
         // return view('VC.Dashboard', compact('programs', 'departments'));
     }

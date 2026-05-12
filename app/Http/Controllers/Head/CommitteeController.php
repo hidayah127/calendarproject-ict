@@ -314,7 +314,7 @@ class CommitteeController extends Controller
             $sent++;
         }
 
-        return redirect()->back()->with('success', "Surat lantikan berjaya dihantar kepada {$sent} ahli jawatankuasa.");
+        return redirect()->back()->with('success', "Notifikasi lantikan berjaya dihantar kepada {$sent} ahli jawatankuasa.");
     }
 
    
