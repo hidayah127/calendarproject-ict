@@ -19,7 +19,7 @@ class PublicPortalController extends Controller
     */
     public function index()
     {
-        return view('Portal.index');
+        return view('portal.index');
     }
  
     /*
