@@ -45,7 +45,7 @@ class CommitteeAppointmentMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'head.committee-appointment',
+            view: 'Head.committee-appointment',
         );
     }
 
