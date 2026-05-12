@@ -45,7 +45,7 @@ class CommitteeController extends Controller
             'committee_member' => 'Committee Member',
         ];
 
-        return view('head.committee', compact('program', 'availableStaff', 'roles'));
+        return view('Head.Committee', compact('program', 'availableStaff', 'roles'));
     }
   
     /**
