@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
    public function login()
     {
-        return view('auth.login');
+        return view('Auth.login');
     }
 
     public function loginProcess(Request $request)
@@ -131,50 +131,50 @@ class AuthController extends Controller
 
     public function forgotPassword()
     {
-        return view('auth.forgot-password');
+        return view('Auth.forgot-password');
     }
 
-    public function forgotPasswordProcess(Request $request)
-    {
-        $request->validate([
-            'staff_id' => 'required'
-        ]);
+    // public function forgotPasswordProcess(Request $request)
+    // {
+    //     $request->validate([
+    //         'staff_id' => 'required'
+    //     ]);
 
-        // find staff using staff_id code
-        $staff = Staff::where('staff_id',$request->staff_id)->first();
+    //     // find staff using staff_id code
+    //     $staff = Staff::where('staff_id',$request->staff_id)->first();
 
-        if(!$staff){
-            return back()->with('error','Staff ID not found');
-        }
+    //     if(!$staff){
+    //         return back()->with('error','Staff ID not found');
+    //     }
 
-        // find user account linked to staff
-        $user = User::where('staff_id',$staff->id)->first();
+    //     // find user account linked to staff
+    //     $user = User::where('staff_id',$staff->id)->first();
 
-        if(!$user){
-            return back()->with('error','No system access assigned');
-        }
+    //     if(!$user){
+    //         return back()->with('error','No system access assigned');
+    //     }
 
-        // Generate token
-        $token = Str::random(64);
+    //     // Generate token
+    //     $token = Str::random(64);
 
-        $user->update([
-            'reset_token' => $token,
-            'reset_token_expires_at' => Carbon::now()->addMinutes(30),
-        ]);
+    //     $user->update([
+    //         'reset_token' => $token,
+    //         'reset_token_expires_at' => Carbon::now()->addMinutes(30),
+    //     ]);
 
-        // Send email
-        $resetLink = route('reset.password', ['token' => $token]);
+    //     // Send email
+    //     $resetLink = route('reset.password', ['token' => $token]);
 
-        Mail::send('auth.emails.reset-password', [
-            'name' => $staff->name,
-            'resetLink' => $resetLink
-        ], function ($message) use ($user, $staff) {
-            $message->to($staff->email)
-                    ->subject('UniManage — Password Reset Request');
-        });
+    //     Mail::send('auth.emails.reset-password', [
+    //         'name' => $staff->name,
+    //         'resetLink' => $resetLink
+    //     ], function ($message) use ($user, $staff) {
+    //         $message->to($staff->email)
+    //                 ->subject('UniManage — Password Reset Request');
+    //     });
 
-        return back()->with('success', 'A password reset link has been sent to your registered email.');
-    }
+    //     return back()->with('success', 'A password reset link has been sent to your registered email.');
+    // }
 
     public function resetPassword($token)
     {
@@ -186,7 +186,7 @@ class AuthController extends Controller
             return redirect()->route('login')->with('error', 'This reset link is invalid or has expired.');
         }
 
-        return view('auth.reset-password', compact('token'));
+        return view('Auth.reset-password', compact('token'));
     }
 
     public function resetPasswordProcess(Request $request)
@@ -215,7 +215,7 @@ class AuthController extends Controller
 
     public function changePassword()
     {
-        return view('auth.change-password');
+        return view('Auth.change-password');
     }
 
     public function changePasswordProcess(Request $request)
