@@ -112,7 +112,7 @@ class PublicPortalController extends Controller
             return $claim->program->category ?? 'Others';
         });
 
-        return view('portal.dashboard', compact(
+        return view('Portal.dashboard', compact(
             'staff',
             'programs',
             'claims',
@@ -199,7 +199,7 @@ class PublicPortalController extends Controller
     private function backToDashboard(string $staffId, string $type, string $message)
     {
         return redirect()
-            ->route('portal.dashboard', ['staff' => $staffId])
+            ->route('Portal.dashboard', ['staff' => $staffId])
             ->with($type, $message);
     }
 }
