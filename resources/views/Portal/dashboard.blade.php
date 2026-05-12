@@ -748,7 +748,7 @@ body {
 {{-- ── Topbar ────────────────────────────────────────────────── --}}
 <nav class="topbar">
     <div class="topbar-inner">
-        <a href="{{ route('portal.index') }}" class="brand">
+        <a href="{{ route('Portal.index') }}" class="brand">
             <div class="brand-mark">
                 <img src="{{ asset('logo/logo.png') }}" alt="Logo" class="brand-logo">
             </div>
@@ -775,7 +775,7 @@ body {
                 </div>
             </div>
 
-            <a href="{{ route('portal.index') }}" class="btn-exit">
+            <a href="{{ route('Portal.index') }}" class="btn-exit">
                 <i class="fa fa-arrow-right-from-bracket"></i> Exit
             </a>
         </div>
