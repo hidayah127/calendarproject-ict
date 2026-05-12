@@ -396,27 +396,13 @@
 
 <script>
 
-let deferredPrompt = null;
+let deferredPrompt;
 
 const installBanner = document.getElementById('installBanner');
 const installBtn = document.getElementById('installBtn');
 const closeBtn = document.getElementById('closeInstallBanner');
 
-/*
-|--------------------------------------------------------------------------
-| TEMPORARY FORCE SHOW
-|--------------------------------------------------------------------------
-| Remove this later if you only want real PWA installs
-|--------------------------------------------------------------------------
-*/
-
-installBanner.style.display = 'flex';
-
-/*
-|--------------------------------------------------------------------------
-| Real PWA Install
-|--------------------------------------------------------------------------
-*/
+installBanner.style.display = 'none';
 
 window.addEventListener('beforeinstallprompt', (e) => {
 
@@ -430,22 +416,18 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 installBtn.addEventListener('click', async () => {
 
-    // If browser supports PWA install
-    if(deferredPrompt){
-
-        deferredPrompt.prompt();
-
-        const { outcome } = await deferredPrompt.userChoice;
-
-        console.log(outcome);
-
-        deferredPrompt = null;
-
-    } else {
-
-        alert('To install this app, use Chrome browser and open via HTTPS or localhost.');
-
+    if (!deferredPrompt) {
+        alert('Install is not available yet.');
+        return;
     }
+
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    console.log(outcome);
+
+    deferredPrompt = null;
 
     installBanner.style.display = 'none';
 
