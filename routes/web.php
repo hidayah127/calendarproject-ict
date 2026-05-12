@@ -24,9 +24,9 @@ Route::post('/reset-password',        [AuthController::class, 'resetPasswordProc
 
 //portal routes
 use App\Http\Controllers\Portal\PublicPortalController;
-Route::get('portal',                [PublicPortalController::class, 'index'])->name('portal.index');
+Route::get('Portal',                [PublicPortalController::class, 'index'])->name('Portal.index');
 Route::post('portal/lookup',        [PublicPortalController::class, 'lookup'])->name('portal.lookup');
-Route::get('portal/dashboard',      [PublicPortalController::class, 'dashboard'])->name('portal.dashboard');  
+Route::get('Portal/dashboard',      [PublicPortalController::class, 'dashboard'])->name('Portal.dashboard');  
 Route::post('portal/claim',         [PublicPortalController::class, 'claim'])->name('portal.claim');
 Route::post('portal/proof/{claim}', [PublicPortalController::class, 'uploadProof'])->name('portal.upload-proof');
 
