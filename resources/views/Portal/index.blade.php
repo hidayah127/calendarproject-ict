@@ -33,7 +33,7 @@ body {
 .d2{animation-delay:.2s;}
 .d3{animation-delay:.3s;}
 
-/* ── Card ── */
+/* ── Login Card ── */
 .portal-card {
     background:#fff;
     border:1.5px solid #e2e8f0;
@@ -64,21 +64,16 @@ body {
     background:rgba(96,165,250,.10);
     bottom:-50px;left:20%;pointer-events:none;
 }
-
 .portal-logo {
     display:inline-flex;align-items:center;justify-content:center;
     font-size:30px;color:#f59e0b;
     margin-bottom:16px;
     position:relative;z-index:1;
 }
-
 .portal-logo img {
-    width: 100px;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.3));
+    width:100px;height:auto;object-fit:contain;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
 }
-
 .portal-header h1 {
     font-size:1.45rem;font-weight:900;color:#fff;
     margin:0 0 6px;position:relative;z-index:1;
@@ -87,65 +82,41 @@ body {
     font-size:13.5px;color:rgba(255,255,255,.62);
     margin:0;position:relative;z-index:1;
 }
+.portal-tagline {
+    font-size:12px;color:rgba(255,255,255,.75);
+    margin-top:4px;font-style:italic;letter-spacing:.3px;
+}
 
 /* ── Body ── */
 .portal-body { padding:32px 36px 36px; }
-
-.portal-tagline {
-    font-size: 12px;
-    color: rgba(255,255,255,.75);
-    margin-top: 4px;
-    font-style: italic;
-    letter-spacing: .3px;
-}
 
 .form-label-custom {
     font-size:12px;font-weight:700;color:#475569;
     text-transform:uppercase;letter-spacing:.5px;
     display:block;margin-bottom:8px;
 }
-
 .id-input {
-    border:2px solid #e2e8f0;
-    border-radius:14px;
-    padding:14px 18px;
-    font-size:1.1rem;
-    font-family:inherit;
-    font-weight:700;
-    letter-spacing:2px;
-    color:#0f172a;
-    background:#f8faff;
-    width:100%;
-    outline:none;
-    text-transform:uppercase;
-    transition:border-color .2s,box-shadow .2s;
+    border:2px solid #e2e8f0;border-radius:14px;
+    padding:14px 18px;font-size:1.1rem;font-family:inherit;
+    font-weight:700;letter-spacing:2px;color:#0f172a;
+    background:#f8faff;width:100%;outline:none;
+    text-transform:uppercase;transition:border-color .2s,box-shadow .2s;
     text-align:center;
 }
 .id-input:focus {
-    border-color:#1a56db;
-    box-shadow:0 0 0 4px rgba(26,86,219,.12);
-    background:#fff;
+    border-color:#1a56db;box-shadow:0 0 0 4px rgba(26,86,219,.12);background:#fff;
 }
 .id-input.is-invalid {
-    border-color:#ef4444;
-    box-shadow:0 0 0 4px rgba(239,68,68,.10);
+    border-color:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.10);
 }
-
 .btn-lookup {
-    width:100%;
-    background:linear-gradient(135deg,#0f2d6e,#1a56db);
-    color:#fff;border:none;border-radius:14px;
-    padding:15px;font-size:15px;font-weight:800;
-    font-family:inherit;cursor:pointer;
-    box-shadow:0 6px 20px rgba(26,86,219,.30);
-    transition:all .22s;
-    display:flex;align-items:center;justify-content:center;gap:10px;
-    margin-top:20px;
+    width:100%;background:linear-gradient(135deg,#0f2d6e,#1a56db);
+    color:#fff;border:none;border-radius:14px;padding:15px;
+    font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;
+    box-shadow:0 6px 20px rgba(26,86,219,.30);transition:all .22s;
+    display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;
 }
-.btn-lookup:hover {
-    transform:translateY(-2px);
-    box-shadow:0 10px 28px rgba(26,86,219,.38);
-}
+.btn-lookup:hover { transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,86,219,.38); }
 .btn-lookup:active { transform:translateY(0); }
 
 .merit-legend {
@@ -154,8 +125,7 @@ body {
 }
 .merit-legend-title {
     font-size:11px;font-weight:700;color:#94a3b8;
-    text-transform:uppercase;letter-spacing:.5px;
-    margin-bottom:12px;
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;
 }
 .merit-row {
     display:flex;align-items:center;justify-content:space-between;
@@ -169,320 +139,320 @@ body {
     background:linear-gradient(135deg,#0f2d6e,#1a56db);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-
-.btn-back-home{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:#f8faff;
-    color:#1a56db;
-    border:1.5px solid #dbeafe;
-    border-radius:12px;
-    padding:11px 18px;
-    text-decoration:none;
-    font-size:13px;
-    font-weight:700;
-    transition:all .22s ease;
+.btn-back-home {
+    display:inline-flex;align-items:center;gap:8px;
+    background:#f8faff;color:#1a56db;border:1.5px solid #dbeafe;
+    border-radius:12px;padding:11px 18px;text-decoration:none;
+    font-size:13px;font-weight:700;transition:all .22s ease;
 }
-.btn-back-home:hover{
-    background:#1a56db;
-    color:white;
-    transform:translateY(-2px);
+.btn-back-home:hover {
+    background:#1a56db;color:white;transform:translateY(-2px);
     box-shadow:0 8px 20px rgba(26,86,219,.18);
 }
-
 .alert-custom {
     background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;
     padding:13px 16px;color:#b91c1c;font-size:13.5px;font-weight:600;
     display:flex;align-items:center;gap:10px;margin-bottom:20px;
 }
 
+
 /* ════════════════════════════════════════
-   VIP WELCOME MODAL
+   VIP WELCOME MODAL — TWO-COLUMN LAYOUT
+   Left: full-bleed photo | Right: welcome
 ═══════════════════════════════════════ */
 #vipOverlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(5, 15, 45, 0.82);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(5,15,45,0.82);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    z-index:9999;
+    align-items:center;justify-content:center;
+    padding:20px;
 }
-#vipOverlay.active {
-    display: flex;
-}
+#vipOverlay.active { display:flex; }
 
 #vipModal {
-    background: #fff;
-    border-radius: 28px;
-    max-width: 480px;
-    width: 100%;
-    overflow: hidden;
-    box-shadow: 0 40px 100px rgba(5,15,60,.5), 0 0 0 1px rgba(255,255,255,.08);
-    animation: modalPop .55s cubic-bezier(.34,1.56,.64,1) both;
-    position: relative;
+    background:#fff;
+    border-radius:28px;
+    max-width:780px;width:100%;
+    overflow:hidden;
+    box-shadow:0 40px 100px rgba(5,15,60,.5), 0 0 0 1px rgba(255,255,255,.08);
+    animation:modalPop .55s cubic-bezier(.34,1.56,.64,1) both;
+    display:flex;flex-direction:row;
+    /* fixed height so photo fills the panel */
+    min-height:480px;
 }
-
 @keyframes modalPop {
-    from { opacity:0; transform: scale(.7) translateY(40px); }
-    to   { opacity:1; transform: scale(1) translateY(0); }
+    from { opacity:0; transform:scale(.75) translateY(40px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
 }
 
-/* Gold shimmer header */
-.vip-header {
-    background: linear-gradient(135deg, #0a1f52 0%, #162f6e 40%, #1e4dd8 100%);
-    padding: 40px 36px 32px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+/* ── LEFT: Full-bleed photo ── */
+.vip-left {
+    width:300px;
+    flex-shrink:0;
+    position:relative;
+    overflow:hidden;
+    border-radius:28px 0 0 28px;
+    /* deep navy base so padding around image looks intentional */
+    background:#070f2b;
+    padding:18px 18px 18px 18px;
+    display:flex;
+    align-items:stretch;
 }
-.vip-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 12px,
-        rgba(240,165,0,.04) 12px,
-        rgba(240,165,0,.04) 24px
+
+/* rotating gold conic-gradient ring behind the image frame */
+.vip-left::before {
+    content:'';
+    position:absolute;
+    inset:-3px;
+    border-radius:30px 0 0 30px;
+    background:conic-gradient(
+        from var(--ring-angle, 0deg),
+        #f0a500 0%,
+        #ffd166 15%,
+        #fff8e7 25%,
+        transparent 35%,
+        transparent 65%,
+        #fff8e7 75%,
+        #ffd166 85%,
+        #f0a500 100%
     );
+    z-index:0;
+    animation:ringRotate 3s linear infinite;
 }
-.vip-header::after {
-    content: '';
-    position: absolute;
-    width: 300px; height: 300px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(240,165,0,.18) 0%, transparent 70%);
-    top: -100px; left: 50%; transform: translateX(-50%);
-    pointer-events: none;
+/* static gold inner glow layer */
+.vip-left::after {
+    content:'';
+    position:absolute;
+    inset:3px;
+    border-radius:26px 0 0 26px;
+    background:transparent;
+    box-shadow:
+        inset 0 0 40px rgba(240,165,0,.25),
+        inset 0 0 80px rgba(240,165,0,.10),
+        0 0 60px rgba(240,165,0,.18);
+    z-index:2;
+    pointer-events:none;
+}
+@property --ring-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+@keyframes ringRotate {
+    to { --ring-angle: 360deg; }
 }
 
-/* VC photo ring */
-.vip-photo-wrap {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 18px;
-    z-index: 1;
+/* image wrapper — sits above the rotating ring */
+.vip-img-frame {
+    position:relative;
+    z-index:1;
+    flex:1;
+    border-radius:16px;
+    overflow:hidden;
+    /* inner gold border on the frame itself */
+    outline:2px solid rgba(240,165,0,.55);
+    outline-offset:-1px;
+    box-shadow:
+        0 0 0 1px rgba(255,215,0,.3),
+        0 0 30px rgba(240,165,0,.35),
+        inset 0 0 20px rgba(240,165,0,.08);
 }
-.vip-photo-ring {
-    width: 110px; height: 110px;
-    border-radius: 50%;
-    padding: 3px;
-    background: linear-gradient(135deg, #f0a500, #ffd166, #f0a500, #e07b00);
-    box-shadow: 0 0 0 4px rgba(240,165,0,.2), 0 8px 30px rgba(240,165,0,.35);
-    animation: ringPulse 2.5s ease-in-out infinite;
+
+/* the image stretches to fill the frame */
+.vip-left-img {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center top;
+    display:block;
 }
-@keyframes ringPulse {
-    0%,100% { box-shadow: 0 0 0 4px rgba(240,165,0,.2), 0 8px 30px rgba(240,165,0,.35); }
-    50%      { box-shadow: 0 0 0 8px rgba(240,165,0,.35), 0 8px 40px rgba(240,165,0,.5); }
+/* subtle dark vignette overlay so star badge is readable */
+.vip-left-vignette {
+    position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom,
+        rgba(5,15,45,.25) 0%,
+        transparent 28%,
+        transparent 62%,
+        rgba(5,15,45,.50) 100%);
+    z-index:1;
 }
-.vip-photo-ring img {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #fff;
-    display: block;
-}
+/* spinning star badge top-right */
 .vip-star-badge {
-    position: absolute;
-    bottom: 2px; right: 2px;
-    width: 28px; height: 28px;
-    background: linear-gradient(135deg, #f0a500, #ffd166);
-    border-radius: 50%;
-    border: 2px solid #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-    box-shadow: 0 2px 8px rgba(240,165,0,.5);
-    animation: starSpin 4s linear infinite;
+    position:absolute;
+    top:26px;right:26px;
+    width:38px;height:38px;
+    background:linear-gradient(135deg,#f0a500,#ffd166);
+    border-radius:50%;border:3px solid #fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;
+    box-shadow:0 3px 16px rgba(240,165,0,.75), 0 0 0 2px rgba(240,165,0,.3);
+    animation:starSpin 4s linear infinite;
+    z-index:5;
 }
 @keyframes starSpin {
-    0%   { transform: rotate(0deg) scale(1);   }
-    50%  { transform: rotate(180deg) scale(1.15); }
-    100% { transform: rotate(360deg) scale(1);  }
+    0%   { transform:rotate(0deg) scale(1); }
+    50%  { transform:rotate(180deg) scale(1.15); }
+    100% { transform:rotate(360deg) scale(1); }
+}
+
+/* ── RIGHT: Welcome content ── */
+.vip-right {
+    flex:1;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:40px 38px 36px;
+    background:#fff;
 }
 
 .vip-launch-badge {
-    display: inline-block;
-    background: rgba(240,165,0,.18);
-    border: 1px solid rgba(240,165,0,.4);
-    border-radius: 99px;
-    padding: 5px 14px;
-    font-size: 10.5px;
-    font-weight: 800;
-    color: #ffd166;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    position: relative;
-    z-index: 1;
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(26,86,219,.08);border:1px solid rgba(26,86,219,.2);
+    border-radius:99px;padding:5px 14px;
+    font-size:10.5px;font-weight:800;color:#1a56db;
+    letter-spacing:.6px;text-transform:uppercase;
+    margin-bottom:16px;width:fit-content;
 }
 
-.vip-welcome-line {
-    font-size: 13px;
-    font-weight: 700;
-    color: rgba(255,255,255,.55);
-    letter-spacing: .3px;
-    margin-bottom: 4px;
-    position: relative;
-    z-index: 1;
+.vip-welcome-label {
+    font-size:11.5px;font-weight:700;color:#94a3b8;
+    letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;
 }
 
+/* Name + title block on right panel */
+.vip-name-block {
+    margin-bottom:18px;
+}
 .vip-name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.9rem;
-    font-weight: 900;
-    color: #fff;
-    line-height: 1.1;
-    margin: 0 0 6px;
-    position: relative;
-    z-index: 1;
-    text-shadow: 0 2px 20px rgba(240,165,0,.3);
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:1.55rem;font-weight:900;
+    color:#0a1f52;line-height:1.2;
+    margin:0 0 6px;
+    text-shadow:none;
 }
-
-/* Body */
-.vip-body {
-    padding: 28px 36px 32px;
-    text-align: center;
-    position: relative;
+.vip-title-tag {
+    display:inline-flex;align-items:center;gap:6px;
+    background:linear-gradient(135deg,#0a1f52,#1a56db);
+    color:#fff;border-radius:8px;padding:4px 12px;
+    font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
 }
 
 .vip-launch-title {
-    font-size: 17px;
-    font-weight: 900;
-    color: #0a1f52;
-    line-height: 1.35;
-    margin-bottom: 10px;
-    letter-spacing: -.3px;
+    font-size:14px;font-weight:700;color:#334155;
+    line-height:1.5;margin-bottom:14px;
 }
 .vip-launch-title span {
-    background: linear-gradient(135deg, #0f2d6e, #1a56db);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background:linear-gradient(135deg,#0f2d6e,#1a56db);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    font-weight:900;
 }
+
+.vip-divider {
+    display:flex;align-items:center;gap:10px;margin-bottom:16px;
+}
+.vip-divider-line { flex:1;height:1px;background:linear-gradient(90deg,transparent,#e2e8f0); }
+.vip-divider-line.right { background:linear-gradient(90deg,#e2e8f0,transparent); }
+.vip-divider-star { font-size:12px;color:#f0a500; }
 
 .vip-message {
-    font-size: 13.5px;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 24px;
-    font-weight: 500;
+    font-size:13px;color:#64748b;line-height:1.65;
+    margin-bottom:22px;font-weight:500;
 }
+.vip-message strong { color:#0a1f52; }
 
-/* Gold divider */
-.vip-divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 24px;
+/* Stat chips */
+.vip-stats { display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap; }
+.vip-stat-chip {
+    background:#f0f6ff;border:1.5px solid #dbeafe;border-radius:12px;
+    padding:9px 14px;display:flex;align-items:center;gap:8px;
+    flex:1;min-width:90px;
 }
-.vip-divider-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #e2e8f0);
-}
-.vip-divider-line.right {
-    background: linear-gradient(90deg, #e2e8f0, transparent);
-}
-.vip-divider-star {
-    font-size: 14px;
-    color: #f0a500;
-}
+.vip-stat-chip i { color:#1a56db;font-size:14px; }
+.vip-stat-chip-label { font-size:9.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;display:block;line-height:1; }
+.vip-stat-chip-val   { font-size:12.5px;font-weight:800;color:#0a1f52;display:block;line-height:1.35; }
 
+/* CTA */
 .btn-vip-enter {
-    width: 100%;
-    background: linear-gradient(135deg, #0a1f52, #1a56db);
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    padding: 16px 24px;
-    font-size: 15px;
-    font-weight: 800;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    cursor: pointer;
-    box-shadow: 0 8px 28px rgba(26,86,219,.35);
-    transition: all .22s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    letter-spacing: -.2px;
-    position: relative;
-    overflow: hidden;
+    width:100%;background:linear-gradient(135deg,#0a1f52,#1a56db);
+    color:#fff;border:none;border-radius:16px;
+    padding:15px 24px;font-size:14.5px;font-weight:800;
+    font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;
+    box-shadow:0 8px 28px rgba(26,86,219,.35);transition:all .22s;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    letter-spacing:-.2px;position:relative;overflow:hidden;
 }
 .btn-vip-enter::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(240,165,0,.15), transparent);
-    opacity: 0;
-    transition: opacity .22s;
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(240,165,0,.15),transparent);
+    opacity:0;transition:opacity .22s;
 }
-.btn-vip-enter:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 36px rgba(26,86,219,.45);
-}
-.btn-vip-enter:hover::before { opacity: 1; }
+.btn-vip-enter:hover { transform:translateY(-2px);box-shadow:0 12px 36px rgba(26,86,219,.45); }
+.btn-vip-enter:hover::before { opacity:1; }
 
 .vip-countdown {
-    font-size: 11.5px;
-    color: #94a3b8;
-    font-weight: 600;
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    font-size:11.5px;color:#94a3b8;font-weight:600;margin-top:11px;
+    display:flex;align-items:center;justify-content:center;gap:6px;
 }
 .vip-countdown-num {
-    font-weight: 900;
-    color: #1a56db;
-    font-size: 13px;
-    min-width: 14px;
-    display: inline-block;
-    text-align: center;
+    font-weight:900;color:#1a56db;font-size:13px;
+    min-width:14px;display:inline-block;text-align:center;
 }
 
-/* ── Confetti canvas ── */
-#confettiCanvas {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 10000;
+/* ── Confetti ── */
+#confettiCanvas { position:fixed;inset:0;pointer-events:none;z-index:10000; }
+
+/* ── Responsive ── */
+@media (max-width:620px) {
+    #vipModal { flex-direction:column; min-height:unset; }
+    .vip-left {
+        width:100%; height:260px;
+        border-radius:28px 28px 0 0;
+        padding:14px;
+    }
+    .vip-left::before { border-radius:30px 30px 0 0; }
+    .vip-left::after  { border-radius:26px 26px 0 0; }
+    .vip-img-frame    { border-radius:14px; }
+    .vip-right { padding:28px 24px 28px; }
+    .vip-stats { flex-direction:column; }
+    .vip-name { font-size:1.3rem; }
 }
-
-
 </style>
 </head>
 
 <body>
 
-{{-- ══ VIP Welcome Modal (hidden until triggered) ══ --}}
+{{-- VIP Welcome Modal --}}
 <div id="vipOverlay">
     <canvas id="confettiCanvas"></canvas>
 
     <div id="vipModal">
-        <div class="vip-header">
-            <div class="vip-photo-wrap">
-                <div class="vip-photo-ring">
-                    <img src="{{ asset('logo/vc.jpg') }}" alt="VIP Staff Photo">
-                </div>
-                <div class="vip-star-badge">⭐</div>
-            </div>
 
-            <div class="vip-launch-badge">🎉 Special Launch Access</div>
-            <div class="vip-welcome-line">Welcome,</div>
-            <h2 class="vip-name" id="vipStaffName">Staff Member</h2>
+        {{-- LEFT: Full-bleed photo with luxury gold ring border --}}
+        <div class="vip-left">
+            <div class="vip-img-frame">
+                <img class="vip-left-img" src="{{ asset('logo/vc1.jpeg') }}" alt="Vice Chancellor Photo">
+                <div class="vip-left-vignette"></div>
+            </div>
+            <div class="vip-star-badge">⭐</div>
         </div>
 
-        <div class="vip-body">
+        {{-- RIGHT: Welcome content --}}
+        <div class="vip-right">
+
+            <div class="vip-launch-badge">🎉 Special Launch Access</div>
+
+            <div class="vip-welcome-label">Welcome,</div>
+
+            <div class="vip-name-block">
+                <h2 class="vip-name" id="vipStaffName">Staff Member</h2>
+                <span class="vip-title-tag" id="vipStaffTitle">Vice Chancellor</span>
+            </div>
+
             <div class="vip-launch-title">
-                The Official Launch of <span>Be An Amazing You</span><br>
+                The Official Launch of
+                <span>Be An Amazing You</span> —
                 Powered by <span>AmazingTrack System</span>
             </div>
 
@@ -493,10 +463,12 @@ body {
             </div>
 
             <p class="vip-message">
-                You're stepping into a new era of growth and excellence.<br>
-                <strong style="color:#0a1f52;">Track. Grow. Be Amazing.</strong><br>
+                You're stepping into a new era of growth and excellence.
+                <strong>Track. Grow. Be Amazing.</strong><br>
                 Every program, every role, every merit point — all in one place.
             </p>
+
+           
 
             <button class="btn-vip-enter" id="vipEnterBtn">
                 <i class="fa fa-rocket"></i>
@@ -505,18 +477,21 @@ body {
 
             <div class="vip-countdown">
                 <i class="fa fa-clock" style="font-size:11px;"></i>
-                Auto-entering in <span class="vip-countdown-num" id="countNum">5</span> seconds
+                Auto-entering in <span class="vip-countdown-num" id="countNum">10</span> seconds
             </div>
+
         </div>
     </div>
 </div>
 
-{{-- ══ Hidden form to submit after modal ══ --}}
+{{-- Hidden form to submit after modal --}}
 <form id="vipForm" method="POST" action="{{ route('portal.lookup') }}" style="display:none;">
     @csrf
     <input type="hidden" name="staff_id" id="vipFormStaffId">
 </form>
 
+
+{{-- Login Card --}}
 <div class="portal-card fu">
 
     <div class="portal-header">
@@ -524,10 +499,8 @@ body {
             <img src="{{ asset('logo/logo.png') }}" alt="Logo" class="logo-img">
         </div>
         <h1>Be An Amazing You Portal</h1>
-        <p>Check in to programs & claim your Amazing merit points</p>
-        <p class="portal-tagline">
-            "Empowering Amazing Performance"
-        </p>
+        <p>Check in to programs &amp; claim your Amazing merit points</p>
+        <p class="portal-tagline">"Empowering Amazing Performance"</p>
     </div>
 
     <div class="portal-body">
@@ -570,7 +543,7 @@ body {
 
         <div class="merit-legend fu d3">
             <div class="merit-legend-title"><i class="fa fa-star me-1"></i> Merit Points by Role</div>
-            @foreach(App\Models\MeritClaim::$meritPoints as $type => $pts)  
+            @foreach(App\Models\MeritClaim::$meritPoints as $type => $pts)
             <div class="merit-row">
                 <span class="merit-role">
                     <i class="fa {{ App\Models\MeritClaim::$claimIcons[$type] ?? 'fa-user' }}"></i>
@@ -584,21 +557,16 @@ body {
     </div>
 </div>
 
+
 <script>
-/* ══════════════════════════════════════════
-   VIP STAFF CONFIG
-   Add any special staff IDs here
-══════════════════════════════════════════ */
 const VIP_STAFF = {
     'FP02961': {
-        name: 'Prof. Dr. Sharifah Syahirah binti Sy Shiekh', // ← Replace with actual name
-        title: 'Vice Chancellor'                  // ← Replace with actual title
+        name:  'Prof. Dr. Sharifah Syahirah binti Sy Shiekh',
+        title: 'Vice Chancellor'
     }
 };
 
-/* ══════════════════════════════════════════
-   CONFETTI ENGINE
-══════════════════════════════════════════ */
+/* ── Confetti ── */
 const canvas  = document.getElementById('confettiCanvas');
 const ctx     = canvas.getContext('2d');
 let particles = [];
@@ -620,88 +588,62 @@ const COLORS = [
 function createParticle() {
     const size = Math.random() * 10 + 5;
     return {
-        x:     Math.random() * canvas.width,
-        y:     -20,
-        w:     size,
-        h:     size * (Math.random() > .5 ? 1 : 0.4),
+        x: Math.random() * canvas.width, y: -20,
+        w: size, h: size * (Math.random() > .5 ? 1 : 0.4),
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        vx:    (Math.random() - .5) * 5,
-        vy:    Math.random() * 4 + 2,
-        angle: Math.random() * Math.PI * 2,
-        spin:  (Math.random() - .5) * .15,
-        life:  1,
-        decay: Math.random() * .008 + .004,
+        vx: (Math.random() - .5) * 5, vy: Math.random() * 4 + 2,
+        angle: Math.random() * Math.PI * 2, spin: (Math.random() - .5) * .15,
+        life: 1, decay: Math.random() * .008 + .004,
         shape: Math.random() > .6 ? 'circle' : 'rect'
     };
 }
 
 function launchConfetti() {
     particles = [];
-    for (let i = 0; i < 180; i++) {
+    for (let i = 0; i < 200; i++) {
         const p = createParticle();
         p.y = Math.random() * canvas.height * .4 - 20;
         particles.push(p);
     }
     if (rafId) cancelAnimationFrame(rafId);
     animateConfetti();
-
-    // Continuous burst for 3s
     let elapsed = 0;
     const burst = setInterval(() => {
-        for (let i = 0; i < 12; i++) particles.push(createParticle());
+        for (let i = 0; i < 14; i++) particles.push(createParticle());
         elapsed += 100;
-        if (elapsed >= 3000) clearInterval(burst);
+        if (elapsed >= 3500) clearInterval(burst);
     }, 100);
 }
 
 function animateConfetti() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     particles = particles.filter(p => p.life > 0 && p.y < canvas.height + 30);
-
     particles.forEach(p => {
-        p.x     += p.vx;
-        p.y     += p.vy;
-        p.angle += p.spin;
-        p.vy    += .07; // gravity
-        p.vx    *= .99;
-        p.life  -= p.decay;
-
+        p.x += p.vx; p.y += p.vy; p.angle += p.spin;
+        p.vy += .07; p.vx *= .99; p.life -= p.decay;
         ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.angle);
+        ctx.translate(p.x, p.y); ctx.rotate(p.angle);
         ctx.globalAlpha = Math.max(0, p.life);
-        ctx.fillStyle   = p.color;
-
+        ctx.fillStyle = p.color;
         if (p.shape === 'circle') {
-            ctx.beginPath();
-            ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(0,0,p.w/2,0,Math.PI*2); ctx.fill();
         } else {
-            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
         }
         ctx.restore();
     });
-
-    if (particles.length > 0) {
-        rafId = requestAnimationFrame(animateConfetti);
-    } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    if (particles.length > 0) { rafId = requestAnimationFrame(animateConfetti); }
+    else { ctx.clearRect(0,0,canvas.width,canvas.height); }
 }
 
-/* ══════════════════════════════════════════
-   MODAL LOGIC
-══════════════════════════════════════════ */
+/* ── Modal ── */
 let countdownInterval = null;
 
 function showVIPModal(staffId, staffData) {
-    document.getElementById('vipStaffName').textContent = staffData.name;
-    document.getElementById('vipFormStaffId').value = staffId;
-
-    const overlay = document.getElementById('vipOverlay');
-    overlay.classList.add('active');
-
+    document.getElementById('vipStaffName').textContent  = staffData.name;
+    document.getElementById('vipStaffTitle').textContent = staffData.title || 'Vice Chancellor';
+    document.getElementById('vipFormStaffId').value      = staffId;
+    document.getElementById('vipOverlay').classList.add('active');
     launchConfetti();
     startCountdown();
 }
@@ -710,16 +652,11 @@ function startCountdown() {
     let count = 10;
     const numEl = document.getElementById('countNum');
     numEl.textContent = count;
-
     if (countdownInterval) clearInterval(countdownInterval);
-
     countdownInterval = setInterval(() => {
         count--;
         numEl.textContent = count;
-        if (count <= 0) {
-            clearInterval(countdownInterval);
-            submitVIPForm();
-        }
+        if (count <= 0) { clearInterval(countdownInterval); submitVIPForm(); }
     }, 1000);
 }
 
@@ -730,21 +667,16 @@ function submitVIPForm() {
     document.getElementById('vipForm').submit();
 }
 
-// Enter button
 document.getElementById('vipEnterBtn').addEventListener('click', submitVIPForm);
 
-// Intercept main form submit
 document.getElementById('mainLookupForm').addEventListener('submit', function(e) {
     const inputVal = document.getElementById('staffIdInput').value.trim().toUpperCase();
-
     if (VIP_STAFF[inputVal]) {
         e.preventDefault();
         showVIPModal(inputVal, VIP_STAFF[inputVal]);
     }
-    // else: normal form submission proceeds
 });
 
-// Auto-uppercase input
 document.getElementById('staffIdInput').addEventListener('input', function() {
     const pos = this.selectionStart;
     this.value = this.value.toUpperCase();
