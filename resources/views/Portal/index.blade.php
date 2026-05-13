@@ -477,7 +477,7 @@ body {
 
             <div class="vip-countdown">
                 <i class="fa fa-clock" style="font-size:11px;"></i>
-                Auto-entering in <span class="vip-countdown-num" id="countNum">10</span> seconds
+                Auto-entering in <span class="vip-countdown-num" id="countNum">20</span> seconds
             </div>
 
         </div>
@@ -611,7 +611,7 @@ function launchConfetti() {
     const burst = setInterval(() => {
         for (let i = 0; i < 14; i++) particles.push(createParticle());
         elapsed += 100;
-        if (elapsed >= 3500) clearInterval(burst);
+        if (elapsed >= 15000) clearInterval(burst);
     }, 100);
 }
 
@@ -649,7 +649,7 @@ function showVIPModal(staffId, staffData) {
 }
 
 function startCountdown() {
-    let count = 10;
+    let count = 20;
     const numEl = document.getElementById('countNum');
     numEl.textContent = count;
     if (countdownInterval) clearInterval(countdownInterval);
