@@ -8,7 +8,6 @@ use App\Models\MeritClaim;
 use App\Models\Program;
 use App\Models\Staff;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Crypt;
 
 
 class PublicPortalController extends Controller
@@ -45,14 +44,14 @@ class PublicPortalController extends Controller
         }
 
         // ✅ Store staff ID in session and redirect to a GET route
-        return redirect()->route('Portal.dashboard', ['staff' => Crypt::encryptString($staff->staff_id)]);
+        return redirect()->route('Portal.dashboard', ['staff' => $staff->staff_id]);
     }
 
     //  Dashboard — shows staff info, claims, and programs
     public function dashboard(Request $request)
     {
         $staff = Staff::with(['department'])
-            ->where('staff_id', Crypt::decryptString($request->staff))
+            ->where('staff_id', $request->staff)
             ->firstOrFail();
 
         $programs = Program::with(['department'])
