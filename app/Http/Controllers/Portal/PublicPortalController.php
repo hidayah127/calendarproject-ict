@@ -56,6 +56,9 @@ class PublicPortalController extends Controller
 
         $programs = Program::with(['department'])
             ->whereNotIn('status', ['cancelled'])
+            ->whereHas('department', function ($query) {
+                $query->where('name', 'Be An Amazing You');
+            })
             ->orderBy('start_date', 'desc')
             ->get();
 

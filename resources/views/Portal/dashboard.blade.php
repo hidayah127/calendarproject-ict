@@ -1167,7 +1167,7 @@ body {
                                     <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
 
                                     <div class="upload-area-text">
-                                        Upload Proof
+                                        Upload Proof (Required)
                                     </div>
 
                                     <div class="upload-area-sub">

@@ -123,9 +123,11 @@
             <i class="fa fa-users-gear"></i> Programs & Committee
         </a>
         
+        @if($user?->role === 'az')  {{-- Only show to AZ --}}
         <a href="{{ route('head.merit-claims') }}" class="{{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
             <i class="fa fa-trophy me-2"></i> Amazing Merit Claims
         </a>
+        @endif
 
     @endif
 
@@ -254,11 +256,17 @@
                 <i class="fa fa-users-gear me-2"></i> Manage Committee
             </a>
 
-              <a href="{{ route('head.merit-claims') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
-                <i class="fa fa-trophy me-2"></i> Amazing Merit Claims
-            </a>
+            @if($user?->role === 'az')
+                <a href="{{ route('head.merit-claims') }}"
+                class="d-block text-white mb-3 {{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
+                    <i class="fa fa-trophy me-2"></i>
+                    Amazing Merit Claims
+                </a>
+            @endif
 
         @endif
+
+        
 
         {{-- Head of Department --}}
         @if($user?->role == 'ld')

@@ -52,7 +52,7 @@ class MeritClaim extends Model
     ];
 
     public static array $claimIcons = [
-        'attendee'         => 'fa-user-check',
+        'attendee'         => 'fa-user',
         'committee_member' => 'fa-users',
         // 'facilitator'      => 'fa-chalkboard-user',
         // 'secretary'        => 'fa-pen-clip',
