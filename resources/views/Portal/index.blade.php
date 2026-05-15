@@ -200,12 +200,6 @@ body {
                 Access My Dashboard
             </button>
 
-            <div style="text-align:center; margin-top:14px;">
-                <a href="{{ url('/') }}" class="btn-back-home">
-                    <i class="fa fa-arrow-left"></i>
-                    Back to Home
-                </a>
-            </div>
 
         </form>
 
@@ -220,6 +214,13 @@ body {
                 <span class="merit-pts">{{ $pts }} pts</span>
             </div>
             @endforeach
+        </div>
+
+        <div style="text-align:center; margin-top:14px;">
+            <a href="{{ url('/') }}" class="btn-back-home">
+                <i class="fa fa-arrow-left"></i>
+                Back to Home
+            </a>
         </div>
 
     </div>
