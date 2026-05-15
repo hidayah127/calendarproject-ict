@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
         $recentPrograms = Program::where('created_by', $user->id)
             ->with('staffInCharge')
-            ->latest()
+            ->latest()  
             ->take(5)
             ->get();
 

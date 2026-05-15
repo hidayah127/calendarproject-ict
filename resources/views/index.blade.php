@@ -232,7 +232,7 @@
         </div>
 
         <!-- TITLE -->
-        <h1>AmazingTrack</h1>
+        <h1>AmazingTrack System</h1>
 
         <!-- TAGLINE -->
         <div class="subtitle">

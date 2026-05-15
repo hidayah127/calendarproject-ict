@@ -1,3 +1,9 @@
+<!--
+# VERSION 1.0.1
+# AmazingTrack SYSTEM UPTM
+# HIDAYAH BINTI BURHANNUDIN
+# 13.05.2026  -->
+
 <?php
 
 use Illuminate\Support\Facades\Route;
