@@ -110,7 +110,8 @@
              <i class="fa fa-calendar-alt me-2"></i> Calendar
         </a>
 
-        <a href="{{ route('head.programs.index') }}" class="{{ Request::routeIs('head.programs*') ? 'active' : '' }}">
+        {{-- FAEYZAN - ADD INDEX TO SO HOVER NOT DUPLICATE 14.05.2026 --}}
+        <a href="{{ route('head.programs.index') }}" class="{{ Request::routeIs('head.programs.index') ? 'active' : '' }}">
             <i class="fa fa-calendar-check me-2"></i> My Programs
         </a>
 

@@ -740,10 +740,10 @@ nav[role="navigation"] p {
 
                                 <option value="">— Select Category —</option>
 
-                                <option value="mind">Mind</option>
-                                <option value="fitness">Fitness</option>
-                                <option value="spiritual">Spiritual</option>
-                                <option value="social">Social</option>
+                                <option value="mind">Be an Amazing You (Mind)</option>
+                                <option value="fitness">Be an Amazing You (Fitness)</option>
+                                <option value="spiritual">Be an Amazing You (Spiritual)</option>
+                                <option value="social">Be an Amazing You (Social)</option>
                                 <option value="Marketing">Marketing</option>
                                 <option value="Meeting">Meeting</option>
                                 <option value="Event">Event</option>

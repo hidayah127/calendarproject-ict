@@ -348,22 +348,22 @@ textarea.form-control {
 
                             <option value="mind"
                                 {{ old('category') == 'mind' ? 'selected' : '' }}>
-                                Mind
+                                Be an Amazing You (Mind)
                             </option>
 
                             <option value="fitness"
                                 {{ old('category') == 'fitness' ? 'selected' : '' }}>
-                                Fitness
+                                Be an Amazing You (Fitness)
                             </option>
 
                             <option value="spiritual"
                                 {{ old('category') == 'spiritual' ? 'selected' : '' }}>
-                                Spiritual
+                                Be an Amazing You (Spiritual)
                             </option>
 
                             <option value="social"
                                 {{ old('category') == 'social' ? 'selected' : '' }}>
-                                Social
+                                Be an Amazing You (Social)
                             </option>
 
                              <option value="Marketing"
