@@ -8,6 +8,7 @@ use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
+use Carbon\Carbon;
 
 class ProgramController extends Controller
 {
@@ -102,68 +103,90 @@ class ProgramController extends Controller
     | Store — save new program
     |--------------------------------------------------------------------------
     */
+
     public function store(Request $request)
-    {
-        // $validated = $request->validate([
-        //     'title'              => 'required|string|max:255',
-        //     'description'        => 'nullable|string',
-        //     'venue'              => 'required|string|max:255',
-        //     'start_date'         => 'required|date',
-        //     'end_date'           => 'required|date|after_or_equal:start_date',
-        //     'staff_in_charge_id' => 'nullable|exists:staff,id',
-        // ]);
+{
+    $user = Auth::user();
 
-        // $user = Auth::user();
+    $rules = [
+        'title'              => 'required|string|max:255',
+        'description'        => 'nullable|string',
+        'venue'              => 'required|string|max:255',
+        'start_date'         => 'required|date',
+        'end_date'           => 'required|date|after_or_equal:start_date',
+        'staff_in_charge_id' => 'nullable|exists:staff,id',
+        'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,Meeting,Event',
+    ];
 
-        $user = Auth::user();
+    $validated = $request->validate($rules);
 
-        $rules = [
-            'title'              => 'required|string|max:255',
-            'description'        => 'nullable|string',
-            'venue'              => 'required|string|max:255',
-            'start_date'         => 'required|date',
-            'end_date'           => 'required|date|after_or_equal:start_date',
-            'staff_in_charge_id' => 'nullable|exists:staff,id',
-            'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,Meeting,Event',
-        ];
+    $now = Carbon::now();
 
-        /* Only AZ role requires category */
-        // if ($user->role === 'az') {
-        //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
-        // }
-
-        $validated = $request->validate($rules);
-
-        // $program = Program::create([
-        //     ...$validated,
-        //     'created_by'    => $user->id,
-        //     'department_id' => $user->staff->department_id ?? null,
-        //     'status'        => 'upcoming',
-        // ]);
-
-        /* Category required for ALL roles */
-
-        $program = Program::create([
-            ...$validated,
-
-            // If not AZ, force category null
-            // 'category'      => $user->role === 'az'
-            //                     ? $request->category
-            //                     : null,
-
-            'category' => $request->category,
-
-            'created_by'    => $user->id,
-            'department_id' => $user->staff->department_id ?? null,
-            'status'        => 'upcoming',
-        ]);
-
-        NotificationService::programCreated(Auth::id(), $program->title, $program->id);
-
-        return redirect()
-            ->route('head.programs.index')
-            ->with('success', 'Program created successfully.');
+    // Determine status
+    if ($now->between(
+        Carbon::parse($validated['start_date']),
+        Carbon::parse($validated['end_date'])
+    )) {
+        $status = 'ongoing';
+    } elseif ($now->lt(Carbon::parse($validated['start_date']))) {
+        $status = 'upcoming';
+    } else {
+        $status = 'completed';
     }
+
+    $program = Program::create([
+        ...$validated,
+
+        'category'      => $request->category,
+        'created_by'    => $user->id,
+        'department_id' => $user->staff->department_id ?? null,
+        'status'        => $status,
+    ]);
+
+    NotificationService::programCreated(Auth::id(), $program->title, $program->id);
+
+    return redirect()
+        ->route('head.programs.index')
+        ->with('success', 'Program created successfully.');
+}
+    // public function store(Request $request)
+    // {
+        
+
+    //     $user = Auth::user();
+
+    //     $rules = [
+    //         'title'              => 'required|string|max:255',
+    //         'description'        => 'nullable|string',
+    //         'venue'              => 'required|string|max:255',
+    //         'start_date'         => 'required|date',
+    //         'end_date'           => 'required|date|after_or_equal:start_date',
+    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
+    //         'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,Meeting,Event',
+    //     ];
+
+       
+
+    //     $validated = $request->validate($rules);
+
+        
+    //     $program = Program::create([
+    //         ...$validated,
+
+           
+    //         'category' => $request->category,
+
+    //         'created_by'    => $user->id,
+    //         'department_id' => $user->staff->department_id ?? null,
+    //         'status'        => 'upcoming',
+    //     ]);
+
+    //     NotificationService::programCreated(Auth::id(), $program->title, $program->id);
+
+    //     return redirect()
+    //         ->route('head.programs.index')
+    //         ->with('success', 'Program created successfully.');
+    // }
 
     /*
     |--------------------------------------------------------------------------
@@ -204,50 +227,91 @@ class ProgramController extends Controller
     //         ->with('success', 'Program updated successfully.');
     // }
 
+    // public function update(Request $request, Program $program)
+    // {
+    //     $this->authorise($program);
+
+    //     $user = Auth::user();
+
+    //     /* ── Validation Rules ── */
+
+    //     $rules = [
+    //         'title'              => 'required|string|max:255',
+    //         'description'        => 'nullable|string',
+    //         'venue'              => 'required|string|max:255',
+    //         'start_date'         => 'required|date',
+    //         'end_date'           => 'required|date|after_or_equal:start_date',
+    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
+    //     ];
+
+    //     /* Only AZ role needs category */
+    //     // if ($user->role === 'az') {
+    //     //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
+    //     // }
+
+    //     /* Category required for ALL roles */
+    //     $rules['category'] = 'required|in:mind,fitness,spiritual,social,Marketing,Meeting,Event';
+
+    //     $validated = $request->validate($rules);
+
+    //     /* ── Update Program ── */
+
+    //     $program->update([
+    //         ...$validated,
+
+    //         // Save category only for AZ
+    //         // 'category' => $user->role === 'az'
+    //         //                 ? $request->category
+    //         //                 : null,
+
+    //         'category' => $request->category,
+    //     ]);
+
+    //     return redirect()
+    //         ->route('head.programs.index')
+    //         ->with('success', 'Program updated successfully.');
+    // }
+
     public function update(Request $request, Program $program)
-    {
-        $this->authorise($program);
+{
+    $this->authorise($program);
 
-        $user = Auth::user();
+    $user = Auth::user();
 
-        /* ── Validation Rules ── */
+    $rules = [
+        'title'              => 'required|string|max:255',
+        'description'        => 'nullable|string',
+        'venue'              => 'required|string|max:255',
+        'start_date'         => 'required|date',
+        'end_date'           => 'required|date|after_or_equal:start_date',
+        'staff_in_charge_id' => 'nullable|exists:staff,id',
+        'category'           => 'required|in:mind,fitness,spiritual,social,Marketing,Meeting,Event',
+    ];
 
-        $rules = [
-            'title'              => 'required|string|max:255',
-            'description'        => 'nullable|string',
-            'venue'              => 'required|string|max:255',
-            'start_date'         => 'required|date',
-            'end_date'           => 'required|date|after_or_equal:start_date',
-            'staff_in_charge_id' => 'nullable|exists:staff,id',
-        ];
+    $validated = $request->validate($rules);
 
-        /* Only AZ role needs category */
-        // if ($user->role === 'az') {
-        //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
-        // }
+    $now = Carbon::now();
+    $startDate = Carbon::parse($validated['start_date']);
+    $endDate = Carbon::parse($validated['end_date']);
 
-        /* Category required for ALL roles */
-        $rules['category'] = 'required|in:mind,fitness,spiritual,social,Marketing,Meeting,Event';
-
-        $validated = $request->validate($rules);
-
-        /* ── Update Program ── */
-
-        $program->update([
-            ...$validated,
-
-            // Save category only for AZ
-            // 'category' => $user->role === 'az'
-            //                 ? $request->category
-            //                 : null,
-
-            'category' => $request->category,
-        ]);
-
-        return redirect()
-            ->route('head.programs.index')
-            ->with('success', 'Program updated successfully.');
+    if ($now->between($startDate, $endDate)) {
+        $status = 'ongoing';
+    } elseif ($now->lt($startDate)) {
+        $status = 'upcoming';
+    } else {
+        $status = 'completed';
     }
+
+    $program->update([
+        ...$validated,
+        'category' => $request->category,
+        'status'   => $status,
+    ]);
+
+    return redirect()
+        ->route('head.programs.index')
+        ->with('success', 'Program updated successfully.');
+}
 
     /*
     |--------------------------------------------------------------------------

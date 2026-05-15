@@ -262,9 +262,13 @@
 
         </div>
 
-        <!-- FOOTER -->
+        <!-- FOOTER --> 
         <div class="footer">
             © {{ date('Y') }} AmazingTrack System. All Rights Reserved.
+            <br>
+            Developed by Information & Communication Technology Division 
+            <br>
+            UPTM
         </div>
 
     </div>

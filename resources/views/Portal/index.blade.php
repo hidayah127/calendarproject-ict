@@ -155,6 +155,12 @@ body {
     display:flex;align-items:center;gap:10px;margin-bottom:20px;
 }
 
+.login-footer {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: rgba(0, 0, 0, 0.55);
+}
 
 /* ════════════════════════════════════════
    VIP WELCOME MODAL — TWO-COLUMN LAYOUT
@@ -532,12 +538,7 @@ body {
                 Access My Dashboard
             </button>
 
-            <div style="text-align:center; margin-top:14px;">
-                <a href="{{ url('/') }}" class="btn-back-home">
-                    <i class="fa fa-arrow-left"></i>
-                    Back to Home
-                </a>
-            </div>
+            
 
         </form>
 
@@ -552,6 +553,21 @@ body {
                 <span class="merit-pts">{{ $pts }} pts</span>
             </div>
             @endforeach
+        </div>
+
+        <div style="text-align:center; margin-top:14px;">
+            <a href="{{ url('/') }}" class="btn-back-home">
+                <i class="fa fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+        
+        <div class="login-footer">
+            © {{ date('Y') }} AmazingTrack System. All Rights Reserved.
+            <br>
+            Developed by Information & Communication Technology Division 
+            <br>
+            UPTM
         </div>
 
     </div>

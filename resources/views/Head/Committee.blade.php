@@ -32,6 +32,15 @@
 }
 .back-btn:hover { border-color:#bfdbfe; color:#1d4ed8; background:#f8faff; text-decoration:none; }
 
+.btn-modal-cancel {
+    background: #f1f5f9; color: #64748b;
+    border: none; border-radius: 10px;
+    padding: 10px 18px; font-size: 13.5px;
+    font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: background .2s;
+}
+.btn-modal-cancel:hover { background: #e2e8f0; }
+
 /* ── Program hero card ── */
 .prog-hero {
     background: linear-gradient(130deg,#0a1f52 0%,#0f2d6e 48%,#1e40af 100%);
@@ -1024,7 +1033,7 @@
 
                     </span>
 
-                    Hantar Notifikasi Jawatankuasa
+                    Send Committee Notification
 
                 </h5>
 
@@ -1060,9 +1069,9 @@
                         line-height:1.5;
                     ">
 
-                        Notifikasi pelantikan jawatankuasa akan dihantar kepada
-                        <strong>{{ $totalMembers }} ahli</strong>
-                        di bawah secara serentak melalui emel.
+                        Committee appointment notifications will be sent simultaneously via email to the members below.
+                        <strong>{{ $totalMembers }} members</strong>
+                        below will receive the notification via email.
 
                     </p>
 
@@ -1159,13 +1168,7 @@
 
             <div class="modal-footer justify-content-between">
 
-                <button type="button"
-                        class="btn-cancel"
-                        data-bs-dismiss="modal">
-
-                    Batal
-
-                </button>
+                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancel</button>
 
                 <form method="POST"
                       action="{{ route('head.committee.notify', $program->id) }}">
@@ -1180,8 +1183,8 @@
 
                         <i class="fa fa-paper-plane me-1"></i>
 
-                        Hantar Notifikasi
-                        ({{ $totalMembers }} Ahli)
+                        Send Notifications
+                        ({{ $totalMembers }} Members)
 
                     </button>
 
