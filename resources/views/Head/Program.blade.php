@@ -380,7 +380,7 @@ nav[role="navigation"] p {
         <i class="fa fa-circle-exclamation"></i> {{ session('error') }}
     </div>
 @endif --}}
-
+  
 {{-- Summary strip --}}
 <div class="row g-3 mb-4">
     @php
