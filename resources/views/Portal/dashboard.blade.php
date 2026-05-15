@@ -836,6 +836,17 @@ body {
     flex-shrink:0;
 }
 
+.disabled-role{
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.submit-btn:disabled{
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Mobile */
 @media(max-width:768px){
 
@@ -1105,6 +1116,10 @@ body {
                     <div class="claim-form-wrap" id="form-{{ $program->id }}">
                         <div class="form-section-label">Select your role</div>
 
+                        @php
+                            $isCompleted = $program->status === 'completed';
+                        @endphp
+
                         <form method="POST" action="{{ route('portal.claim') }}" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id"   value="{{ $staff->id }}">
@@ -1120,8 +1135,8 @@ body {
                                     $claimStatus = $existing?->status;
                                 @endphp
 
-                                <label class="role-card {{ $isClaimed ? ($claimStatus === 'rejected' ? 'claimed-rejected' : 'claimed') : '' }}"
-                                       onclick="{{ $isClaimed ? 'return false' : "selectRole('{$program->id}','{$role}', this)" }}">
+                               <label class="role-card {{ $isClaimed ? ($claimStatus === 'rejected' ? 'claimed-rejected' : 'claimed') : '' }} {{ $isCompleted ? 'disabled-role' : '' }}"
+                                       onclick="{{ ($isClaimed || $isCompleted) ? 'return false' : "selectRole('{$program->id}','{$role}', this)" }}" >
 
                                     @if($isClaimed)
                                     <span class="role-card-badge {{ $claimStatus === 'approved' ? 'badge-approved' : ($claimStatus === 'rejected' ? 'badge-rejected' : 'badge-pending') }}">
@@ -1144,6 +1159,7 @@ body {
                                        id="proof-{{ $program->id }}"
                                        name="proof[]"
                                        multiple
+                                       {{ $isCompleted ? 'disabled' : '' }}
                                        accept=".jpg,.jpeg,.png,.pdf"
                                        onchange="showPreview('{{ $program->id }}', this)" required>
                                 <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
@@ -1160,6 +1176,8 @@ body {
                                     <input type="file"
                                         id="proof-{{ $program->id }}-0"
                                         name="proof[]"
+                                        multiple
+                                        {{ $isCompleted ? 'disabled' : '' }}
                                         accept=".jpg,.jpeg,.png,.pdf"
                                         onchange="addNewInput('{{ $program->id }}', this)"
                                         hidden>
@@ -1187,6 +1205,12 @@ body {
                                 <i class="fa fa-paper-plane"></i> Submit Claim
                             </button>
                         </form>
+
+                        @if($isCompleted)
+                            <div class="alert alert-warning mt-3">
+                                Merit claim submission is closed because this program has been completed.
+                            </div>
+                        @endif
                     </div>
 
                 </div>
