@@ -664,17 +664,27 @@
             </div>
 
             {{-- Action buttons --}}
+            {{-- Action buttons --}}
             <div class="action-row">
 
                 @if($claim->status === 'pending')
 
                     {{-- Approve --}}
-                    <form method="POST" action="{{ route('head.merit-claims.approve', $claim->id) }}" style="display:inline;">
+                    <form method="POST"
+                        action="{{ route('head.merit-claims.approve', $claim->id) }}"
+                        style="display:inline;">
+
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn-approve">
-                            <i class="fa fa-circle-check"></i> Approve
+
+                        <button type="submit"
+                                class="btn-approve">
+
+                            <i class="fa fa-circle-check"></i>
+                            Approve
+
                         </button>
+
                     </form>
 
                     {{-- Reject --}}
@@ -683,31 +693,45 @@
                             data-bs-target="#rejectModal"
                             data-id="{{ $claim->id }}"
                             data-name="{{ $claim->staff->name ?? '' }}">
-                        <i class="fa fa-circle-xmark"></i> Reject
+
+                        <i class="fa fa-circle-xmark"></i>
+                        Reject
+
                     </button>
 
                 @elseif($claim->status === 'approved')
 
-                    {{-- Undo approve → back to pending --}}
-                    <form method="POST" action="{{ route('head.merit-claims.reject', $claim->id) }}" style="display:inline;">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="rejection_reason" value="Approval reversed by reviewer.">
-                        <button type="submit" class="btn-undo"
-                                onclick="return confirm('Reverse this approval?')">
-                            <i class="fa fa-rotate-left"></i> Reverse Approval
-                        </button>
-                    </form>
+                    {{-- Reverse approval --}}
+                    <button type="button"
+                            class="btn-undo"
+                            data-bs-toggle="modal"
+                            data-bs-target="#reverseModal"
+                            data-id="{{ $claim->id }}"
+                            data-name="{{ $claim->staff->name }}">
+
+                        <i class="fa fa-rotate-left"></i>
+                        Reverse Approval
+
+                    </button>
 
                 @elseif($claim->status === 'rejected')
 
                     {{-- Re-approve --}}
-                    <form method="POST" action="{{ route('head.merit-claims.approve', $claim->id) }}" style="display:inline;">
+                    <form method="POST"
+                        action="{{ route('head.merit-claims.approve', $claim->id) }}"
+                        style="display:inline;">
+
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn-approve">
-                            <i class="fa fa-circle-check"></i> Approve Instead
+
+                        <button type="submit"
+                                class="btn-approve">
+
+                            <i class="fa fa-circle-check"></i>
+                            Approve Instead
+
                         </button>
+
                     </form>
 
                 @endif
@@ -766,6 +790,95 @@
         </div>
     </div>
 </div>
+
+{{-- reverse modal --}}
+<div class="modal fade"
+     id="reverseModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="m-stripe"
+                 style="background:linear-gradient(90deg,#64748b,#94a3b8)">
+            </div>
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    <span class="m-icon"
+                          style="background:#f1f5f9;color:#64748b;">
+
+                        <i class="fa fa-rotate-left"></i>
+
+                    </span>
+
+                    Reverse Approval
+
+                </h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="POST"
+                  id="reverseForm">
+
+                @csrf
+                @method('PATCH')
+
+                <div class="modal-body">
+
+                    <p>
+
+                        Reversing approval for
+                        <strong id="reverseStaffName"></strong>
+
+                    </p>
+
+                    <label class="form-label-sm">
+                        Reason
+                    </label>
+
+                    <textarea name="rejection_reason"
+                              class="form-ctrl"
+                              rows="3"
+                              required
+                              placeholder="Explain why approval is being reversed..."></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn-modal-cancel"
+                            data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn-modal-reject">
+
+                        Confirm Reverse
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 {{-- BULK REJECT MODAL --}}
 <div class="modal fade" id="bulkRejectModal" tabindex="-1">
@@ -859,6 +972,24 @@ document.getElementById('rejectModal').addEventListener('show.bs.modal', functio
     document.getElementById('rejectStaffName').textContent = b.dataset.name;
     document.getElementById('rejectForm').action =
         '/head/merit-claims/' + b.dataset.id + '/reject';
+});
+
+// Reverse modal
+document
+.getElementById('reverseModal')
+.addEventListener('show.bs.modal', function(e){
+
+    let b=e.relatedTarget;
+
+    document.getElementById(
+        'reverseStaffName'
+    ).textContent=b.dataset.name;
+
+    document.getElementById(
+        'reverseForm'
+    ).action=
+    '/head/merit-claims/'+b.dataset.id+'/reject';
+
 });
 
 /* ── Filter pills ── */

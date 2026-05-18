@@ -53,8 +53,9 @@ class PublicPortalController extends Controller
         $staff = Staff::with(['department'])
             ->where('staff_id', $request->staff)
             ->firstOrFail();
+            
 
-        $programs = Program::with(['department'])
+        $programs = Program::with(['department','staffInCharge'])
             ->whereNotIn('status', ['cancelled'])
             ->whereHas('department', function ($query) {
                 $query->where('name', 'Be An Amazing You');
@@ -179,12 +180,14 @@ class PublicPortalController extends Controller
         $exists = MeritClaim::where('staff_id',  $request->staff_id)
             ->where('program_id', $request->program_id)
             ->where('claim_type', $request->claim_type)
+            ->whereIn('status', ['pending', 'approved'])
             ->exists();
 
         if ($exists) {
             return $this->backToDashboard($request->staff_id, 'error', 'You have already submitted this claim.');
         }
 
+        // single upload file handling (deprecated in favor of multiple uploads - 18/5/2026)
         // $proofPath = $proofOriginalName = null;
 
         // if ($request->hasFile('proof')) {

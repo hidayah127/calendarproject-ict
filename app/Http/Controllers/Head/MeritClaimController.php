@@ -45,7 +45,7 @@ class MeritClaimController extends Controller
             'rejectedCount',
         ));
     }
-
+ 
     /*
     |--------------------------------------------------------------------------
     | Approve a claim

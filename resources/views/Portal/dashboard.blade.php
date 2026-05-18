@@ -1131,7 +1131,28 @@ body {
                                     <span><i class="fa fa-building me-1"></i>{{ $program->department->name ?? '—' }}</span>
                                     <span><i class="fa fa-location-dot me-1"></i>{{ $program->venue }}</span>
                                     <span><i class="fa fa-calendar me-1"></i>{{ $program->start_date->format('d M Y') }} – {{ $program->end_date->format('d M Y') }}</span>
+                                    @php
+                                        $categoryIcon = match($program->category) {
+                                            'social' => 'fa-users',
+                                            'mind' => 'fa-brain',
+                                            'fitness' => 'fa-person-running',
+                                            'spiritual' => 'fa-mosque',
+                                            default => 'fa-folder'
+                                        };
+                                    @endphp
+
+                                    <span>
+                                        <i class="fa {{ $categoryIcon }}"></i>
+                                        {{ ucfirst($program->category ?? '—') }}
+                                    </span>
                                 </div>
+                                {{-- PIC Information --}}
+                                <div class="prog-meta mt-1">
+                                    <span><i class="fa fa-user me-1"></i>{{ $program->staffInCharge->name ?? '—' }}</span>
+                                    <span><i class="fa fa-envelope me-1"></i>{{ $program->staffInCharge->email ?? '—' }}</span>
+                                </div>
+
+                                   
                             </div>
                         </div>
                         <div class="d-flex align-items-center gap-2 flex-shrink-0">
@@ -1148,7 +1169,10 @@ body {
                             $isCompleted = $program->status === 'completed';
                         @endphp
 
-                        <form method="POST" action="{{ route('portal.claim') }}" enctype="multipart/form-data">
+                        <form method="POST" 
+                              action="{{ route('portal.claim') }}" 
+                              enctype="multipart/form-data"
+                              class="claimForm">
                             @csrf
                             <input type="hidden" name="staff_id"   value="{{ $staff->id }}">
                             <input type="hidden" name="program_id" value="{{ $program->id }}">
@@ -1159,7 +1183,7 @@ body {
                                 @php
                                     $key         = $program->id . '_' . $role;
                                     $existing    = $claims->where('program_id', $program->id)->where('claim_type', $role)->first();
-                                    $isClaimed   = isset($claimedKeys[$key]);
+                                    $isClaimed   = isset($claimedKeys[$key]) && $claimedKeys[$key] !== 'rejected';
                                     $claimStatus = $existing?->status;
                                 @endphp
 
@@ -1484,6 +1508,8 @@ body {
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 /* toggle program accordion */
 function toggleProgram(id) {
@@ -1658,6 +1684,185 @@ function removeFile(programId,inputId,btn){
     }
 
 }
+
+// form submission confirmation 
+// document.querySelectorAll('.claimForm').forEach(form=>{
+
+//     form.addEventListener('submit',function(e){
+
+//         e.preventDefault();
+
+//         const role = this.querySelector(
+//             'input[name="claim_type"],input[id^="claimType"]'
+//         )?.value;
+
+//         if(!role){
+//             alert("Please select your role before submitting.");
+//             return;
+//         }
+
+//         const confirm1 = confirm(
+//             "Are you sure you want to submit this merit claim?"
+//         );
+
+//         if(!confirm1) return;
+
+//         const confirm2 = confirm(
+//             "Final confirmation.\n\nAfter submission, your claim will be sent for review.\nContinue?"
+//         );
+
+//         if(!confirm2) return;
+
+//         this.submit();
+
+//     });
+
+// });
+
+// Enhanced form submission confirmation with SweetAlert2
+document.querySelectorAll('.claimForm').forEach(form=>{
+
+    form.addEventListener('submit', async function(e){
+
+        e.preventDefault();
+
+        const role = this.querySelector(
+            '[id^="claimType"]'
+        )?.value;
+
+        if(!role){
+
+            Swal.fire({
+                icon:'warning',
+                title:'Role Required',
+                text:'Please select your role before submitting.',
+                confirmButtonColor:'#1847f0',
+                background:'#fff',
+                borderRadius:'18px'
+            });
+
+            return;
+        }
+
+        // First confirmation
+        const first = await Swal.fire({
+
+            title:'Submit Merit Claim?',
+            html:`
+                <div style="font-size:14px;color:#6b7280">
+                Please review your details before submission.
+                </div>
+            `,
+
+            icon:'question',
+
+            showCancelButton:true,
+
+            confirmButtonText:'Continue',
+
+            cancelButtonText:'Cancel',
+
+            confirmButtonColor:'#1847f0',
+
+            cancelButtonColor:'#d1d5db',
+
+            reverseButtons:true,
+
+            background:'#fff',
+
+            borderRadius:'20px',
+
+            backdrop:`
+                rgba(17,24,39,.55)
+                blur(6px)
+            `,
+
+            showClass:{
+                popup:'animate__animated animate__zoomIn'
+            }
+
+        });
+
+        if(!first.isConfirmed) return;
+
+
+        // Final confirmation
+        const second = await Swal.fire({
+
+            title:'Final Confirmation',
+
+            html:`
+            <div style="line-height:1.8">
+
+                <div style="
+                    width:65px;
+                    height:65px;
+                    margin:auto;
+                    background:#e8effe;
+                    border-radius:50%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    margin-bottom:15px;
+                ">
+                    <i class="fa fa-paper-plane"
+                    style="
+                    color:#1847f0;
+                    font-size:24px;
+                    "></i>
+                </div>
+
+                Your claim will be submitted for review.<br>
+                You cannot edit it after submission.
+
+            </div>
+            `,
+
+            showCancelButton:true,
+
+            confirmButtonText:'Submit Now',
+
+            cancelButtonText:'Go Back',
+
+            confirmButtonColor:'#10b981',
+
+            cancelButtonColor:'#d1d5db',
+
+            background:'#fff',
+
+            borderRadius:'20px',
+
+            backdrop:`
+                rgba(17,24,39,.55)
+                blur(6px)
+            `
+
+        });
+
+
+        if(second.isConfirmed){
+
+            Swal.fire({
+
+                title:'Submitting...',
+                html:'Please wait',
+
+                allowOutsideClick:false,
+
+                didOpen:()=>{
+
+                    Swal.showLoading();
+
+                }
+
+            });
+
+            this.submit();
+        }
+
+    });
+
+});
 
 /* search */
 document.getElementById('progSearch').addEventListener('input', function () {
