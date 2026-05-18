@@ -952,6 +952,34 @@ body {
     </div>
     @endif
 
+    {{-- Form validation errors --}}
+    @if ($errors->any())
+
+    <div class="flash flash-error fu">
+
+        <i class="fa fa-circle-exclamation"></i>
+
+        <div>
+
+            <strong>Submission failed:</strong>
+
+            <ul style="
+                margin:6px 0 0 18px;
+                padding:0;
+            ">
+                @foreach($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+            </ul>
+
+        </div>
+
+    </div>
+
+    @endif
+
     {{-- ── Stat cards ──────────────────────────────────────────── --}}
     @php
         $pendingCount  = $claims->where('status','pending')->count();
@@ -1508,11 +1536,15 @@ function addNewInput(programId, input){
         uploadIndex[programId] = 1;
     }
 
-    const previewList = document.getElementById('previewList-' + programId);
+    const previewList = document.getElementById(
+        'previewList-' + programId
+    );
 
     if(input.files[0]){
 
-        // Show selected file
+        const currentInputId = input.id;
+
+        // Preview item
         const div = document.createElement('div');
 
         div.style.marginTop = '8px';
@@ -1522,47 +1554,88 @@ function addNewInput(programId, input){
                 background:#f8fafc;
                 border:1px solid #e2e8f0;
                 border-radius:10px;
-                padding:10px 14px;
+                padding:12px 14px;
                 font-size:13px;
                 display:flex;
                 align-items:center;
-                gap:8px;
+                justify-content:space-between;
             ">
-                <i class="fa fa-file" style="color:#2563eb;"></i>
-                ${input.files[0].name}
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                    overflow:hidden;
+                ">
+                    <i class="fa fa-file"
+                       style="color:#2563eb;"></i>
+
+                    <span style="
+                        white-space:nowrap;
+                        overflow:hidden;
+                        text-overflow:ellipsis;
+                    ">
+                        ${input.files[0].name}
+                    </span>
+                </div>
+
+                <button type="button"
+                    style="
+                        border:none;
+                        background:#fee2e2;
+                        color:#dc2626;
+                        width:26px;
+                        height:26px;
+                        border-radius:50%;
+                        font-size:14px;
+                        cursor:pointer;
+                        flex-shrink:0;
+                    "
+                    onclick="removeFile('${programId}','${currentInputId}',this)"
+                >
+                    ×
+                </button>
+
             </div>
         `;
 
         previewList.appendChild(div);
 
-        // Create NEW hidden input automatically
+
+        // Create next hidden input
         const newInput = document.createElement('input');
 
-        newInput.type = 'file';
+        newInput.type='file';
 
-        newInput.name = 'proof[]';
+        newInput.name='proof[]';
 
-        newInput.accept = '.jpg,.jpeg,.png,.pdf';
+        newInput.accept='.jpg,.jpeg,.png,.pdf';
 
-        newInput.hidden = true;
+        newInput.hidden=true;
 
-        const currentIndex = uploadIndex[programId];
+        const currentIndex=uploadIndex[programId];
 
-        newInput.id = `proof-${programId}-${currentIndex}`;
+        newInput.id=`proof-${programId}-${currentIndex}`;
 
-        newInput.onchange = function(){
-            addNewInput(programId, this);
+        newInput.onchange=function(){
+            addNewInput(programId,this);
         };
 
-        document.getElementById('uploadWrapper-' + programId)
-            .appendChild(newInput);
+        document
+        .getElementById('uploadWrapper-'+programId)
+        .appendChild(newInput);
 
-        // Make upload area click newest input
-        document.querySelector(`#uploadWrapper-${programId} .upload-area`)
-            .setAttribute(
-                'onclick',
-                `document.getElementById('proof-${programId}-${currentIndex}').click()`
-            );
+
+        document
+        .querySelector(
+            `#uploadWrapper-${programId} .upload-area`
+        )
+        .setAttribute(
+            'onclick',
+            `document.getElementById(
+                'proof-${programId}-${currentIndex}'
+            ).click()`
+        );
 
         uploadIndex[programId]++;
 
@@ -1570,6 +1643,21 @@ function addNewInput(programId, input){
 
 }
 
+
+// remove file from preview and delete corresponding hidden input (18/5/2026) - Hidayah
+function removeFile(programId,inputId,btn){
+
+    // remove preview card
+    btn.closest('div').parentElement.remove();
+
+    // remove hidden input
+    const fileInput=document.getElementById(inputId);
+
+    if(fileInput){
+        fileInput.remove();
+    }
+
+}
 
 /* search */
 document.getElementById('progSearch').addEventListener('input', function () {

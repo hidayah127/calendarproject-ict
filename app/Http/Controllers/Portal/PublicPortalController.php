@@ -133,13 +133,47 @@ class PublicPortalController extends Controller
     */
     public function claim(Request $request)
     {
+        // note: validation is now handled client-side in the dashboard form, so we can skip it here. We will still validate the file uploads though.
+        // $request->validate([
+        //     'staff_id'   => 'required|exists:staff,id',
+        //     'program_id' => 'required|exists:programs,id',
+        //     'claim_type' => 'required|in:attendee,committee_member,committee_head,coordinator,secretary,treasurer,facilitator',
+        //     // 'proof'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        //     'proof' => 'required|array',
+        //     'proof.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120',
+        // ]);
+
+        // Enhanced validation with custom messages and array handling for multiple files (18/5/2026) - Hidayah
         $request->validate([
             'staff_id'   => 'required|exists:staff,id',
+
             'program_id' => 'required|exists:programs,id',
-            'claim_type' => 'required|in:attendee,committee_member,committee_head,coordinator,secretary,treasurer,facilitator',
-            // 'proof'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'proof' => 'required|array',
-            'proof.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120',
+
+            'claim_type' => [
+                'required',
+                'in:attendee,committee_member,committee_head,coordinator,secretary,treasurer,facilitator'
+            ],
+
+            'proof' => 'required|array|min:1',
+
+            'proof.*' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+
+        ],[
+            'claim_type.required' => 'Please select your role.',
+
+            'proof.required' => 'Please upload at least one proof file.',
+
+            'proof.array' => 'Invalid file upload.',
+
+            'proof.min' => 'Please upload at least one proof file.',
+
+            'proof.*.mimes' => 'Only JPG, JPEG, PNG and PDF files are allowed.',
+
+            'proof.*.max' => 'File size cannot exceed 5MB.',
+
+            'staff_id.exists' => 'Staff record not found.',
+
+            'program_id.exists' => 'Program not found.'
         ]);
 
         $exists = MeritClaim::where('staff_id',  $request->staff_id)
