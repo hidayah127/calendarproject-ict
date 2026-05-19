@@ -35,7 +35,7 @@ class CommitteeAppointmentMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[AmazingTrack] Notifikasi Pelantikan Jawatankuasa — ' . strtoupper($this->program->title),
+            subject: '[Amazing-Track UPTM] Committee Appointment Notification — ' . strtoupper($this->program->title),
         );   
     }
 

@@ -261,7 +261,7 @@
         </div>
 
         <div class="header-title">
-            Pelantikan Ahli Jawatankuasa Program
+            Appointment of Program Committee Member
         </div>
 
         <div class="header-program">
@@ -274,20 +274,20 @@
     <div class="email-body">
 
         <div class="greeting">
-            Assalamualaikum & Salam Sejahtera,
+            Assalamualaikum & Greetings,
             {{ $staff->name }},
         </div>
 
         <div class="greeting-sub">
-            Anda telah dilantik sebagai ahli jawatankuasa bagi program berikut.
-            Sila semak maklumat pelantikan anda di bawah.
+            You have been appointed as a committee member for the following program.
+            Please review your appointment details below.
         </div>
 
         <!-- Role -->
         <div class="role-card">
 
             <div class="role-label">
-                Peranan Anda
+                Your Role   
             </div>
 
             <div class="role-value">
@@ -306,14 +306,14 @@
 
         <!-- Program Details -->
         <div class="section-title">
-            Maklumat Program
+            Program Details
         </div>
 
         <div class="detail-list">
 
             <div class="detail-row">
                 <span class="detail-label">
-                    Nama Program
+                    Program Name
                 </span>
                 <span class="detail-value">
                     {{ $program->title }}
@@ -322,7 +322,7 @@
 
             <div class="detail-row">
                 <span class="detail-label">
-                    Tarikh
+                    Date
                 </span>
                 <span class="detail-value">
 
@@ -338,7 +338,7 @@
             @if($program->venue)
             <div class="detail-row">
                 <span class="detail-label">
-                    Tempat
+                    Place
                 </span>
                 <span class="detail-value">
                     {{ $program->venue }}
@@ -348,7 +348,7 @@
 
             <div class="detail-row">
                 <span class="detail-label">
-                    Anjuran
+                    Host
                 </span>
                 <span class="detail-value">
                     {{ $program->department->name ?? '—' }}
@@ -367,7 +367,7 @@
             <div class="detail-row">
 
                 <span class="detail-label">
-                    Pegawai Bertanggungjawab
+                    Person in Charge
                 </span>
 
                 <span class="detail-value">
@@ -390,7 +390,7 @@
         <div class="resp-box">
 
             <div class="resp-box-title">
-                Tanggungjawab Anda
+                Your Responsibilities
             </div>
 
             <p>
@@ -405,10 +405,9 @@
        <div class="notice-banner">
 
             <p>
-                Surat lantikan rasmi akan menyusul dalam masa terdekat.
-                Sekiranya terdapat sebarang perubahan berkaitan program
-                atau pelantikan ini, pihak kami akan memaklumkan kepada
-                tuan/puan dari semasa ke semasa.
+                An official appointment letter will be issued in the near future.
+                Should there be any changes regarding the program or this appointment, 
+                we will inform you from time to time..
             </p>
 
         </div>
@@ -417,7 +416,7 @@
         {{-- <div class="cta-wrap">
 
             <a href="{{ url('/') }}" class="cta-btn">
-                Lihat Program
+                Show Program Details
             </a>
 
         </div> --}}
@@ -427,20 +426,20 @@
         <!-- Closing -->
         <div class="closing">
 
-            Sebarang pertanyaan boleh dirujuk kepada pihak pengurus program.
+            Any questions can be directed to the program manager.
 
             <br><br>
 
-            Terima kasih.
+            Thank You.
 
             <br><br>
 
-            <strong>Pasukan AmazingTrack</strong>
+            <strong>The AmazingTrack Team</strong>
 
             <br>
 
             <span style="font-size:12px;color:#94a3b8;">
-                Notifikasi dihantar pada
+                Notification sent on
                 {{ now()->translatedFormat('d F Y, H:i') }}
             </span>
 
@@ -456,8 +455,8 @@
         </div>
 
         <div class="footer-note">
-            Emel ini dijana secara automatik.
-            Sila jangan balas emel ini.
+            This email was generated automatically.
+            Please do not reply to this email.
             <br>
             © {{ now()->format('Y') }} AmazingTrack
         </div>
