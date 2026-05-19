@@ -293,7 +293,7 @@ class CommitteeController extends Controller
             'secretary'        => 'Secretary',
             'treasurer'        => 'Treasurer',
             'facilitator'      => 'Facilitator',
-            'committee_member' => 'Committee Member',
+            'committee_member' => 'Committee Members',
         ];
 
         $sent = 0;
