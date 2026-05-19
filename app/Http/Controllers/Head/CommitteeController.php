@@ -288,12 +288,12 @@ class CommitteeController extends Controller
         }
 
         $roleLabels = [
-            'committee_head'   => 'Ketua Jawatankuasa',
-            'coordinator'      => 'Penyelaras',
-            'secretary'        => 'Setiausaha',
-            'treasurer'        => 'Bendahari',
-            'facilitator'      => 'Fasilitator',
-            'committee_member' => 'Ahli Jawatankuasa',
+            'committee_head'   => 'Committee Head',
+            'coordinator'      => 'Coordinator',
+            'secretary'        => 'Secretary',
+            'treasurer'        => 'Treasurer',
+            'facilitator'      => 'Facilitator',
+            'committee_member' => 'Committee Member',
         ];
 
         $sent = 0;
@@ -314,7 +314,7 @@ class CommitteeController extends Controller
             $sent++;
         }
 
-        return redirect()->back()->with('success', "Notifikasi lantikan berjaya dihantar kepada {$sent} ahli jawatankuasa.");
+        return redirect()->back()->with('success', "The appointment notification has been successfully sent to {$sent} committee members.");
     }
 
    
