@@ -30,11 +30,15 @@ Route::post('/reset-password',        [AuthController::class, 'resetPasswordProc
 
 //portal routes
 use App\Http\Controllers\Portal\PublicPortalController;
+use App\Http\Controllers\Portal\PublicCalendarController;
 Route::get('Portal',                [PublicPortalController::class, 'index'])->name('Portal.index');
 Route::post('portal/lookup',        [PublicPortalController::class, 'lookup'])->name('portal.lookup');
 Route::get('Portal/dashboard',      [PublicPortalController::class, 'dashboard'])->name('Portal.dashboard');  
 Route::post('portal/claim',         [PublicPortalController::class, 'claim'])->name('portal.claim');
 Route::post('portal/proof/{claim}', [PublicPortalController::class, 'uploadProof'])->name('portal.upload-proof');
+
+// Public Calendar Route
+Route::get('/calendar', [PublicCalendarController::class, 'index'])->name('public.calendar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/change-password',  [AuthController::class, 'changePassword'])->name('change.password');

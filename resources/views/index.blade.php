@@ -260,6 +260,12 @@
                 Staff Portal
             </a>
 
+            {{-- Public Calendar --}}
+            <a href="{{ route('public.calendar') }}" class="btn btn-secondary">
+                <i class="fa-solid fa-calendar-days"></i>
+                Program Calendar
+            </a>
+
         </div>
 
         <!-- FOOTER --> 
