@@ -154,6 +154,16 @@ body {
     padding:13px 16px;color:#b91c1c;font-size:13.5px;font-weight:600;
     display:flex;align-items:center;gap:10px;margin-bottom:20px;
 }
+
+.manual-link{
+    color:#4f5d75;
+    transition:0.2s ease;
+}
+
+.manual-link:hover{
+    color:#1d4ed8;
+    text-decoration:underline !important;
+}
 </style>
 </head>
 
@@ -199,6 +209,16 @@ body {
                 <i class="fa fa-arrow-right-to-bracket"></i>
                 Access My Dashboard
             </button>
+
+            <div class="text-center mt-3">
+                <a href="{{ asset('manual/user-manual.pdf') }}"
+                target="_blank"
+                class="text-decoration-none fw-semibold small manual-link">
+
+                    <i class="fas fa-circle-question me-1"></i>
+                    Need Help? User Manual
+                </a>
+            </div>
 
 
         </form>
@@ -283,6 +303,16 @@ document.getElementById('staffIdInput').addEventListener('input', function() {
     this.value = this.value.toUpperCase();
     this.setSelectionRange(pos, pos);
     clearRestrictionError(this);
+});
+
+/* ── Auto insert FP prefix ── */
+document.getElementById('staffIdInput').addEventListener('input', function () {
+    let value = this.value;
+
+    // If user types only numbers
+    if (/^\d+$/.test(value)) {
+        this.value = 'FP' + value;
+    }
 });
 </script>
 

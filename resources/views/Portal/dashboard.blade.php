@@ -721,6 +721,36 @@ body {
     color: var(--blue);
 }
 
+.cat-wrap{
+    gap:.5rem;
+    flex-wrap:wrap;
+}
+
+.cat-pill{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    font-size:.95rem;
+}
+
+.cat-pill.on{
+    background:var(--blue);
+    color:#fff;
+    border-color:var(--blue);
+}
+
+/* make ALL button slightly wider */
+.cat-pill[data-cat="all"]{
+    width:auto;
+    padding:0 14px;
+    font-size:.85rem;
+    font-weight:600;
+}
+
 /* ─── Empty states ───────────────────────────────────────── */
 .empty {
     text-align: center;
@@ -1095,6 +1125,31 @@ body {
                 <button class="pill" data-f="completed">Completed</button>
             </div>
 
+            <!-- CATEGORY FILTER -->
+            <div class="pills fu d2 mb-4 cat-wrap">
+
+    <button class="pill cat-pill on" data-cat="all">
+        All
+    </button>
+
+    <button class="pill cat-pill" data-cat="social" title="Social">
+        <i class="fa fa-users"></i>
+    </button>
+
+    <button class="pill cat-pill" data-cat="mind" title="Mind">
+        <i class="fa fa-brain"></i>
+    </button>
+
+    <button class="pill cat-pill" data-cat="fitness" title="Fitness">
+        <i class="fa fa-person-running"></i>
+    </button>
+
+    <button class="pill cat-pill" data-cat="spiritual" title="Spiritual">
+        <i class="fa fa-mosque"></i>
+    </button>
+
+</div>
+
             <div class="panel fu d3" id="progList">
                 <div class="panel-accent"></div>
                 <div class="panel-head">
@@ -1119,6 +1174,7 @@ body {
 
                 <div class="prog-item"
                      data-status="{{ $program->status }}"
+                     data-category="{{ strtolower($program->category) }}"
                      data-title="{{ strtolower($program->title) }}">
 
                     {{-- Header row --}}
@@ -1887,6 +1943,45 @@ document.querySelectorAll('.pill').forEach(pill => {
         document.querySelectorAll('.prog-item').forEach(item => {
             item.style.display = (f === 'all' || item.dataset.status === f) ? '' : 'none';
         });
+    });
+});
+
+const statusButtons = document.querySelectorAll('[data-f]');
+const categoryButtons = document.querySelectorAll('[data-cat]');
+const cards = document.querySelectorAll('.prog-item');
+
+let currentStatus = 'all';
+let currentCategory = 'all';
+
+function filterCards() {
+    cards.forEach(card => {
+        const status = card.dataset.status;
+        const category = card.dataset.category;
+
+        const statusMatch = currentStatus === 'all' || status === currentStatus;
+        const categoryMatch = currentCategory === 'all' || category === currentCategory;
+
+        card.style.display = statusMatch && categoryMatch ? 'block' : 'none';
+    });
+}
+
+statusButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        statusButtons.forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+
+        currentStatus = btn.dataset.f;
+        filterCards();
+    });
+});
+
+categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        categoryButtons.forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+
+        currentCategory = btn.dataset.cat;
+        filterCards();
     });
 });
 </script>
