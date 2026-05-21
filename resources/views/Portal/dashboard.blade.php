@@ -1167,6 +1167,7 @@ body {
 
                         @php
                             $isCompleted = $program->status === 'completed';
+                            $isUpcoming = $program->status === 'upcoming';
                         @endphp
 
                         <form method="POST" 
@@ -1187,8 +1188,8 @@ body {
                                     $claimStatus = $existing?->status;
                                 @endphp
 
-                               <label class="role-card {{ $isClaimed ? ($claimStatus === 'rejected' ? 'claimed-rejected' : 'claimed') : '' }} {{ $isCompleted ? 'disabled-role' : '' }}"
-                                       onclick="{{ ($isClaimed || $isCompleted) ? 'return false' : "selectRole('{$program->id}','{$role}', this)" }}" >
+                               <label class="role-card {{ $isClaimed ? ($claimStatus === 'rejected' ? 'claimed-rejected' : 'claimed') : '' }} {{ $isCompleted || $isUpcoming ? 'disabled-role' : '' }}"
+                                       onclick="{{ ($isClaimed || $isCompleted || $isUpcoming) ? 'return false' : "selectRole('{$program->id}','{$role}', this)" }}" >
 
                                     @if($isClaimed)
                                     <span class="role-card-badge {{ $claimStatus === 'approved' ? 'badge-approved' : ($claimStatus === 'rejected' ? 'badge-rejected' : 'badge-pending') }}">
@@ -1211,7 +1212,7 @@ body {
                                        id="proof-{{ $program->id }}"
                                        name="proof[]"
                                        multiple
-                                       {{ $isCompleted ? 'disabled' : '' }}
+                                       {{ $isCompleted || $isUpcoming ? 'disabled' : '' }}
                                        accept=".jpg,.jpeg,.png,.pdf"
                                        onchange="showPreview('{{ $program->id }}', this)" required>
                                 <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
@@ -1229,7 +1230,7 @@ body {
                                         id="proof-{{ $program->id }}-0"
                                         name="proof[]"
                                         multiple
-                                        {{ $isCompleted ? 'disabled' : '' }}
+                                        {{ $isCompleted || $isUpcoming? 'disabled' : '' }}
                                         accept=".jpg,.jpeg,.png,.pdf"
                                         onchange="addNewInput('{{ $program->id }}', this)"
                                         hidden>
@@ -1259,8 +1260,13 @@ body {
                         </form>
 
                         @if($isCompleted)
-                            <div class="alert alert-warning mt-3">
+                            <div class="alert alert-danger mt-3">
                                 Merit claim submission is closed because this program has been completed.
+                            </div>
+                        @endif
+                        @if($isUpcoming)
+                            <div class="alert alert-warning mt-3">
+                                Merit claim submission is closed because this program is upcoming.
                             </div>
                         @endif
                     </div>
