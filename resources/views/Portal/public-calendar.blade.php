@@ -66,17 +66,26 @@ body {
   color: white;
 }
 
-.brand-logo-wrap {
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 10px;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: white;
+.brand-logo-wrap{
+    background: rgba(255,255,255,0.95);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px;
+
+    padding: 6px 10px;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.top-logo{
+    height:34px;
+    width:auto;
+    object-fit:contain;
+}
+
+.bau-logo{
+    height:30px;
 }
 
 .brand-name {
@@ -721,17 +730,33 @@ body {
 <nav class="topbar">
   <div class="topbar-inner">
     <a href="{{ route('Portal.index') }}" class="brand">
-      <div class="brand-logo-wrap">
+      {{-- <div class="brand-logo-wrap">
         <i class="fa fa-calendar-check"></i>
+      </div> --}}
+
+      <div class="brand-logo-wrap dual-logo">
+
+          <img 
+              src="{{ asset('logo/logo.png') }}" 
+              alt="UPTM Logo"
+              class="top-logo"
+          >
+
+          <img 
+              src="{{ asset('logo/bau.png') }}" 
+              alt="BAU Logo"
+              class="top-logo bau-logo"
+          >
+
       </div>
       <div>
         <div class="brand-name">AmazingTrack</div>
         <div class="brand-sub">Public Portal</div>
       </div>
     </a>
-    <a href="{{ route('Portal.index') }}" class="btn-back">
-      <i class="fa fa-arrow-left" style="font-size:11px"></i>
-      Back to Portal
+    <a href="{{ url('/') }}" class="btn-back">
+      <i class="fa fa-arrow-right-from-bracket" style="font-size:11px"></i>
+      Exit
     </a>
   </div>
 </nav>
@@ -880,10 +905,13 @@ body {
       <div>
         <div class="footer-col-title">Quick Links</div>
         <ul class="footer-links">
-          <li><a href="{{ route('Portal.index') }}"><i class="fa fa-house"></i> Portal Home</a></li>
+          <li><a href="{{ url('/') }}"><i class="fa fa-arrow-right-from-bracket"></i> Exit Portal</a></li>
+          <li><a href="{{ route('Portal.index') }}"><i class="fa fa-house"></i> Staff Portal</a></li>
           <li><a href="#"><i class="fa fa-calendar-days"></i> Programme Calendar</a></li>
-          <li><a href="#"><i class="fa fa-building"></i> Departments</a></li>
-          <li><a href="#"><i class="fa fa-circle-info"></i> About</a></li>
+          {{-- system login --}}
+          <li><a href="{{ route('login') }}"><i class="fa fa-lock"></i> System Login</a></li>
+          {{-- <li><a href="#"><i class="fa fa-building"></i> Departments</a></li> --}}
+          {{-- <li><a href="#"><i class="fa fa-circle-info"></i> About</a></li> --}}
         </ul>
       </div>
       <div>

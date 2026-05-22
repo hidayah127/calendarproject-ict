@@ -102,10 +102,14 @@ body {
 }
 .brand-mark {
     background: rgba(255,255,255,0.95);
-    border-radius: 8px;
-    padding: 4px 8px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px;
 
-    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    padding: 6px 10px;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
 .brand-name {
@@ -133,6 +137,22 @@ body {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+.dual-logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.brand-logo{
+    height:42px;
+    width:auto;
+    object-fit:contain;
+}
+
+.second-logo{
+    height:36px;
 }
 
 .merit-pill {
@@ -877,6 +897,135 @@ body {
     cursor: not-allowed;
 }
 
+/* ─── FOOTER ─────────────────────────────────────── */
+.footer {
+  background: var(--navy);
+  border-top: 3px solid var(--red);
+  margin-top: 48px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 28px 28px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  text-decoration: none;
+}
+
+.footer-brand-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.footer-brand-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -.2px;
+}
+
+.footer-brand-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.45);
+  margin-top: 1px;
+}
+
+.footer-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+.footer-col-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 14px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  font-size: 13px;
+  color: rgba(255,255,255,.65);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color .15s;
+}
+
+.footer-links a:hover { color: white; }
+
+.footer-links a i {
+  font-size: 12px;
+  opacity: .5;
+  width: 14px;
+}
+
+.footer-bottom {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+}
+
+.footer-copy strong {
+  color: rgba(255,255,255,.6);
+  font-weight: 700;
+}
+
+.footer-powered {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+}
+
+.footer-powered span {
+  color: rgba(255,255,255,.6);
+  font-weight: 600;
+}
+
 /* Mobile */
 @media(max-width:768px){
 
@@ -913,6 +1062,9 @@ body {
         width:calc(50% - 5px);
     }
 
+    .footer-top { grid-template-columns: 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+
 }
 
 /* Mobile */
@@ -932,9 +1084,26 @@ body {
 <nav class="topbar">
     <div class="topbar-inner">
         <a href="{{ route('Portal.index') }}" class="brand">
-            <div class="brand-mark">
+            {{-- <div class="brand-mark">
                 <img src="{{ asset('logo/logo.png') }}" alt="Logo" class="brand-logo">
+            </div> --}}
+
+            <div class="brand-mark dual-logo">
+    
+                <img 
+                    src="{{ asset('logo/logo.png') }}" 
+                    alt="UPTM Logo" 
+                    class="brand-logo"
+                >
+
+                <img 
+                    src="{{ asset('logo/bau.png') }}" 
+                    alt="Be Amazing You Logo" 
+                    class="brand-logo second-logo"
+                >
+
             </div>
+
             <div>
                 <div class="brand-name">AmazingTrack</div>
                 <div class="brand-sub">Staff Self-Service Portal</div>
@@ -1569,6 +1738,56 @@ body {
         </div>
     </div>
 </div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a href="{{ route('Portal.index') }}" class="footer-brand">
+          <div class="footer-brand-icon"><i class="fa fa-calendar-check"></i></div>
+          <div>
+            <div class="footer-brand-name">AmazingTrack</div>
+            <div class="footer-brand-sub">Public Portal</div>
+          </div>
+        </a>
+        <p class="footer-desc">A centralised platform for tracking university programmes, activities, and departmental events across all faculties.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Quick Links</div>
+        {{-- <ul class="footer-links">
+          <li><a href="{{ route('Portal.index') }}"><i class="fa fa-house"></i> Portal Home</a></li>
+          <li><a href="{{ route('public.calendar') }}"><i class="fa fa-calendar-days"></i> Programme Calendar</a></li>
+          <li><a href="#"><i class="fa fa-building"></i> </a></li>
+          <li><a href="#"><i class="fa fa-circle-info"></i> About</a></li>
+        </ul> --}}
+
+         <ul class="footer-links">
+          <li><a href="{{ url('/') }}"><i class="fa fa-arrow-right-from-bracket"></i> Exit Portal</a></li>
+          <li><a href="{{ route('Portal.index') }}"><i class="fa fa-house"></i> Staff Portal</a></li>
+          <li><a href="#"><i class="fa fa-calendar-days"></i> Programme Calendar</a></li>
+          {{-- system login --}}
+          <li><a href="{{ route('login') }}"><i class="fa fa-lock"></i> System Login</a></li>
+          {{-- <li><a href="#"><i class="fa fa-building"></i> Departments</a></li> --}}
+          {{-- <li><a href="#"><i class="fa fa-circle-info"></i> About</a></li> --}}
+        </ul>
+      </div>
+      {{-- <div>
+        <div class="footer-col-title">Event Status Guide</div>
+        <ul class="footer-links">
+          <li><a href="#"><i class="fa fa-circle" style="color:#4f46e5;opacity:1"></i> Upcoming</a></li>
+          <li><a href="#"><i class="fa fa-circle" style="color:#16a34a;opacity:1"></i> Ongoing</a></li>
+          <li><a href="#"><i class="fa fa-circle" style="color:#7c3aed;opacity:1"></i> Completed</a></li>
+          <li><a href="#"><i class="fa fa-circle" style="color:#dc2626;opacity:1"></i> Cancelled</a></li>
+          <li><a href="#"><i class="fa fa-circle" style="color:#d97706;opacity:1"></i> Rescheduled</a></li>
+        </ul>
+      </div> --}}
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; {{ date('Y') }} <strong>AmazingTrack</strong>. All rights reserved. University Public Portal.</div>
+      <div class="footer-powered"><i class="fa fa-bolt" style="font-size:11px;color:rgba(255,255,255,.4)"></i> Powered by <span>AmazingTrack System</span></div>
+    </div>
+  </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
