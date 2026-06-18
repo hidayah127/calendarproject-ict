@@ -59,7 +59,7 @@
             <i class="fa fa-calendar-week"></i> Weekend Staff
         </a>
 
-        <a href="{{ route('vc.non-weekend-staff') }}" class="{{ Request::routeIs('vc.no-weekend-staff') ? 'active' : '' }}">
+        <a href="{{ route('vc.non-weekend-staff') }}" class="{{ Request::routeIs('vc.non-weekend-staff') ? 'active' : '' }}">
             <i class="fa fa-user-times"></i> No Weekend Staff
         </a>
 
@@ -67,7 +67,7 @@
             <i class="fa fa-file-alt me-2"></i> Amazing Reports
         </a>
 
-    @endif
+    @endif 
 
 
     {{-- Admin --}}
