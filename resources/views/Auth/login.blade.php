@@ -381,7 +381,7 @@ body {
 
     <p class="login-footer">
         &copy; {{ date('Y') }} AmazingTrack — All rights reserved<br>
-        Developed by Information & Communication Technology Division UPTM
+        Developed by Information & Communication Technology Department UPTM
     </p>
 
 </div>

@@ -554,18 +554,15 @@
                             $posClass = match($s->position) {
                                 'hd'    => 'pos-hd',
                                 'staff' => 'pos-staff',
-                                'ld'    => 'pos-ld',
                                 default => 'pos-other',
                             };
                             $posIcon = match($s->position) {
                                 'hd'    => 'fa-crown',
                                 'staff' => 'fa-user',
-                                'ld'    => 'fa-user-tie',
                                 default => 'fa-circle',
                             };
                             $posLabel = match($s->position) {
                                 'hd'    => 'Programme Secretariat',
-                                'ld'    => 'Head of Department',
                                 'staff' => 'Staff',
                                 default => ucfirst($s->position),
                             };
@@ -717,7 +714,6 @@
                             <label class="form-label">Position</label>
                             <select name="position" class="form-select">
                                 <option value="">Select Position</option>
-                                <option value="ld">Head of Department</option>
                                 <option value="hd">Programme Secretariat</option>
                                 <option value="staff">Staff</option>
                             </select>
@@ -789,7 +785,6 @@
                             <label class="form-label">Position</label>
                             <select name="position" id="editRole" class="form-select">
                                 <option value="hd">Programme Secretariat</option>
-                                <option value="ld">Head of Department</option>
                                 <option value="staff">Staff</option>
                             </select>
                         </div>
@@ -885,8 +880,12 @@
                     <div>
                         <label class="form-label">Assign Role</label>
                         <select name="role" class="form-select">
-                            <option value="ld">Head of Department</option>
                             <option value="vc">Vice Chancellor</option>
+                            <option value="dv">Deputy Vice Chancellor</option>
+                            <option value="rd">Registrar</option>
+                            <option value="bs">Bursar</option>
+                            <option value="dc">Director</option>
+                            <option value="ld">Dean</option>
                             <option value="hd">Programme Secretariat</option>
                             <option value="az">Be An Amazing You</option>
                         </select>

@@ -68,6 +68,7 @@ use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\AccessUserController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProgramController as AdminProgramController;
 
 Route::prefix('admin')
     ->name('admin.')
@@ -80,6 +81,14 @@ Route::prefix('admin')
     Route::post('staff/import-csv', [StaffController::class, 'importCSV'])->name('staff.import.csv');
     Route::resource('departments', DepartmentController::class);
     Route::resource('users', AccessUserController::class)->only(['index','destroy']);
+    Route::get('/users/{user}/access',[AccessUserController::class,'editAccess'])->name('users.access');
+    Route::put('/users/{user}/access',[AccessUserController::class,'updateAccess'])->name('users.access.update');
+
+
+    // Program Routes
+    Route::resource('programs', AdminProgramController::class);
+    Route::patch('programs/{program}/reschedule', [AdminProgramController::class, 'reschedule'])->name('programs.reschedule');
+    Route::patch('programs/{program}/cancel',     [AdminProgramController::class, 'cancel'])    ->name('programs.cancel');
 
     // Give system access
     Route::post('staff/{id}/give-access', [StaffController::class, 'giveAccess'])->name('staff.giveAccess');
@@ -133,6 +142,7 @@ use App\Http\Controllers\VC\DashboardController as VCDashboardController;
 use App\Http\Controllers\VC\WeekendStaffController;
 use App\Http\Controllers\VC\MeritReportController;
 use App\Http\Controllers\VC\NonWeekendStaffController;
+use App\Http\Controllers\VC\GalleryController;
 
 Route::prefix('vc')
     ->name('vc.')
@@ -140,6 +150,14 @@ Route::prefix('vc')
     ->group(function () {
         Route::get('dashboard',         [VCDashboardController::class, 'index'])->name('dashboard');
         Route::get('programs',          [VCProgramController::class, 'index'])->name('programs');
+        Route::get('programs/create',   [VCProgramController::class, 'create'])->name('programs.create');
+        Route::post('programs',         [VCProgramController::class, 'store'])->name('programs.store');
+        Route::get('programs/{program}', [VCProgramController::class, 'edit'])->name('programs.edit');
+        Route::put('programs/{program}', [VCProgramController::class, 'update'])->name('programs.update');
+        Route::delete('programs/{program}', [VCProgramController::class, 'destroy'])->name('programs.destroy');
+        Route::patch('programs/{program}/reschedule', [VCProgramController::class, 'reschedule'])->name('programs.reschedule');
+        Route::patch('programs/{program}/cancel',     [VCProgramController::class, 'cancel'])    ->name('programs.cancel');
+
         Route::get('calendar/calendar', [VCProgramController::class, 'calendar'])->name('calendar');
         Route::get('weekend-staff',     [WeekendStaffController::class, 'index'])->name('weekend-staff');
         Route::get('non-weekend-staff', [NonWeekendStaffController::class, 'index'])->name('non-weekend-staff');
@@ -148,16 +166,53 @@ Route::prefix('vc')
         Route::get('reports/export', [MeritReportController::class, 'exportCSV'])->name('reports.export');
         // Route::get('reports/generate', [MeritReportController::class, 'generate'])->name('reports.generate');   
 
+        Route::get('gallery',[GalleryController::class,'index'])->name('gallery');
+
     });
 
 // Head of Department Routes
-use App\Http\Controllers\HOD\DepartmentOverviewController;
-use App\Http\Controllers\HOD\ProgramController as HODProgramController;
+use App\Http\Controllers\HOD\LeaderController;
 
-Route::prefix('ld')
-    ->name('ld.')
-    ->middleware('auth', 'role:ld')
+Route::prefix('leader')
+    ->name('leader.')
+    ->middleware('auth', 'role:ld,dv,rd,bs,dc')
     ->group(function () {
-        Route::get('dashboard', [DepartmentOverviewController::class, 'index'])->name('dashboard');
-        Route::get('programs',  [HODProgramController::class, 'index'])->name('programs');
+       // Route::get('dashboard', [DepartmentOverviewController::class, 'index'])->name('dashboard');
+      //  Route::get('programs',  [HODProgramController::class, 'index'])->name('programs');
+
+
+         Route::get('/dashboard', [LeaderController::class, 'dashboard'])->name('dashboard');
+
+        // Alternate "analytics widget" home page — see dashboardAnalytics() docblock.
+        Route::get('/overview', [LeaderController::class, 'dashboardAnalytics'])->name('overview');
+
+        // Programs (scoped to the leader's own department_access rows)
+        // The two GET routes below must be registered before anything that
+        // could otherwise swallow "edit" as a {program} route parameter.
+        Route::get('/programs/{program}/edit', [LeaderController::class, 'editData'])->name('programs.edit');
+        Route::get('/programs/{program}/report', [LeaderController::class, 'programReport'])->name('programs.report');
+        Route::get('/programs/{program}', [LeaderController::class, 'show'])->name('programs.show');
+        Route::post('/programs', [LeaderController::class, 'storeProgram'])->name('programs.store');
+        Route::put('/programs/{program}', [LeaderController::class, 'updateProgram'])->name('programs.update');
+        Route::post('/programs/{program}/reschedule', [LeaderController::class, 'reschedule'])->name('programs.reschedule');
+        Route::post('/programs/{program}/cancel', [LeaderController::class, 'cancel'])->name('programs.cancel');
+        Route::get('/staff-search', [LeaderController::class, 'searchStaff'])->name('staff.search');
+
+        // Monthly report
+        Route::get('/reports/generate', [LeaderController::class, 'generateReport'])->name('reports.generate');
+
+        // Staff directory
+        Route::get('/staff', [LeaderController::class, 'staffDirectory'])->name('staff.index');
+
+        // Calendar (the events route must come before nothing here — no {param} collision)
+        Route::get('/calendar', [LeaderController::class, 'calendarView'])->name('calendar.index');
+        Route::get('/calendar/events', [LeaderController::class, 'calendarEvents'])->name('calendar.events');
+
+        // My Departments
+        Route::get('/departments', [LeaderController::class, 'departmentsOverview'])->name('departments.index');
+
+        // Notifications
+        Route::get('/notifications', [LeaderController::class, 'notifications'])->name('notifications.index');
+        Route::post('/notifications/{notification}/read', [LeaderController::class, 'markNotificationRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [LeaderController::class, 'markAllNotificationsRead'])->name('notifications.readAll');
     }); 

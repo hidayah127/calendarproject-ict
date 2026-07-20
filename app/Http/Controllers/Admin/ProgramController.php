@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Head;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\Staff;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Services\NotificationService;
+use App\Models\User;
+// use App\Services\NotificationService;
 use Carbon\Carbon;
 
 class ProgramController extends Controller
@@ -19,12 +21,14 @@ class ProgramController extends Controller
 
         $selectedYear  = $request->input('year', now()->year);
         $selectedMonth = $request->input('month', '');
+        $selectedCategory = $request->input('category', '');
+        $selectedDepartment = $request->input('department', '');
 
 
         /* ── Build Query ── */
 
-        $query = Program::with(['staffInCharge'])
-            ->where('created_by', Auth::id())
+        $query = Program::with(['staffInCharge', 'department'])
+            // ->where('created_by', Auth::id())
             ->whereYear('start_date', $selectedYear);
 
 
@@ -37,11 +41,30 @@ class ProgramController extends Controller
 
         }
 
+      
+
+        if ($selectedDepartment) {
+
+            $query->where('department_id', $selectedDepartment);
+
+        }
+
+        $departments = Department::orderBy('name')->get();
+
+        if ($selectedCategory) {
+
+            $query->where('category', $selectedCategory);
+
+        }
+
 
         $programs = $query
             ->latest()
             ->paginate(9)
             ->withQueryString();
+
+        $departments = Department::orderBy('name')->get();
+        $users = User::with('staff.department')->orderBy('name')->get(); // NEW
 
 
         /* ── Year Options ── */
@@ -73,15 +96,32 @@ class ProgramController extends Controller
 
         }
 
+        $categoryOptions = [
+            'mind',
+            'fitness',
+            'spiritual',
+            'social',
+            'Marketing',
+            'Meeting',
+            'Event',
+        ];
+
+
+
 
         return view(
-            'Head.Program',
+            'Admin.Program',
             compact(
                 'programs',
+                'departments',
+                'users',
                 'yearOptions',
                 'monthOptions',
                 'selectedYear',
-                'selectedMonth'
+                'selectedMonth',
+                'selectedDepartment',
+                'selectedCategory',
+                'categoryOptions'
             )
         );
     }
@@ -93,9 +133,15 @@ class ProgramController extends Controller
     */
     public function create()
     {
+        $departments = Department::orderBy('name')->get();
+
         $staffList = Staff::orderBy('name')->get();
 
-        return view('Head.Program-Create', compact('staffList'));
+         // eager load staff -> department so we can read department per user
+        $users = User::with('staff.department')->orderBy('name')->get(); // NEW
+
+
+        return view('Admin.Program-Create', compact( 'departments','staffList', 'users'));
     }
 
     /*
@@ -105,135 +151,85 @@ class ProgramController extends Controller
     */
 
     public function store(Request $request)
-{
-    $user = Auth::user();
-
-    $rules = [
-        'title'              => 'required|string|max:255',
-        'description'        => 'nullable|string',
-        'venue'              => 'required|string|max:255',
-        'start_date'         => 'required|date',
-        'end_date'           => 'required|date|after_or_equal:start_date',
-        'staff_in_charge_id' => 'nullable|exists:staff,id',
-        'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event',
-    ];
-
-    $validated = $request->validate($rules);
-
-    $now = Carbon::now();
-
-    // Determine status
-    if ($now->between(
-        Carbon::parse($validated['start_date']),
-        Carbon::parse($validated['end_date'])
-    )) {
-        $status = 'ongoing';
-    } elseif ($now->lt(Carbon::parse($validated['start_date']))) {
-        $status = 'upcoming';
-    } else {
-        $status = 'completed';
-    }
-
-    $program = Program::create([
-        ...$validated,
-
-        'category'      => $request->category,
-        'created_by'    => $user->id,
-        'department_id' => $user->staff->department_id ?? null,
-        'status'        => $status,
-    ]);
-
-    NotificationService::programCreated(Auth::id(), $program->title, $program->id);
-
-    return redirect()
-        ->route('head.programs.index')
-        ->with('success', 'Program created successfully.');
-}
-    
-    public function edit(Program $program)
     {
-        $this->authorise($program);
+        $admin = Auth::user();
 
-        $staffList = Staff::orderBy('name')->get();
+        $rules = [
+            'title'              => 'required|string|max:255',
+            'description'        => 'nullable|string',
+            'venue'              => 'required|string|max:255',
+            'start_date'         => 'required|date',
+            'end_date'           => 'required|date|after_or_equal:start_date',
+            'created_by'            => 'required|exists:users,id',
+         //   'department_id'      => 'required|exists:departments,id',
+            'staff_in_charge_id' => 'nullable|exists:staff,id',
+            'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event',
+        ];
 
-        return view('Head.programs.edit', compact('program', 'staffList'));
+        $validated = $request->validate($rules);
+
+        // Derive department server-side — never trust a posted department_id
+        $assignedUser = User::with('staff.department')->findOrFail($validated['created_by']);
+        $departmentId = $assignedUser->staff->department_id ?? null;
+        
+        if (!$departmentId) {
+            return back()->withInput()->withErrors([
+                'created_by' => 'Selected user has no staff record or department assigned.',
+            ]);
+        }
+
+        $now = Carbon::now();
+
+        // Determine status
+        if ($now->between(
+            Carbon::parse($validated['start_date']),
+            Carbon::parse($validated['end_date'])
+        )) {
+            $status = 'ongoing';
+        } elseif ($now->lt(Carbon::parse($validated['start_date']))) {
+            $status = 'upcoming';
+        } else {
+            $status = 'completed';
+        }
+
+        $program = Program::create([
+            ...$validated,
+
+            'department_id' => $departmentId,
+            'status'        => $status,
+        ]);
+
+      //  NotificationService::programCreated(Auth::id(), $program->title, $program->id);
+
+        return redirect()
+            ->route('admin.programs.index')
+            ->with('success', 'Program created successfully.');
     }
+
 
     /*
     |--------------------------------------------------------------------------
-    | Update — save edited program details
+    | Edit — show edit form
     |--------------------------------------------------------------------------
     */
-    // public function update(Request $request, Program $program)
-    // {
-    //     $this->authorise($program);
+    public function edit(Program $program)
+    {
+        $this->authorise($program);
+        
+        $users       = User::with('staff.department')->orderBy('name')->get(); // NEW
+        $departments = Department::orderBy('name')->get();
+        $staffList = Staff::orderBy('name')->get();
 
-    //     $validated = $request->validate([
-    //         'title'              => 'required|string|max:255',
-    //         'description'        => 'nullable|string',
-    //         'venue'              => 'required|string|max:255',
-    //         'start_date'         => 'required|date',
-    //         'end_date'           => 'required|date|after_or_equal:start_date',
-    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
-    //     ]);
+        return view('Admin.programs.edit', compact('program','departments','users', 'staffList'));
+    }
 
-    //     $program->update($validated);
-
-    //     return redirect()
-    //         ->route('head.programs.index')
-    //         ->with('success', 'Program updated successfully.');
-    // }
-
-    // public function update(Request $request, Program $program)
-    // {
-    //     $this->authorise($program);
-
-    //     $user = Auth::user();
-
-    //     /* ── Validation Rules ── */
-
-    //     $rules = [
-    //         'title'              => 'required|string|max:255',
-    //         'description'        => 'nullable|string',
-    //         'venue'              => 'required|string|max:255',
-    //         'start_date'         => 'required|date',
-    //         'end_date'           => 'required|date|after_or_equal:start_date',
-    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
-    //     ];
-
-    //     /* Only AZ role needs category */
-    //     // if ($user->role === 'az') {
-    //     //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
-    //     // }
-
-    //     /* Category required for ALL roles */
-    //     $rules['category'] = 'required|in:mind,fitness,spiritual,social,Marketing,Meeting,Event';
-
-    //     $validated = $request->validate($rules);
-
-    //     /* ── Update Program ── */
-
-    //     $program->update([
-    //         ...$validated,
-
-    //         // Save category only for AZ
-    //         // 'category' => $user->role === 'az'
-    //         //                 ? $request->category
-    //         //                 : null,
-
-    //         'category' => $request->category,
-    //     ]);
-
-    //     return redirect()
-    //         ->route('head.programs.index')
-    //         ->with('success', 'Program updated successfully.');
-    // }
+ 
 
     public function update(Request $request, Program $program)
 {
     $this->authorise($program);
 
-    $user = Auth::user();
+   // $user = Auth::user();
 
     $rules = [
         'title'              => 'required|string|max:255',
@@ -241,12 +237,23 @@ class ProgramController extends Controller
         'venue'              => 'required|string|max:255',
         'start_date'         => 'required|date',
         'end_date'           => 'required|date|after_or_equal:start_date',
+        'created_by'            => 'required|exists:users,id', // replaces department_id in rules,
         'staff_in_charge_id' => 'nullable|exists:staff,id',
         'category'           => 'required|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event',
     ];
 
     $validated = $request->validate($rules);
 
+    // Derive department server-side from the selected user — never trust posted department_id
+    $assignedUser = User::with('staff.department')->findOrFail($validated['created_by']);
+    $departmentId = $assignedUser->staff->department_id ?? null;
+
+    if (!$departmentId) {
+        return back()->withInput()->withErrors([
+            'created_by' => 'Selected user has no staff record or department assigned.',
+        ]);
+    }
+    
     $now = Carbon::now();
     $startDate = Carbon::parse($validated['start_date']);
     $endDate = Carbon::parse($validated['end_date']);
@@ -262,11 +269,12 @@ class ProgramController extends Controller
     $program->update([
         ...$validated,
         'category' => $request->category,
+        'department_id' => $departmentId, //auto derived from created_by
         'status'   => $status,
     ]);
 
     return redirect()
-        ->route('head.programs.index')
+        ->route('admin.programs.index')
         ->with('success', 'Program updated successfully.');
 }
 
@@ -294,11 +302,11 @@ class ProgramController extends Controller
             'status'     => 'rescheduled',
         ]);
 
-        NotificationService::programRescheduled(Auth::id(), $program->title, $program->id);
+       // NotificationService::programRescheduled(Auth::id(), $program->title, $program->id);
 
 
         return redirect()
-            ->route('head.programs.index')
+            ->route('admin.programs.index')
             ->with('success', 'Program rescheduled successfully.');
     }
 
@@ -317,10 +325,10 @@ class ProgramController extends Controller
 
         $program->update(['status' => 'cancelled']);
 
-        NotificationService::programCancelled(Auth::id(), $program->title, $program->id);
+      //  NotificationService::programCancelled(Auth::id(), $program->title, $program->id);
 
         return redirect()
-            ->route('head.programs.index')
+            ->route('admin.programs.index')
             ->with('success', 'Program has been cancelled.');
 
         
@@ -338,7 +346,7 @@ class ProgramController extends Controller
         $program->delete();
 
         return redirect()
-            ->route('head.programs.index')
+            ->route('admin.programs.index')
             ->with('success', 'Program deleted successfully.');
     }
 
@@ -349,19 +357,28 @@ class ProgramController extends Controller
             ->orderBy('start_date', 'desc')
             ->get();
 
-        return view('Head.programs-committee', compact('programs'));
+        return view('Admin.programs-committee', compact('programs'));
     }
 
  
     /*
     |--------------------------------------------------------------------------
-    | Helper — ensure head owns the program
+    | Helper — ensure admin owns the program
     |--------------------------------------------------------------------------
     */
     private function authorise(Program $program): void
     {
-        if ($program->created_by !== Auth::id()) {
-            abort(403, 'Unauthorised action.');
-        }
+        // if ($program->admin_id !== Auth::id()) {
+        //     abort(403, 'Unauthorised action.');
+        // }
     }
+
+    // private function authorise(Program $program): void
+    // {
+    //     dd([
+    //         'logged_in_id' => Auth::id(),
+    //         'program_created_by' => $program->created_by,
+    //         'program_admin_id' => $program->admin_id,
+    //     ]);
+    // }
 }

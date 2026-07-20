@@ -92,7 +92,7 @@ class StaffController extends Controller
 
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username',
-            'role' => 'required|in:admin,vc,hd,ld,az'
+            'role' => 'required|in:admin,vc,hd,ld,az,dv,rd,bs,dc'
         ]);
 
         $staff = Staff::findOrFail($id);

@@ -220,6 +220,20 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    margin: 2px;
+}
+
+
+.department-list{
+    margin:0;
+    padding-left:18px;
+    list-style-type: disc;
+}
+
+.department-list li{
+    font-size:13px;
+    color:#475569;
+    margin-bottom:4px;
 }
 
 .role-badge {
@@ -271,6 +285,27 @@
     background: #fecaca;
     transform: scale(1.04);
 }
+
+.btn-access {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all .18s;
+    font-family: inherit;
+}
+.btn-access:hover {
+    background: #bfdbfe;
+    transform: scale(1.04);
+}
+
 
 /* ── Footer ── */
 .users-footer {
@@ -387,6 +422,10 @@
     $vcCount     = collect($users)->where('role','vc')->count();
     $ldCount     = collect($users)->where('role','ld')->count();
     $azCount     = collect($users)->where('role','az')->count();
+    $dcCount     = collect($users)->where('role','dc')->count();
+    $dvCount     = collect($users)->where('role','dv')->count();
+    $bsCount     = collect($users)->where('role','bs')->count();
+    $rdCount     = collect($users)->where('role','rd')->count();
 @endphp
 
 {{-- Page Header --}}
@@ -418,16 +457,7 @@
         </div>
     </div>
 
-    {{-- <div class="stat-chip">
-        <div class="stat-chip-icon" style="background:#e0e7ff;">
-            <i class="fa fa-user-gear" style="color:#3730a3;"></i>
-        </div>
-        <div>
-            <div class="stat-chip-val">{{ $adminCount }}</div>
-            <div class="stat-chip-label">Admins</div>
-        </div>
-    </div> --}}
-
+    {{-- Program Secretary count --}}
     <div class="stat-chip">
         <div class="stat-chip-icon" style="background:#fef9c3;">
             <i class="fa fa-crown" style="color:#b45309;"></i>
@@ -438,6 +468,7 @@
         </div>
     </div>
 
+    {{-- vice chancellor count --}}
     <div class="stat-chip">
         <div class="stat-chip-icon" style="background:#f0fdf4;">
             <i class="fa fa-star" style="color:#15803d;"></i>
@@ -448,13 +479,69 @@
         </div>
     </div>
 
-     <div class="stat-chip">
+    {{-- dean of faculty count --}}
+    <div class="stat-chip">
         <div class="stat-chip-icon" style="background:#ffd9d9;">
             <i class="fa fa-user-tie" style="color:#c41a1a;"></i>
         </div>
         <div>
             <div class="stat-chip-val">{{ $ldCount }}</div>
-            <div class="stat-chip-label">Head of Department</div>
+            <div class="stat-chip-label">Dean of Faculty</div>
+        </div>
+    </div>
+
+    {{-- director count --}}
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#fef9c3;">
+            <i class="fa fa-user-tie" style="color:#b45309;"></i>
+        </div>
+        <div>
+            <div class="stat-chip-val">{{ $dcCount }}</div>
+            <div class="stat-chip-label">Director</div>
+        </div>
+    </div>
+
+    {{-- deputy vice chancellor count --}}
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#fef9c3;">
+            <i class="fa fa-user-tie" style="color:#b45309;"></i>
+        </div>
+        <div>
+            <div class="stat-chip-val">{{ $dvCount }}</div>
+            <div class="stat-chip-label">Deputy Vice Chancellor</div>
+        </div>
+    </div>
+
+    {{-- bursar count --}}
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#fef9c3;">
+            <i class="fa fa-user-tie" style="color:#b45309;"></i>
+        </div>
+        <div>
+            <div class="stat-chip-val">{{ $bsCount }}</div>
+            <div class="stat-chip-label">Bursar</div>
+        </div>
+    </div>
+
+    {{-- registrar count --}}
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#e0e7ff;">
+            <i class="fa fa-user-tie" style="color:#3730a3;"></i>
+        </div>
+        <div>
+            <div class="stat-chip-val">{{ $rdCount }}</div>
+            <div class="stat-chip-label">Registrar</div>
+        </div>
+    </div>
+
+    {{-- amazing you committee count --}}
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#ffe4e6;">
+            <i class="fa fa-star" style="color:#c026d3;"></i>
+        </div>
+        <div>
+            <div class="stat-chip-val">{{ $azCount }}</div>
+            <div class="stat-chip-label">Amazing You Committee</div>
         </div>
     </div>
 
@@ -485,6 +572,7 @@
                     <th>User</th>
                     <th>Staff ID</th>
                     <th>Department</th>
+                    <th>Accessible</th>
                     <th>Role</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -524,6 +612,19 @@
                         </span>
                     </td>
 
+                    {{-- Accessible --}}
+                    <td>
+                        @if($user->accessibleDepartments->count())
+                            <ul class="department-list mb-0">
+                                @foreach($user->accessibleDepartments as $department)
+                                    <li>{{ $department->name }}</li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <span class="text-muted">No department access</span>
+                        @endif
+                    </td>
+
                     {{-- Role --}}
                     <td>
                         @php
@@ -533,6 +634,7 @@
                                 'vc'    => 'role-vc',
                                 'ld'    => 'role-ld',
                                 'az'    => 'role-az',
+                                
                                 default => 'role-other',
                             };
                             $roleIcon = match($user->role) {
@@ -547,8 +649,12 @@
                                 'admin' => 'Admin',
                                 'hd'    => 'Programme Secretariat',
                                 'vc'    => 'Vice Chancellor',
-                                'ld'    => 'Head of Department',
+                                'ld'    => 'Dean of Faculty',
                                 'az'    => 'Amazing You Committee',
+                                'dv'    => 'Deputy Vice Chancellor',
+                                'dc'    => 'Director',
+                                'bs'    => 'Bursar',
+                                'rd'    => 'Registrar',
                                 default => strtoupper($user->role),
                             };
                         @endphp
@@ -568,6 +674,18 @@
 
                     {{-- Action --}}
                     <td>
+                        {{-- access department --}}
+                        <button
+                            class="btn-access"
+                            data-bs-toggle="modal"
+                            data-bs-target="#departmentAccessModal"
+                            data-id="{{ $user->id }}"
+                            data-name="{{ $user->name }}"
+                            data-departments="{{ $user->accessibleDepartments->pluck('id')->implode(',') }}">
+                            <i class="fa fa-building"></i> Access
+                        </button>
+
+                        {{-- revoke access --}}
                         <button class="btn-revoke"
                                 data-bs-toggle="modal"
                                 data-bs-target="#removeAccessModal"
@@ -576,6 +694,9 @@
                             <i class="fa fa-user-slash"></i> Revoke
                         </button>
                     </td>
+
+                   
+
 
                 </tr>
                 @endforeach
@@ -637,6 +758,69 @@
     </div>
 </div>
 
+{{-- Access Department Modal --}}
+<div class="modal fade" id="departmentAccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-stripe" style="background:linear-gradient(90deg,#0f2d6e,#1a56db,#3b82f6);"></div>
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span class="modal-icon" style="background:#dbeafe;color:#1d4ed8;">
+                        <i class="fa fa-building"></i>
+                    </span>
+                    Manage Department Access
+                </h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="POST" id="departmentAccessForm">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+
+                    <div class="danger-zone" style="background:#eff6ff;border-color:#bfdbfe;margin-bottom:18px;">
+                        <i class="fa fa-circle-info" style="color:#1d4ed8;"></i>
+                        <p>
+                            Assign the departments that
+                            <strong id="accessUserName">this user</strong>
+                            should be able to access. They will only see data belonging to the selected departments.
+                        </p>
+                    </div>
+
+                    <label class="form-label" style="font-size:12.5px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.5px;">
+                        Departments
+                    </label>
+
+                    <select
+                        name="department_ids[]"
+                        id="departmentSelect"
+                        class="form-select select2"
+                        multiple
+                        style="width:100%;">
+                        @foreach($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modal-danger" style="background:linear-gradient(135deg,#0f2d6e,#1a56db);box-shadow:0 4px 12px rgba(26,86,219,0.28);">
+                        <i class="fa fa-check me-1"></i> Save Access
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 
@@ -666,12 +850,33 @@ $(document).ready(function () {
         table.search(this.value).draw();
     });
 
+    // Initialize Select2 for the department multi-select
+    $('#departmentSelect').select2({
+        dropdownParent: $('#departmentAccessModal'),
+        placeholder: 'Select departments...',
+        width: '100%'
+    });
+
 });
 
 document.getElementById('removeAccessModal').addEventListener('show.bs.modal', function (e) {
     var btn = e.relatedTarget;
     document.getElementById('revokeUserName').textContent = btn.dataset.name ?? 'this user';
     document.getElementById('removeAccessForm').action = '/admin/users/' + btn.dataset.id;
+});
+
+document.getElementById('departmentAccessModal').addEventListener('show.bs.modal', function (e) {
+    let btn = e.relatedTarget;
+
+    document.getElementById('accessUserName').textContent = btn.dataset.name;
+    document.getElementById('departmentAccessForm').action = '/admin/users/' + btn.dataset.id + '/access';
+
+    // Parse the comma-separated department IDs and pre-select them
+    let selectedIds = btn.dataset.departments
+        ? btn.dataset.departments.split(',').filter(Boolean)
+        : [];
+
+    $('#departmentSelect').val(selectedIds).trigger('change');
 });
 </script>
 @endpush

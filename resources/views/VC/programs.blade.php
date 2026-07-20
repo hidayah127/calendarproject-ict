@@ -1,6 +1,3 @@
-<div>
-    <!-- The only way to do great work is to love what you do. - Steve Jobs -->
-</div>
 @extends('layouts.app')
 
 @section('page-title','All Programs — Vice Chancellor')
@@ -18,7 +15,7 @@
 .d4  { animation-delay:.24s; }
 .d5  { animation-delay:.30s; }
 .d6  { animation-delay:.36s; }
- 
+
 /* ── Hero ── */
 .vc-hero {
     background:linear-gradient(128deg,#0a1f52 0%,#0f2d6e 50%,#1e40af 100%);
@@ -45,6 +42,7 @@
 }
 .hero-chip i { color:#f59e0b; }
 .view-switcher { display:flex;gap:8px; }
+
 .vs-btn {
     background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.22);
     border-radius:11px;padding:9px 18px;color:rgba(255,255,255,.85);
@@ -54,31 +52,20 @@
 .vs-btn:hover  { background:rgba(255,255,255,.22);color:#fff;text-decoration:none;transform:translateY(-1px); }
 .vs-btn.active { background:#f59e0b;border-color:#f59e0b;color:#fff;box-shadow:0 4px 16px rgba(245,158,11,.38); }
 
+.create-btn{ background:#16a34a; border-color:#16a34a; color:#fff; }
+.create-btn:hover{ background:#15803d; border-color:#15803d; color:#fff; transform:translateY(-1px); box-shadow:0 6px 18px rgba(22,163,74,.30); }
 
 .print-btn {
-    background:#0f2d6e;
-    color:#fff;
-    border:none;
-    border-radius:10px;
-    padding:8px 14px;
-    font-size:13px;
-    font-weight:700;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    cursor:pointer;
-    transition:all .2s;
+    background:#0f2d6e; color:#fff; border:none; border-radius:10px;
+    padding:8px 14px; font-size:13px; font-weight:700;
+    display:inline-flex; align-items:center; gap:6px;
+    cursor:pointer; transition:all .2s;
 }
-
-.print-btn:hover {
-    background:#1a56db;
-    transform:translateY(-1px);
-}
+.print-btn:hover { background:#1a56db; transform:translateY(-1px); }
+.print-btn:disabled { background:#cbd5e1; cursor:not-allowed; transform:none; }
 
 /* ── Stat strip ── */
-.stat-strip {
-    display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin-bottom:22px;
-}
+.stat-strip { display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin-bottom:22px; }
 @media(max-width:1200px){ .stat-strip{ grid-template-columns:repeat(3,1fr); } }
 @media(max-width:600px) { .stat-strip{ grid-template-columns:repeat(2,1fr); } }
 
@@ -93,17 +80,11 @@
 .s-chip-label { font-size:11.5px;color:#64748b;font-weight:600;margin-top:3px; }
 
 /* ── Main card ── */
-.prog-card {
-    background:#fff;border:1.5px solid #e2e8f0;border-radius:18px;
-    overflow:hidden;box-shadow:0 4px 24px rgba(15,45,110,.07);
-}
+.prog-card { background:#fff;border:1.5px solid #e2e8f0;border-radius:18px; overflow:hidden;box-shadow:0 4px 24px rgba(15,45,110,.07); }
 .prog-stripe { height:5px;background:linear-gradient(90deg,#0f2d6e,#1a56db,#3b82f6); }
 
 /* ── Toolbar ── */
-.toolbar {
-    display:flex;align-items:center;justify-content:space-between;
-    flex-wrap:wrap;gap:12px;padding:16px 22px;border-bottom:1px solid #f1f5f9;
-}
+.toolbar { display:flex;align-items:center;justify-content:space-between; flex-wrap:wrap;gap:12px;padding:16px 22px;border-bottom:1px solid #f1f5f9; }
 .toolbar-left  { display:flex;align-items:center;gap:10px;flex-wrap:wrap; }
 .toolbar-title { font-size:14px;font-weight:800;color:#0f172a; }
 .count-pill    { background:#eff6ff;color:#1d4ed8;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px; }
@@ -148,6 +129,11 @@
 .prog-table tbody td { padding:13px 16px;vertical-align:middle;border-bottom:1px solid #f1f5f9;color:#334155; }
 .prog-table tbody tr:last-child td { border-bottom:none; }
 
+/* colored accent per row, driven by --row-accent set inline per status */
+.prog-table tbody tr td:first-child {
+    box-shadow: inset 3px 0 0 var(--row-accent, transparent);
+}
+
 .prog-dot  { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
 .p-title   { font-weight:700;color:#0f172a;font-size:14px; }
 .p-venue   { font-size:12px;color:#94a3b8;margin-top:2px; }
@@ -182,47 +168,51 @@
 }
 .view-btn:hover { background:#dbeafe;transform:scale(1.08); }
 
-/* ── Committee expand row ── */
-.cm-expand-row td {
-    padding:0 !important;
-    border-bottom:2px solid #e0e7ff !important;
-    background:transparent !important;
+/* ── Row actions dropdown ── */
+.action-menu-btn {
+    width:32px;height:32px;border-radius:8px;border:none;
+    background:#f1f5f9;color:#475569;font-size:14px;
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    transition:all .18s;
 }
+.action-menu-btn:hover,
+.action-menu-btn[aria-expanded="true"] { background:#e2e8f0;color:#0f172a; }
 
+.action-dropdown {
+    border:1.5px solid #e2e8f0;border-radius:12px;
+    box-shadow:0 14px 36px rgba(15,45,110,.16);padding:6px;
+    min-width:190px;
+}
+.action-dropdown .dropdown-item {
+    font-size:13px;font-weight:600;color:#334155;border-radius:8px;
+    padding:8px 12px;display:flex;align-items:center;gap:9px;
+    transition:background .15s;background:transparent;border:none;width:100%;
+    text-align:left;font-family:inherit;
+}
+.action-dropdown .dropdown-item i { width:16px;text-align:center;color:#64748b; }
+.action-dropdown .dropdown-item:hover { background:#f8faff;color:#0f172a; }
+.action-dropdown .dropdown-item.text-warning:hover { background:#fff7ed;color:#b45309; }
+.action-dropdown .dropdown-item.text-warning i { color:#b45309; }
+.action-dropdown .dropdown-item.text-danger:hover { background:#fef2f2;color:#b91c1c; }
+.action-dropdown .dropdown-item.text-danger i { color:#b91c1c; }
+.action-dropdown .dropdown-divider { margin:6px 4px; }
+
+/* ── Committee expand row ── */
+.cm-expand-row td { padding:0 !important; border-bottom:2px solid #e0e7ff !important; background:transparent !important; }
 .cm-expand-panel {
     background:linear-gradient(135deg,#f8faff,#eef2ff);
     border-top:1.5px solid #e0e7ff;
     padding:16px 22px 18px;
     animation:expandDown .22s ease;
 }
-@keyframes expandDown {
-    from{opacity:0;transform:translateY(-6px);}
-    to{opacity:1;transform:translateY(0);}
-}
+@keyframes expandDown { from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:translateY(0);} }
 
-.cm-expand-header {
-    display:flex;align-items:center;gap:8px;
-    font-size:13px;font-weight:800;color:#1e293b;
-    margin-bottom:14px;flex-wrap:wrap;
-}
-.cm-expand-header i {
-    width:26px;height:26px;border-radius:7px;
-    background:#e0e7ff;color:#4338ca;
-    display:inline-flex;align-items:center;justify-content:center;font-size:12px;
-}
-.cm-member-count {
-    background:#e0e7ff;color:#3730a3;
-    font-size:11px;font-weight:700;
-    padding:2px 8px;border-radius:20px;
-}
+.cm-expand-header { display:flex;align-items:center;gap:8px; font-size:13px;font-weight:800;color:#1e293b; margin-bottom:14px;flex-wrap:wrap; }
+.cm-expand-header i { width:26px;height:26px;border-radius:7px; background:#e0e7ff;color:#4338ca; display:inline-flex;align-items:center;justify-content:center;font-size:12px; }
+.cm-member-count { background:#e0e7ff;color:#3730a3; font-size:11px;font-weight:700; padding:2px 8px;border-radius:20px; }
 
 /* ── Member cards grid ── */
-.cm-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-    gap:10px;
-}
-
+.cm-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; }
 .cm-card {
     background:#fff;border:1.5px solid #e2e8f0;border-radius:13px;
     padding:12px 14px;display:flex;align-items:flex-start;gap:10px;
@@ -262,16 +252,11 @@
 .role-facilitator      { background:#fce7f3;color:#9d174d; }
 .role-committee_member { background:#f1f5f9;color:#475569; }
 
-.cm-empty {
-    text-align:center;padding:24px;color:#94a3b8;font-size:13px;
-}
+.cm-empty { text-align:center;padding:24px;color:#94a3b8;font-size:13px; }
 .cm-empty i { font-size:28px;display:block;margin-bottom:8px;color:#cbd5e1; }
 
 /* ── Footer ── */
-.prog-footer {
-    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
-    padding:14px 22px;border-top:1px solid #f1f5f9;font-size:13px;color:#64748b;
-}
+.prog-footer { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px; padding:14px 22px;border-top:1px solid #f1f5f9;font-size:13px;color:#64748b; }
 
 /* DT */
 .dataTables_wrapper .dataTables_filter,
@@ -284,11 +269,11 @@
     background:linear-gradient(135deg,#0f2d6e,#1a56db)!important;color:#fff!important;border:none!important;
 }
 
-/* ── Detail modal ── */
+/* ── Detail / action modals ── */
 .modal-content  { border:none!important;border-radius:18px!important;overflow:hidden;box-shadow:0 24px 60px rgba(15,45,110,.18)!important; }
 .m-stripe       { height:5px; }
 .modal-header   { border-bottom:1px solid #f1f5f9!important;padding:20px 24px 16px!important;background:#fff!important; }
-.modal-title    { font-size:16px!important;font-weight:800!important;color:#0f172a!important; }
+.modal-title    { font-size:16px!important;font-weight:800!important;color:#0f172a!important;display:flex;align-items:center; }
 .modal-body     { padding:20px 24px!important; }
 .modal-footer   { padding:14px 24px 20px!important;border-top:1px solid #f1f5f9!important;background:#fff!important; }
 .d-row          { display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f8faff;font-size:13.5px; }
@@ -298,27 +283,34 @@
 .btn-dismiss    { background:#f1f5f9;color:#64748b;border:none;border-radius:10px;padding:10px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s; }
 .btn-dismiss:hover { background:#e2e8f0; }
 
-/* modal committee section */
-.modal-cm-section {
-    margin-top:16px;
-    border-top:1.5px solid #f1f5f9;
-    padding-top:16px;
+.btn-confirm {
+    border:none;border-radius:10px;color:#fff;font-weight:700;
+    font-size:13.5px;padding:10px 20px;cursor:pointer;transition:opacity .2s;
+    display:inline-flex;align-items:center;gap:6px;
 }
+.btn-confirm:hover { opacity:.9; }
+
+.form-label-sm {
+    font-size:11.5px;font-weight:700;color:#94a3b8;
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block;
+}
+.form-control-modern {
+    width:100%;border:1.5px solid #e2e8f0;border-radius:10px;
+    padding:10px 12px;font-size:13.5px;font-family:inherit;
+    background:#f8faff;color:#1e293b;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+}
+.form-control-modern:focus { border-color:#1a56db;box-shadow:0 0 0 3px rgba(26,86,219,.10);background:#fff; }
+
+/* modal committee section */
+.modal-cm-section { margin-top:16px; border-top:1.5px solid #f1f5f9; padding-top:16px; }
 .modal-cm-title {
     font-size:12px;font-weight:700;color:#94a3b8;
     text-transform:uppercase;letter-spacing:.5px;
     margin-bottom:12px;display:flex;align-items:center;gap:7px;
 }
-.modal-cm-title i {
-    width:22px;height:22px;border-radius:6px;
-    background:#e0e7ff;color:#4338ca;
-    display:inline-flex;align-items:center;justify-content:center;font-size:10px;
-}
-.modal-cm-grid {
-    display:flex;flex-direction:column;gap:8px;
-    max-height:260px;overflow-y:auto;
-    padding-right:4px;
-}
+.modal-cm-title i { width:22px;height:22px;border-radius:6px; background:#e0e7ff;color:#4338ca; display:inline-flex;align-items:center;justify-content:center;font-size:10px; }
+.modal-cm-grid { display:flex;flex-direction:column;gap:8px; max-height:260px;overflow-y:auto; padding-right:4px; }
 .modal-cm-grid::-webkit-scrollbar { width:4px; }
 .modal-cm-grid::-webkit-scrollbar-thumb { background:#e2e8f0;border-radius:10px; }
 
@@ -348,9 +340,7 @@
     font-size:9px;font-weight:800;
     padding:2px 7px;border-radius:20px;
 }
-.modal-cm-empty {
-    text-align:center;padding:20px;color:#94a3b8;font-size:13px;
-}
+.modal-cm-empty { text-align:center;padding:20px;color:#94a3b8;font-size:13px; }
 </style>
 @endpush
 
@@ -391,7 +381,7 @@
 {{-- Hero --}}
 <div class="vc-hero fu">
     <h1><i class="fa fa-layer-group me-2" style="color:#f59e0b;"></i>Programs Overview</h1>
-    <p>Read-only view of all programs across every department.</p>
+    <p>Manage every program across every department — view, edit, reschedule, or remove in a click.</p>
     <div class="hero-bottom">
         <div class="hero-chips">
             <span class="hero-chip"><i class="fa fa-calendar-days"></i>{{ now()->format('d F Y') }}</span>
@@ -399,6 +389,11 @@
             <span class="hero-chip"><i class="fa fa-building"></i>{{ $departments->count() }} departments</span>
         </div>
         <div class="view-switcher">
+            <a href="{{ route('vc.programs.create') }}" class="vs-btn create-btn">
+                <i class="fa fa-plus"></i>
+                Create Program
+            </a>
+
             <a href="{{ route('vc.programs') }}" class="vs-btn active">
                 <i class="fa fa-list"></i> List
             </a>
@@ -441,80 +436,38 @@
             <button class="filter-pill" data-f="ongoing">Ongoing</button>
             <button class="filter-pill" data-f="completed">Completed</button>
         </div>
-        {{-- <div class="toolbar-right">
-            <select id="deptSel" class="dept-sel">
-                <option value="">All Departments</option>
-                @foreach($departments as $d)
-                    <option value="{{ $d->id }}">{{ $d->name }}</option>
-                @endforeach
-            </select>
-            <div class="search-wrap">
-                <i class="fa fa-magnifying-glass"></i>
-                <input id="progSearch" type="text" class="search-inp" placeholder="Search...">
-            </div>
-        </div> --}}
 
         <form method="GET" action="{{ route('vc.programs') }}">
-
             <div class="toolbar-right">
 
                 {{-- Year --}}
-                <select name="year"
-                        class="dept-sel"
-                        onchange="this.form.submit()">
-
+                <select name="year" class="dept-sel" onchange="this.form.submit()">
                     @foreach($yearOptions as $year)
-                    <option value="{{ $year }}"
-                        {{ $selectedYear == $year ? 'selected' : '' }}>
-                        {{ $year }}
-                    </option>
+                    <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
                     @endforeach
-
                 </select>
-
 
                 {{-- Month --}}
-                <select name="month"
-                        class="dept-sel"
-                        onchange="this.form.submit()">
-
+                <select name="month" class="dept-sel" onchange="this.form.submit()">
                     <option value="">All Months</option>
-
                     @foreach($monthOptions as $m)
-                    <option value="{{ $m['value'] }}"
-                        {{ $selectedMonth == $m['value'] ? 'selected' : '' }}>
-                        {{ $m['label'] }}
-                    </option>
+                    <option value="{{ $m['value'] }}" {{ $selectedMonth == $m['value'] ? 'selected' : '' }}>{{ $m['label'] }}</option>
                     @endforeach
-
                 </select>
 
-
-                {{-- Department (existing) --}}
+                {{-- Department --}}
                 <select id="deptSel" class="dept-sel">
                     <option value="">All Departments</option>
-
                     @foreach($departments as $d)
-                    <option value="{{ $d->id }}">
-                        {{ $d->name }}
-                    </option>
+                    <option value="{{ $d->id }}">{{ $d->name }}</option>
                     @endforeach
                 </select>
-
 
                 {{-- Search --}}
                 <div class="search-wrap">
                     <i class="fa fa-magnifying-glass"></i>
-
-                    <input id="progSearch"
-                        type="text"
-                        class="search-inp"
-                        placeholder="Search...">
+                    <input id="progSearch" type="text" class="search-inp" placeholder="Search...">
                 </div>
-
-                {{-- <button onclick="printWeekly()" class="print-btn">
-                    <i class="fa fa-print"></i> Weekly
-                </button> --}}
 
                 @if(!$selectedMonth)
                     <button class="print-btn" disabled title="Select month first">
@@ -526,7 +479,7 @@
                     </button>
                 @endif
 
-                <button onclick="printMonthly()" class="print-btn">
+                <button type="button" onclick="printMonthly()" class="print-btn">
                     <i class="fa fa-print"></i> Monthly
                 </button>
 
@@ -534,7 +487,7 @@
         </form>
     </div>
 
-    {{-- Table — NO cm-expand-row rows inside here at all --}}
+    {{-- Table --}}
     <div class="table-responsive">
         <table id="progTable" class="prog-table">
             <thead>
@@ -546,14 +499,14 @@
                     <th>Start</th>
                     <th>End</th>
                     <th>Status</th>
-                    <th width="100">Actions</th>
+                    <th width="120">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($programs as $i => $p)
                 @php $memberCount = $p->committee ? $p->committee->count() : 0; @endphp
 
-                <tr data-status="{{ $p->status }}" data-dept="{{ $p->department_id }}">
+                <tr data-status="{{ $p->status }}" data-dept="{{ $p->department_id }}" style="--row-accent:{{ $dotColor[$p->status] ?? '#94a3b8' }};">
 
                     <td style="color:#94a3b8;font-weight:600;font-size:13px;">{{ $i + 1 }}</td>
 
@@ -613,20 +566,72 @@
                                 {{ $memberCount }}
                                 <i class="fa fa-chevron-down cm-chev"></i>
                             </button>
-                            <button class="view-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#detailModal"
-                                    data-id="{{ $p->id }}"
-                                    data-title="{{ $p->title }}"
-                                    data-dept="{{ $p->department->name ?? '—' }}"
-                                    data-venue="{{ $p->venue }}"
-                                    data-start="{{ $p->start_date->format('d M Y, h:i A') }}"
-                                    data-end="{{ $p->end_date->format('d M Y, h:i A') }}"
-                                    data-status="{{ $p->status }}"
-                                    data-sic="{{ $p->staffInCharge->name ?? '—' }}"
-                                    data-desc="{{ $p->description ?? '' }}">
-                                <i class="fa fa-eye"></i>
-                            </button>
+
+                            <div class="dropdown">
+                                <button class="action-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More actions">
+                                    <i class="fa fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu action-dropdown">
+                                    <li>
+                                        <button type="button" class="dropdown-item"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#detailModal"
+                                                data-id="{{ $p->id }}"
+                                                data-title="{{ $p->title }}"
+                                                data-dept="{{ $p->department->name ?? '—' }}"
+                                                data-venue="{{ $p->venue }}"
+                                                data-start="{{ $p->start_date->format('d M Y, h:i A') }}"
+                                                data-end="{{ $p->end_date->format('d M Y, h:i A') }}"
+                                                data-status="{{ $p->status }}"
+                                                data-sic="{{ $p->staffInCharge->name ?? '—' }}"
+                                                data-desc="{{ $p->description ?? '' }}">
+                                            <i class="fa fa-eye"></i> View Details
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="{{ $p->id }}">
+                                            <i class="fa fa-pen"></i> Edit Program
+                                        </button>
+                                    </li>
+                                    @if(!in_array($p->status, ['cancelled','completed']))
+                                    <li>
+                                        <button type="button" class="dropdown-item"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#rescheduleModal"
+                                                data-id="{{ $p->id }}"
+                                                data-title="{{ $p->title }}"
+                                                data-start="{{ $p->start_date->format('Y-m-d\TH:i') }}"
+                                                data-end="{{ $p->end_date->format('Y-m-d\TH:i') }}">
+                                            <i class="fa fa-clock-rotate-left"></i> Reschedule
+                                        </button>
+                                    </li>
+                                    @endif
+                                    @if($p->status !== 'cancelled')
+                                    <li>
+                                        <button type="button" class="dropdown-item text-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#cancelModal"
+                                                data-id="{{ $p->id }}"
+                                                data-title="{{ $p->title }}">
+                                            <i class="fa fa-ban"></i> Cancel Program
+                                        </button>
+                                    </li>
+                                    @endif
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <button type="button" class="dropdown-item text-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="{{ $p->id }}"
+                                                data-title="{{ $p->title }}">
+                                            <i class="fa fa-trash"></i> Delete Permanently
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </td>
 
@@ -652,7 +657,6 @@
 
 
 {{-- ── Committee expand panels — stored OUTSIDE the DataTable ── --}}
-{{-- These are detached from here and injected after each row by JS --}}
 <div id="cm-panels-store" style="display:none;">
     @foreach($programs as $p)
     @php $memberCount = $p->committee ? $p->committee->count() : 0; @endphp
@@ -747,45 +751,198 @@
     </div>
 </div>
 
+{{-- ── Edit Modal ── --}}
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="m-stripe" style="background:linear-gradient(90deg,#0f2d6e,#1a56db,#3b82f6);"></div>
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-pen me-2" style="color:#1a56db;"></i>Edit Program</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label-sm">Program Title</label>
+                        <input type="text" name="title" id="edTitle" class="form-control-modern" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-sm">Description</label>
+                        <textarea name="description" id="edDesc" rows="3" class="form-control-modern" style="resize:vertical;"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-sm">Venue</label>
+                        <input type="text" name="venue" id="edVenue" class="form-control-modern" required>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Start</label>
+                            <input type="datetime-local" name="start_date" id="edStart" class="form-control-modern" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-sm">End</label>
+                            <input type="datetime-local" name="end_date" id="edEnd" class="form-control-modern" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Assigned User (Person in Charge)</label>
+                            <select name="created_by" id="edCreatedBy" class="form-control-modern" required onchange="updateEditDept()">
+                                <option value="">Select user...</option>
+                                @foreach($users as $u)
+                                <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Department (auto-derived)</label>
+                            <input type="text" id="edDeptDisplay" class="form-control-modern" disabled style="background:#f1f5f9;color:#64748b;">
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Staff in Charge</label>
+                            <select name="staff_in_charge_id" id="edStaffInCharge" class="form-control-modern">
+                                <option value="">— None —</option>
+                                @foreach($staffList as $s)
+                                <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Category</label>
+                            <select name="category" id="edCategory" class="form-control-modern" required>
+                                @foreach(['mind','fitness','spiritual','social','Marketing','inmeeting','exmeeting','Event'] as $cat)
+                                <option value="{{ $cat }}">{{ $cat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-dismiss" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-confirm" style="background:#1a56db;">
+                        <i class="fa fa-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ── Reschedule Modal ── --}}
+<div class="modal fade" id="rescheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="m-stripe" style="background:linear-gradient(90deg,#b45309,#fbbf24);"></div>
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-clock-rotate-left me-2" style="color:#b45309;"></i>Reschedule Program</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="rescheduleForm" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body">
+                    <p style="font-size:13.5px;color:#64748b;margin-bottom:18px;">
+                        Update the schedule for <strong id="rsTitle"></strong>. The status will automatically switch to <strong>Rescheduled</strong>.
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label-sm">New Start</label>
+                        <input type="datetime-local" name="start_date" id="rsStart" class="form-control-modern" required>
+                    </div>
+                    <div>
+                        <label class="form-label-sm">New End</label>
+                        <input type="datetime-local" name="end_date" id="rsEnd" class="form-control-modern" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-dismiss" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-confirm" style="background:#b45309;">
+                        <i class="fa fa-check"></i> Save New Schedule
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ── Cancel Modal ── --}}
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="m-stripe" style="background:linear-gradient(90deg,#b45309,#fbbf24);"></div>
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-triangle-exclamation me-2" style="color:#b45309;"></i>Cancel Program</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="cancelForm" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body">
+                    <p style="font-size:13.5px;color:#475569;">
+                        Are you sure you want to mark <strong id="cancelTitle"></strong> as <strong>cancelled</strong>?
+                        The program will stay on record but will no longer count as active.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-dismiss" data-bs-dismiss="modal">Keep Program</button>
+                    <button type="submit" class="btn-confirm" style="background:#b45309;">
+                        <i class="fa fa-ban"></i> Yes, Cancel It
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ── Delete Modal ── --}}
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="m-stripe" style="background:linear-gradient(90deg,#b91c1c,#f87171);"></div>
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-trash me-2" style="color:#b91c1c;"></i>Delete Program</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body">
+                    <p style="font-size:13.5px;color:#475569;">
+                        This will <strong>permanently delete</strong> <strong id="deleteTitle"></strong>, including its committee assignments.
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-dismiss" data-bs-dismiss="modal">Keep Program</button>
+                    <button type="submit" class="btn-confirm" style="background:#b91c1c;">
+                        <i class="fa fa-trash"></i> Delete Permanently
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{-- WEEKLY PRINT --}}
-{{-- <div id="weeklyPrint" style="display:none; padding:30px;">
-    <h2 style="text-align:center;">Weekly Program Report</h2>
-
-    @foreach($weeklyPrograms as $week => $items)
-        <h3>{{ $week }}</h3>
-
-        <table width="100%" border="1" cellspacing="0" cellpadding="8">
-            <tr>
-                <th>Date</th>
-                <th>Program</th>
-                <th>Department</th>
-            </tr>
-
-            @foreach($items as $p)
-            <tr>
-                <td>{{ $p->start_date->format('d M') }}</td>
-                <td>{{ $p->title }}</td>
-                <td>{{ $p->department->name ?? '-' }}</td>
-            </tr>
-            @endforeach
-        </table>
-    @endforeach
-</div> --}}
-
 <div id="weeklyPrint" style="display:none; padding:40px; font-family:Arial;">
-
-    {{-- HEADER --}}
     <div style="text-align:center; margin-bottom:20px;">
         <h2 style="margin:0;">UNIVERSITY PROGRAM REPORT</h2>
         <p style="margin:2px 0; font-size:14px;">
-            Weekly Report — 
-            {{ $selectedMonth ? date('F', mktime(0,0,0,$selectedMonth,1)) : 'All Months' }} 
+            Weekly Report —
+            {{ $selectedMonth ? date('F', mktime(0,0,0,$selectedMonth,1)) : 'All Months' }}
             {{ $selectedYear }}
         </p>
         <hr style="margin-top:10px;">
     </div>
 
-    {{-- CONTENT --}}
     @foreach($weeklyPrograms as $week => $items)
         <h3 style="margin-top:20px;">{{ $week }}</h3>
 
@@ -806,62 +963,29 @@
         </table>
     @endforeach
 
-    {{-- FOOTER --}}
     <div style="margin-top:40px; font-size:12px; color:#555;">
         <hr>
         <div style="display:flex; justify-content:space-between;">
-            <div>
-                Generated on: {{ now()->format('d M Y, h:i A') }}
-            </div>
-            <div>
-                Report generated by <strong>AmazingTrack System</strong>
-            </div>
+            <div>Generated on: {{ now()->format('d M Y, h:i A') }}</div>
+            <div>Report generated by <strong>AmazingTrack System</strong></div>
         </div>
     </div>
-
 </div>
 
 
 {{-- MONTHLY PRINT --}}
-{{-- <div id="monthlyPrint" style="display:none; padding:30px;">
-    <h2 style="text-align:center;">Monthly Program Report</h2>
-
-    <table width="100%" border="1" cellspacing="0" cellpadding="8">
-        <tr>
-            <th>Date</th>
-            <th>Program</th>
-            <th>Department</th>
-            <th>Venue</th>
-        </tr>
-
-        @foreach($monthlyPrograms as $p)
-        <tr>
-            <td>{{ $p->start_date->format('d M Y') }}</td>
-            <td>{{ $p->title }}</td>
-            <td>{{ $p->department->name ?? '-' }}</td>
-            <td>{{ $p->venue }}</td>
-        </tr>
-        @endforeach
-
-    </table>
-</div> --}}
-
 <div id="monthlyPrint" style="display:none; padding:40px; font-family:Arial;">
-
-    {{-- HEADER --}}
     <div style="text-align:center; margin-bottom:20px;">
         <h2 style="margin:0;">UNIVERSITY PROGRAM REPORT</h2>
         <p style="margin:2px 0; font-size:14px;">
-            Monthly Report — 
-            {{ $selectedMonth ? date('F', mktime(0,0,0,$selectedMonth,1)) : 'All Months' }} 
+            Monthly Report —
+            {{ $selectedMonth ? date('F', mktime(0,0,0,$selectedMonth,1)) : 'All Months' }}
             {{ $selectedYear }}
         </p>
         <hr style="margin-top:10px;">
     </div>
 
-    {{-- TABLE --}}
     <table width="100%" cellspacing="0" cellpadding="10" style="border-collapse:collapse;">
-
         <tr style="background:#0f2d6e; color:white;">
             <th align="left">Date</th>
             <th align="left">Program</th>
@@ -877,22 +1001,15 @@
             <td>{{ $p->venue }}</td>
         </tr>
         @endforeach
-
     </table>
 
-    {{-- FOOTER --}}
     <div style="margin-top:40px; font-size:12px; color:#555;">
         <hr>
         <div style="display:flex; justify-content:space-between;">
-            <div>
-                Generated on: {{ now()->format('d M Y, h:i A') }}
-            </div>
-            <div>
-                Report generated by <strong>AmazingTrack System</strong>
-            </div>
+            <div>Generated on: {{ now()->format('d M Y, h:i A') }}</div>
+            <div>Report generated by <strong>AmazingTrack System</strong></div>
         </div>
     </div>
-
 </div>
 
 @endsection
@@ -905,10 +1022,10 @@ $(document).ready(function () {
     var _cmRows = {};
     $('#cm-panels-store tr.cm-expand-row').each(function () {
         var id = this.id.replace('cm-row-', '');
-        _cmRows[id] = $(this).clone(true); // clone so we keep the original in store
+        _cmRows[id] = $(this).clone(true);
     });
 
-    // ── Step 2: Init DataTable — tbody is clean, no colspan rows ──
+    // ── Step 2: Init DataTable ──
     var table = $('#progTable').DataTable({
         responsive: true,
         pageLength: 15,
@@ -925,7 +1042,6 @@ $(document).ready(function () {
             $('#progTable_info').appendTo('#dtInfo');
             $('#progTable_paginate').appendTo('#dtPaginate');
 
-            // ── Step 3: Inject expand rows after each data row ──
             $('#progTable tbody tr').each(function () {
                 var btn = $(this).find('[id^="cm-btn-"]');
                 if (btn.length) {
@@ -934,7 +1050,6 @@ $(document).ready(function () {
                         $(this).after(
                             $('<tr class="cm-expand-row" id="cm-row-' + id + '" style="display:none;"><td colspan="8" style="padding:0!important;border-bottom:2px solid #e0e7ff!important;background:transparent!important;"></td></tr>')
                         );
-                        // Move the panel content into the injected row
                         $('#cm-row-' + id + ' td').append(
                             _cmRows[id].find('td > div.cm-expand-panel').clone(true)
                         );
@@ -960,7 +1075,6 @@ $(document).ready(function () {
             if (s === undefined) return;
             var ok = (curStatus === 'all' || s === curStatus) && (curDept === '' || d === curDept);
             $(this).toggle(ok);
-            // hide expand row when parent is hidden
             var btn = $(this).find('[id^="cm-btn-"]');
             if (btn.length) {
                 var pid = btn.attr('id').replace('cm-btn-', '');
@@ -988,8 +1102,8 @@ $(document).ready(function () {
 
 // ── Toggle committee expand row ──
 function toggleCmRow(id) {
-    var row    = document.getElementById('cm-row-' + id);
-    var btn    = document.getElementById('cm-btn-' + id);
+    var row = document.getElementById('cm-row-' + id);
+    var btn = document.getElementById('cm-btn-' + id);
     if (!row) return;
     var isOpen = row.style.display !== 'none';
     row.style.display = isOpen ? 'none' : 'table-row';
@@ -1032,7 +1146,6 @@ document.getElementById('detailModal').addEventListener('show.bs.modal', functio
     document.getElementById('mDescRow').style.display = desc ? 'flex' : 'none';
     document.getElementById('mDesc').textContent      = desc;
 
-    // Committee list
     var grid    = document.getElementById('mCmGrid');
     var count   = document.getElementById('mCmCount');
     var prog    = programsData[pid];
@@ -1071,6 +1184,66 @@ document.getElementById('detailModal').addEventListener('show.bs.modal', functio
     grid.innerHTML = html;
 });
 
+// ── Edit / Reschedule / Cancel / Delete modal wiring ──
+// NOTE: route names assume a route group named 'vc.' wrapping the routes you shared
+// (vc.programs.update, vc.programs.reschedule, vc.programs.cancel, vc.programs.destroy).
+// A unique placeholder is used instead of a literal 0, since 0 can also appear inside
+// the host/port of the generated URL (e.g. 127.0.0.1:8000) and a plain .replace('0', id)
+// would corrupt that instead of the trailing route parameter.
+var editUrlTemplate       = "{{ route('vc.programs.update', ['program' => 'PROGRAM_ID']) }}";
+var rescheduleUrlTemplate = "{{ route('vc.programs.reschedule', ['program' => 'PROGRAM_ID']) }}";
+var cancelUrlTemplate     = "{{ route('vc.programs.cancel', ['program' => 'PROGRAM_ID']) }}";
+var deleteUrlTemplate     = "{{ route('vc.programs.destroy', ['program' => 'PROGRAM_ID']) }}";
+
+// Users lookup (id -> name/department) so the Edit modal can auto-derive department client-side
+var usersData = @json($usersJson ?? []);
+
+document.getElementById('editModal').addEventListener('show.bs.modal', function (e) {
+    var b    = e.relatedTarget;
+    var pid  = b.dataset.id;
+    var prog = programsData[pid];
+    if (!prog) return;
+
+    document.getElementById('editForm').action = editUrlTemplate.replace('PROGRAM_ID', pid);
+    document.getElementById('edTitle').value          = prog.title || '';
+    document.getElementById('edDesc').value           = prog.description || '';
+    document.getElementById('edVenue').value          = prog.venue || '';
+    document.getElementById('edStart').value          = prog.start_date || '';
+    document.getElementById('edEnd').value            = prog.end_date || '';
+    document.getElementById('edCreatedBy').value      = prog.created_by || '';
+    document.getElementById('edStaffInCharge').value  = prog.staff_in_charge_id || '';
+    document.getElementById('edCategory').value       = prog.category || '';
+
+    updateEditDept();
+});
+
+// Mirrors the read-only department auto-fill behaviour from the create page
+function updateEditDept() {
+    var uid = document.getElementById('edCreatedBy').value;
+    var u   = usersData[uid];
+    document.getElementById('edDeptDisplay').value = u ? (u.department || '—') : '—';
+}
+
+document.getElementById('rescheduleModal').addEventListener('show.bs.modal', function (e) {
+    var b = e.relatedTarget;
+    document.getElementById('rsTitle').textContent = b.dataset.title;
+    document.getElementById('rsStart').value = b.dataset.start;
+    document.getElementById('rsEnd').value = b.dataset.end;
+    document.getElementById('rescheduleForm').action = rescheduleUrlTemplate.replace('PROGRAM_ID', b.dataset.id);
+});
+
+document.getElementById('cancelModal').addEventListener('show.bs.modal', function (e) {
+    var b = e.relatedTarget;
+    document.getElementById('cancelTitle').textContent = b.dataset.title;
+    document.getElementById('cancelForm').action = cancelUrlTemplate.replace('PROGRAM_ID', b.dataset.id);
+});
+
+document.getElementById('deleteModal').addEventListener('show.bs.modal', function (e) {
+    var b = e.relatedTarget;
+    document.getElementById('deleteTitle').textContent = b.dataset.title;
+    document.getElementById('deleteForm').action = deleteUrlTemplate.replace('PROGRAM_ID', b.dataset.id);
+});
+
 function openPrint(content) {
     var win = window.open('', '', 'width=1000,height=700');
 
@@ -1100,7 +1273,5 @@ function printWeekly() {
 function printMonthly() {
     openPrint(document.getElementById('monthlyPrint').innerHTML);
 }
-
-
 </script>
 @endpush

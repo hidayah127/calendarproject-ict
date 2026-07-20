@@ -231,14 +231,14 @@ textarea.form-control {
         <h2><i class="fa fa-circle-plus me-2 text-primary"></i>Create Program</h2>
         <nav aria-label="breadcrumb" class="mt-1">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('head.dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('head.programs.index') }}">My Programs</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('vc.dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('vc.programs') }}">My Programs</a></li>
                 <li class="breadcrumb-item active">Create</li>
             </ol>
         </nav>
     </div>
 
-    <a href="{{ route('head.programs.index') }}" class="btn-back">
+    <a href="{{ route('vc.programs') }}" class="btn-back">
         <i class="fa fa-arrow-left"></i> Back
     </a>
 </div>
@@ -277,7 +277,7 @@ textarea.form-control {
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('head.programs.store') }}">
+                <form method="POST" action="{{ route('vc.programs.store') }}">
                     @csrf
 
                     {{-- ── Basic Info ── --}}
@@ -434,8 +434,54 @@ textarea.form-control {
                         </div>
                     </div>
 
+                 
+
                     {{-- ── Staff ── --}}
-                    <p class="section-label"><i class="fa fa-user-tie" style="color:#1a56db;"></i> Staff Assignment</p>
+                    <p class="section-label"><i class="fa fa-user-tie" style="color:#1a56db;"></i> Department & Staff Assignment</p>
+
+
+                    {{-- Department --}}
+                    {{-- <div class="mb-4">
+                         <label class="form-label">
+                            Department <span class="req">*</span>
+                        </label>
+                        <select name="department_id"
+                                class="form-select select-search @error('department_id') is-invalid @enderror">
+                            <option value="">— Select department —</option>
+                            @foreach($departments as $department)
+                                <option value="{{ $department->id }}"
+                                    {{ old('department_id') == $department->id ? 'selected' : '' }}>
+                                    {{ $department->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('department_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div> --}}
+
+                    {{-- Assign User --}}
+                    <div class="mb-4">
+                        <label class="form-label">Assign User <span class="req">*</span></label>
+                        <select name="created_by" id="created_by" class="form-select select-search @error('created_by') is-invalid @enderror" required>
+                            <option value="">— Select user —</option>
+                            @foreach($users as $u)
+                                <option value="{{ $u->id }}"
+                                    data-department-name="{{ $u->staff->department->name ?? '—' }}"
+                                    {{ old('created_by') == $u->id ? 'selected' : '' }}>
+                                    {{ $u->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('created_by')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Department (auto-filled)</label>
+                        <input type="text" id="department_display" class="form-control" value="" disabled placeholder="Select a user first">
+                    </div>
 
                     <div class="mb-4">
                         <label class="form-label">Staff in Charge</label>
@@ -458,6 +504,8 @@ textarea.form-control {
                         </div>
                     </div>
 
+                  
+
                     {{-- ── Actions ── --}}
                     <hr style="border-color:#f1f5f9;margin:4px 0 20px;">
 
@@ -465,7 +513,7 @@ textarea.form-control {
                         <button type="submit" class="btn-submit">
                             <i class="fa fa-circle-plus"></i> Create Program
                         </button>
-                        <a href="{{ route('head.programs.index') }}" class="btn-back">
+                        <a href="{{ route('vc.programs') }}" class="btn-back">
                             <i class="fa fa-xmark"></i> Cancel
                         </a>
                     </div>
@@ -565,6 +613,15 @@ textarea.form-control {
         if (startDateInput.value) {
             endDateInput.setAttribute('min', startDateInput.value);
         }
+    });
+
+    $('#created_by').on('change', function () {
+        const selected = $(this).find('option:selected');
+        $('#department_display').val(selected.data('department-name') || '');
+    });
+
+    $(document).ready(function () {
+        $('#created_by').trigger('change'); // handles old() re-render after validation failure
     });
 </script>
 @endpush

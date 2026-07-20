@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
+use App\Models\User;
+use App\Models\Admin;
 
 class Program extends Model
 {
@@ -18,8 +20,8 @@ class Program extends Model
         'end_date',
         'status',
         'category',
-        'department_id',
         'created_by',
+        'department_id',
         'staff_in_charge_id',
     ];
 
@@ -81,4 +83,6 @@ class Program extends Model
 
         return $value; // upcoming or rescheduled
     }
+
+    
 }

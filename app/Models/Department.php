@@ -32,4 +32,13 @@ class Department extends Model
     {
         return $this->hasMany(Program::class);
     }
+
+    // Many-to-Many relationship with User through department_access pivot table
+    public function accessibleUsers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'department_access'
+        );
+    }
 }

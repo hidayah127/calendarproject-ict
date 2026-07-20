@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Notification;
 use App\Models\User;
+use App\Models\Program;
+use Illuminate\Support\Facades\DB;
 
 class NotificationService
 {
@@ -44,12 +46,35 @@ class NotificationService
         self::send($userId, $data);
     }
 
+    private static function sendToLeadersOfDepartment(?int $departmentId, array $data, ?int $excludeUserId = null): void
+    {
+        if (! $departmentId) {
+            return;
+        }
+
+        $leaderUserIds = DB::table('department_access')
+            ->where('department_id', $departmentId)
+            ->pluck('user_id');
+
+        if ($leaderUserIds->isEmpty()) {
+            return;
+        }
+
+        User::whereIn('role', ['ld', 'dc', 'dv', 'bs', 'rd'])
+            ->whereIn('id', $leaderUserIds)
+            ->when($excludeUserId, fn ($q) => $q->where('id', '!=', $excludeUserId))
+            ->each(function ($user) use ($data) {
+                self::send($user->id, $data);
+            });
+    }
+
     // ── Program Created ───────────────────────────────────
     // HD creates → notify Admin + VC
     public static function programCreated(int $hdUserId, string $title, int $programId): void
     {
         $hd = User::find($hdUserId);
-        $hdName = $hd?->name ?? 'A Head of Department';
+        $hdName = $hd?->name ?? 'A Programme Secretariat';
+        $departmentId = Program::find($programId)?->department_id;
 
         // Notify all Admins
         self::sendToAdmin([
@@ -71,6 +96,16 @@ class NotificationService
             'icon_color' => '#15803d',
         ]);
 
+         // Notify the leader(s) who manage this program's department
+        self::sendToLeadersOfDepartment($departmentId, [
+            'type'       => 'program_created',
+            'message'    => "New program added under your department: \"{$title}\" by {$hdName}.",
+            'url'        => route('leader.dashboard', ['tab' => 'programs']),
+            'icon'       => 'fa-calendar-plus',
+            'icon_bg'    => '#dcfce7',
+            'icon_color' => '#15803d',
+        ], $hdUserId);
+
         // Notify the HD themselves (confirmation)
         self::sendToUser($hdUserId, [
             'type'       => 'program_created',
@@ -86,7 +121,8 @@ class NotificationService
     public static function programRescheduled(int $hdUserId, string $title, int $programId): void
     {
         $hd = User::find($hdUserId);
-        $hdName = $hd?->name ?? 'A Head of Department';
+        $hdName = $hd?->name ?? 'A Programme Secretariat';
+        $departmentId = Program::find($programId)?->department_id;
 
         self::sendToAdmin([
             'type'       => 'program_rescheduled',
@@ -106,6 +142,15 @@ class NotificationService
             'icon_color' => '#b45309',
         ]);
 
+        self::sendToLeadersOfDepartment($departmentId, [
+            'type'       => 'program_rescheduled',
+            'message'    => "A program under your department, \"{$title}\", has been rescheduled.",
+            'url'        => route('leader.dashboard', ['tab' => 'programs']),
+            'icon'       => 'fa-clock-rotate-left',
+            'icon_bg'    => '#fef9c3',
+            'icon_color' => '#b45309',
+        ], $hdUserId);
+
         self::sendToUser($hdUserId, [
             'type'       => 'program_rescheduled',
             'message'    => "You rescheduled \"{$title}\" successfully.",
@@ -120,7 +165,8 @@ class NotificationService
     public static function programCancelled(int $hdUserId, string $title, int $programId): void
     {
         $hd = User::find($hdUserId);
-        $hdName = $hd?->name ?? 'A Head of Department';
+        $hdName = $hd?->name ?? 'A Programme Secretariat';
+        $departmentId = Program::find($programId)?->department_id;
 
         self::sendToAdmin([
             'type'       => 'program_cancelled',
@@ -140,6 +186,15 @@ class NotificationService
             'icon_color' => '#b91c1c',
         ]);
 
+        self::sendToLeadersOfDepartment($departmentId, [
+            'type'       => 'program_cancelled',
+            'message'    => "A program under your department, \"{$title}\", has been cancelled.",
+            'url'        => route('leader.dashboard', ['tab' => 'programs']),
+            'icon'       => 'fa-ban',
+            'icon_bg'    => '#fee2e2',
+            'icon_color' => '#b91c1c',
+        ], $hdUserId);
+
         self::sendToUser($hdUserId, [
             'type'       => 'program_cancelled',
             'message'    => "You cancelled \"{$title}\".",
@@ -154,7 +209,8 @@ class NotificationService
     public static function programCompleted(int $hdUserId, string $title, int $programId): void
     {
         $hd = User::find($hdUserId);
-        $hdName = $hd?->name ?? 'Head of Department';
+        $hdName = $hd?->name ?? 'A Programme Secretariat';
+        $departmentId = Program::find($programId)?->department_id;
 
         self::sendToAdmin([
             'type'       => 'program_completed',
@@ -173,6 +229,15 @@ class NotificationService
             'icon_bg'    => '#e0e7ff',
             'icon_color' => '#4338ca',
         ]);
+
+          self::sendToLeadersOfDepartment($departmentId, [
+            'type'       => 'program_completed',
+            'message'    => "A program under your department, \"{$title}\", is now marked as completed.",
+            'url'        => route('leader.dashboard', ['tab' => 'programs']),
+            'icon'       => 'fa-circle-check',
+            'icon_bg'    => '#e0e7ff',
+            'icon_color' => '#4338ca',
+        ], $hdUserId);
 
         self::sendToUser($hdUserId, [
             'type'       => 'program_completed',

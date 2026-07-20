@@ -73,4 +73,33 @@ class User extends Authenticatable
     {
         return $this->role === 'ld';
     }
+
+    public function isDV()
+    {
+        return $this->role === 'dv';
+    }
+
+    public function isRD()
+    {
+        return $this->role === 'rd';
+    }
+
+    public function isBS()
+    {
+        return $this->role === 'bs';
+    }
+
+    public function isDC()
+    {
+        return $this->role === 'dc';
+    }
+
+    // Check if the user has access to a specific department
+    public function accessibleDepartments()
+    {
+        return $this->belongsToMany(
+            Department::class,
+            'department_access'
+        );
+    }
 }

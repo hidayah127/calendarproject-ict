@@ -387,8 +387,12 @@
                 'super_admin' => 'Super Admin',
                 'vc' => 'Vice Chancellor',
                 'hd' => 'Programme Secretariat',
-                'ld' => 'Head of Department',
+                'ld' => 'Dean',
                 'az' => 'Amazing You Committee',
+                'dv' => 'Deputy Vice Chancellor',
+                'rd' => 'Registrar',
+                'bs' => 'Bursar',
+                'dc' => 'Director',
             ];
         @endphp
 
@@ -434,11 +438,6 @@
                 <div id="notifList"></div>
 
                 <div class="notif-footer">
-                    {{-- @if(auth()->user()->role == 'vc')
-                        <a href="{{ route('vc.programs') }}">View all programs →</a>
-                    @elseif(auth()->user()->role == 'hd')
-                        <a href="{{ route('head.programs.index') }}">View all programs →</a>
-                    @endif --}}
 
                     @if(!$isAdmin && $role == 'vc')
                         <a href="{{ route('vc.programs') }}">View all programs →</a>
@@ -446,6 +445,10 @@
                     {{-- @elseif(!$isAdmin && $role == 'hd') --}}
                     @elseif(!$isAdmin && in_array($role, ['hd','az']))
                         <a href="{{ route('head.programs.index') }}">View all programs →</a>
+
+                    @elseif(!$isAdmin && in_array($role, ['ld','dv','rd','bs','dc']))
+                        <a href="{{ route('leader.dashboard') }}">View all notifications →</a>
+
                     @endif
                 </div>
             </div>

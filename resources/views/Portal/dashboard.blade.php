@@ -55,6 +55,10 @@ body {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(8px) scale(.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 .fu { animation: fadeUp .4s ease both; }
 .d1 { animation-delay: .05s; }
 .d2 { animation-delay: .10s; }
@@ -62,24 +66,14 @@ body {
 .d4 { animation-delay: .20s; }
 .d5 { animation-delay: .25s; }
 
-/* ─── Topbar ─────────────────────────────────────────────── */
-/* .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 200;
-    background: var(--navy);
-    border-bottom: 1px solid rgba(255,255,255,.07);
-    box-shadow: 0 2px 24px rgba(0,0,0,.25);
-} */
+@media (prefers-reduced-motion: reduce) {
+    .fu, .card-in { animation: none !important; }
+    * { transition-duration: .001ms !important; }
+}
 
+/* ─── Topbar (unchanged) ─────────────────────────────────── */
 .topbar {
-    /* background: linear-gradient(
-        90deg,
-        #1E3A6D,
-        #244A86
-    ); */
-    background: #162f5c; /* darker blue */
-    
+    background: #162f5c;
     border-bottom: 2px solid #ED1C24;
 }
 
@@ -104,9 +98,7 @@ body {
     background: rgba(255,255,255,0.95);
     border: 1px solid rgba(255,255,255,.15);
     border-radius: 12px;
-
     padding: 6px 10px;
-
     display:flex;
     align-items:center;
     gap:10px;
@@ -306,6 +298,7 @@ body {
 .sec-head {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     font-size: 15px;
     font-weight: 800;
@@ -313,6 +306,7 @@ body {
     margin-bottom: 14px;
     letter-spacing: -.3px;
 }
+.sec-head-left { display: flex; align-items: center; gap: 10px; }
 .sec-head-icon {
     width: 30px; height: 30px;
     border-radius: 8px;
@@ -387,37 +381,156 @@ body {
     border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(24,71,240,.10);
 }
+.search-wrap .clear-btn{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    border:none;
+    background:#eef1f7;
+    color:#9ca3af;
+    width:22px;height:22px;
+    border-radius:50%;
+    font-size:11px;
+    cursor:pointer;
+    display:none;
+    align-items:center;
+    justify-content:center;
+}
+.search-wrap .clear-btn.show{ display:flex; }
 
-/* ─── Filter pills ───────────────────────────────────────── */
-.pills {
+/* ─── Status Tabs ────────────────────────────────────────── */
+.tabs-row {
     display: flex;
+    gap: 6px;
+    background: #eef1f8;
+    border-radius: 99px;
+    padding: 5px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.tabs-row::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 7px;
-    flex-wrap: wrap;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 99px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .18s;
+}
+.tab-btn:hover:not(.active) { color: var(--ink); }
+.tab-btn.active {
+    background: var(--surface);
+    color: var(--navy);
+    box-shadow: 0 2px 8px rgba(10,22,40,.12);
+}
+.tab-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.tab-dot.ongoing   { background: var(--green); }
+.tab-dot.upcoming  { background: var(--blue); }
+.tab-dot.completed { background: #7c3aed; }
+.tab-dot.all       { background: var(--gold); }
+
+.tab-badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: #e2e6f0;
+    color: var(--muted);
+}
+.tab-btn.active .tab-badge { background: var(--blue-lt); color: var(--blue); }
+
+/* ─── Category filter pills ──────────────────────────────── */
+.cat-wrap{
+    gap:.5rem;
+    flex-wrap:wrap;
+    display:flex;
     margin-bottom: 14px;
 }
-.pill {
+.cat-pill{
     border: 1px solid var(--border);
-    border-radius: 99px;
-    padding: 5px 13px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
     background: var(--surface);
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    font-size:.9rem;
+    color: var(--muted);
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
     transition: all .16s;
 }
-.pill:hover, .pill.on {
-    background: var(--blue-lt);
-    border-color: var(--blue-md);
-    color: var(--blue);
+.cat-pill:hover { border-color: var(--blue-md); color: var(--blue); }
+.cat-pill.on{
+    background:var(--blue);
+    color:#fff;
+    border-color:var(--blue);
+}
+.cat-pill[data-cat="all"]{
+    width:auto;
+    padding:0 14px;
+    font-size:.82rem;
+    font-weight:700;
 }
 
-/* ─── Program item ───────────────────────────────────────── */
-.prog-item {
+/* ─── List toolbar (summary + page size) ─────────────────── */
+.list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 20px;
     border-bottom: 1px solid var(--border);
+    background: #fbfcfe;
+    font-size: 11.5px;
+    color: var(--muted);
+    flex-wrap: wrap;
 }
-.prog-item:last-child { border-bottom: none; }
+.list-toolbar strong { color: var(--ink); }
+.page-size-select {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--muted);
+}
+.page-size-select select {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 4px 8px;
+    font-size: 11.5px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+    cursor: pointer;
+}
+
+/* ─── Program card list ──────────────────────────────────── */
+#progListBody {
+    max-height: 640px;
+    overflow-y: auto;
+}
+
+.program-card {
+    border-bottom: 1px solid var(--border);
+    animation: cardIn .3s ease both;
+}
+.program-card:last-child { border-bottom: none; }
 
 .prog-row {
     display: flex;
@@ -429,6 +542,7 @@ body {
     transition: background .14s;
 }
 .prog-row:hover { background: #fafbff; }
+.prog-row:active { background: #f1f4fd; }
 
 .prog-dot {
     width: 8px; height: 8px;
@@ -483,10 +597,11 @@ body {
     overflow: hidden;
     transition: max-height .36s ease, padding .28s;
     padding: 0 20px;
+    background: #fbfcfe;
 }
 .claim-form-wrap.open {
-    max-height: 700px;
-    padding: 0 20px 18px;
+    max-height: 900px;
+    padding: 4px 20px 18px;
 }
 
 .form-section-label {
@@ -594,7 +709,44 @@ body {
 }
 .btn-submit:disabled { background: #d1d8f5; box-shadow: none; cursor: default; }
 
-/* ─── Claim list ─────────────────────────────────────────── */
+/* ─── Pagination ─────────────────────────────────────────── */
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px 20px 4px;
+    flex-wrap: wrap;
+}
+.page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all .15s;
+}
+.page-btn:hover:not(:disabled) { border-color: var(--blue-md); color: var(--blue); background: var(--blue-lt); }
+.page-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.page-btn:disabled { opacity: .4; cursor: default; }
+.page-ellipsis { color: #c4cad6; font-size: 12px; padding: 0 2px; }
+
+/* ─── Claim list (right column) ──────────────────────────── */
+.claim-list-scroll {
+    max-height: 520px;
+    overflow-y: auto;
+}
+
 .claim-row {
     display: flex;
     align-items: flex-start;
@@ -741,36 +893,6 @@ body {
     color: var(--blue);
 }
 
-.cat-wrap{
-    gap:.5rem;
-    flex-wrap:wrap;
-}
-
-.cat-pill{
-    width:40px;
-    height:40px;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-    font-size:.95rem;
-}
-
-.cat-pill.on{
-    background:var(--blue);
-    color:#fff;
-    border-color:var(--blue);
-}
-
-/* make ALL button slightly wider */
-.cat-pill[data-cat="all"]{
-    width:auto;
-    padding:0 14px;
-    font-size:.85rem;
-    font-weight:600;
-}
-
 /* ─── Empty states ───────────────────────────────────────── */
 .empty {
     text-align: center;
@@ -781,16 +903,10 @@ body {
 .empty p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
 
 /* Proof Files */
-/* ─────────────────────────────
-   Proof Files
-───────────────────────────── */
-
 .proof-files-wrapper{
     margin-top:12px;
-
     display:flex;
     flex-wrap:wrap;
-
     gap:10px;
 }
 
@@ -798,29 +914,18 @@ body {
     display:flex;
     align-items:center;
     justify-content:space-between;
-
     width:calc(50% - 5px);
-    /* width:calc(25% - 8px); */
-    /* min-width:180px; */
-
     background:#ffffff;
-
     border:1px solid #e5e7eb;
-
     border-radius:12px;
-
     padding:10px 12px;
-
     text-decoration:none;
-
     transition:all .2s ease;
 }
 
 .proof-file-card:hover{
     transform:translateY(-2px);
-
     border-color:#c7d2fe;
-
     box-shadow:0 8px 18px rgba(99,102,241,.10);
 }
 
@@ -828,61 +933,44 @@ body {
     display:flex;
     align-items:center;
     gap:10px;
-
     min-width:0;
 }
 
 .proof-file-icon{
     width:36px;
     height:36px;
-
     border-radius:10px;
-
     background:#eef2ff;
-
     color:#4f46e5;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     font-size:15px;
-
     flex-shrink:0;
 }
 
-.proof-file-info{
-    min-width:0;
-}
+.proof-file-info{ min-width:0; }
 
 .proof-file-name{
     font-size:12px;
     font-weight:700;
-
     color:#111827;
-
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
-
     max-width:140px;
 }
 
 .proof-file-meta{
     font-size:10px;
-
     color:#9ca3af;
-
     margin-top:2px;
 }
 
 .proof-file-action{
     color:#9ca3af;
-
     font-size:11px;
-
     margin-left:8px;
-
     flex-shrink:0;
 }
 
@@ -897,7 +985,7 @@ body {
     cursor: not-allowed;
 }
 
-/* ─── FOOTER ─────────────────────────────────────── */
+/* ─── FOOTER (unchanged) ─────────────────────────────────── */
 .footer {
   background: var(--navy);
   border-top: 3px solid var(--red);
@@ -1026,15 +1114,6 @@ body {
   font-weight: 600;
 }
 
-/* Mobile */
-@media(max-width:768px){
-
-    .proof-file-card{
-        width:100%;
-    }
-
-}
-
 /* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 640px) {
     .topbar-inner { height: auto; padding: 12px 16px; flex-wrap: wrap; }
@@ -1043,37 +1122,25 @@ body {
     .panel-head { padding: 12px 16px; }
     .prog-row, .claim-row { padding: 13px 16px; }
     .claim-form-wrap { padding: 0 16px; }
-    .claim-form-wrap.open { padding: 0 16px 16px; }
-}
-
-/* Tablet */
-@media(max-width:1200px){
-
-    .proof-file-card{
-        width:calc(33.33% - 7px);
-    }
-
-}
-
-/* Small tablet */
-@media(max-width:768px){
-
-    .proof-file-card{
-        width:calc(50% - 5px);
-    }
-
+    .claim-form-wrap.open { padding: 4px 16px 16px; }
+    .list-toolbar { padding: 10px 16px; }
+    .tabs-row { margin: 0 -14px 14px; padding: 5px 14px; border-radius: 0; }
+    .proof-file-card{ width:100%; }
+    #progListBody { max-height: 70vh; }
     .footer-top { grid-template-columns: 1fr; gap: 28px; }
     .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
-
 }
 
-/* Mobile */
-@media(max-width:500px){
+@media (max-width: 1200px) and (min-width: 769px) {
+    .proof-file-card{ width:calc(33.33% - 7px); }
+}
 
-    .proof-file-card{
-        width:100%;
-    }
+@media (max-width: 768px) and (min-width: 501px) {
+    .proof-file-card{ width:calc(50% - 5px); }
+}
 
+@media (max-width: 500px) {
+    .proof-file-card{ width:100%; }
 }
 </style>
 </head>
@@ -1084,21 +1151,17 @@ body {
 <nav class="topbar">
     <div class="topbar-inner">
         <a href="{{ route('Portal.index') }}" class="brand">
-            {{-- <div class="brand-mark">
-                <img src="{{ asset('logo/logo.png') }}" alt="Logo" class="brand-logo">
-            </div> --}}
-
             <div class="brand-mark dual-logo">
-    
-                <img 
-                    src="{{ asset('logo/logo.png') }}" 
-                    alt="UPTM Logo" 
+
+                <img
+                    src="{{ asset('logo/logo.png') }}"
+                    alt="UPTM Logo"
                     class="brand-logo"
                 >
 
-                <img 
-                    src="{{ asset('logo/bau.png') }}" 
-                    alt="Be Amazing You Logo" 
+                <img
+                    src="{{ asset('logo/bau.png') }}"
+                    alt="Be Amazing You Logo"
                     class="brand-logo second-logo"
                 >
 
@@ -1153,30 +1216,17 @@ body {
 
     {{-- Form validation errors --}}
     @if ($errors->any())
-
     <div class="flash flash-error fu">
-
         <i class="fa fa-circle-exclamation"></i>
-
         <div>
-
             <strong>Submission failed:</strong>
-
-            <ul style="
-                margin:6px 0 0 18px;
-                padding:0;
-            ">
+            <ul style="margin:6px 0 0 18px; padding:0;">
                 @foreach($errors->all() as $error)
-
                     <li>{{ $error }}</li>
-
                 @endforeach
             </ul>
-
         </div>
-
     </div>
-
     @endif
 
     {{-- ── Stat cards ──────────────────────────────────────────── --}}
@@ -1184,6 +1234,11 @@ body {
         $pendingCount  = $claims->where('status','pending')->count();
         $approvedCount = $claims->where('status','approved')->count();
         $rejectedCount = $claims->where('status','rejected')->count();
+
+        $ongoingCount   = $programs->where('status','ongoing')->count();
+        $upcomingCount  = $programs->where('status','upcoming')->count();
+        $completedCount = $programs->where('status','completed')->count();
+        $allProgCount   = $programs->count();
     @endphp
 
     <div class="stat-grid">
@@ -1234,8 +1289,7 @@ body {
             <div class="cat-grid">
                 @foreach($categorySummary as $category => $points)
                 <div class="cat-card">
-                    <div class="cat-icon"
-                         style="background:#ede9fe;color:#7c3aed;">
+                    <div class="cat-icon" style="background:#ede9fe;color:#7c3aed;">
                         <i class="fa
                             @if($category=='social') fa-users
                             @elseif($category=='mind') fa-brain
@@ -1252,7 +1306,6 @@ body {
                 </div>
                 @endforeach
 
-                {{-- Total --}}
                 <div class="cat-card">
                     <div class="cat-icon" style="background:var(--blue-lt);color:var(--blue);">
                         <i class="fa fa-star"></i>
@@ -1274,50 +1327,49 @@ body {
         <div class="col-lg-7">
 
             <div class="sec-head fu d1">
-                <div class="sec-head-icon" style="background:var(--blue-lt);">
-                    <i class="fa fa-calendar-check" style="color:var(--blue);"></i>
+                <div class="sec-head-left">
+                    <div class="sec-head-icon" style="background:var(--blue-lt);">
+                        <i class="fa fa-calendar-check" style="color:var(--blue);"></i>
+                    </div>
+                    Available Programs
                 </div>
-                Available Programs
             </div>
 
             {{-- Search --}}
             <div class="search-wrap fu d2">
                 <i class="fa fa-magnifying-glass"></i>
-                <input type="text" id="progSearch" placeholder="Search programs…">
+                <input type="text" id="progSearch" placeholder="Search programs by name…">
+                <button type="button" class="clear-btn" id="clearSearch"><i class="fa fa-xmark"></i></button>
             </div>
 
-            {{-- Filter pills --}}
-            <div class="pills fu d2">
-                <button class="pill on" data-f="all">All</button>
-                <button class="pill" data-f="upcoming">Upcoming</button>
-                <button class="pill" data-f="ongoing">Ongoing</button>
-                <button class="pill" data-f="completed">Completed</button>
+            {{-- Status tabs: Ongoing → Upcoming → Completed → All --}}
+            <div class="tabs-row fu d2" id="statusTabs">
+                <button class="tab-btn active" data-status="ongoing">
+                    <span class="tab-dot ongoing"></span> Ongoing
+                    <span class="tab-badge">{{ $ongoingCount }}</span>
+                </button>
+                <button class="tab-btn" data-status="upcoming">
+                    <span class="tab-dot upcoming"></span> Upcoming
+                    <span class="tab-badge">{{ $upcomingCount }}</span>
+                </button>
+                <button class="tab-btn" data-status="completed">
+                    <span class="tab-dot completed"></span> Completed
+                    <span class="tab-badge">{{ $completedCount }}</span>
+                </button>
+                <button class="tab-btn" data-status="all">
+                    <span class="tab-dot all"></span> All
+                    <span class="tab-badge">{{ $allProgCount }}</span>
+                </button>
             </div>
 
-            <!-- CATEGORY FILTER -->
-            <div class="pills fu d2 mb-4 cat-wrap">
-
-    <button class="pill cat-pill on" data-cat="all">
-        All
-    </button>
-
-    <button class="pill cat-pill" data-cat="social" title="Social">
-        <i class="fa fa-users"></i>
-    </button>
-
-    <button class="pill cat-pill" data-cat="mind" title="Mind">
-        <i class="fa fa-brain"></i>
-    </button>
-
-    <button class="pill cat-pill" data-cat="fitness" title="Fitness">
-        <i class="fa fa-person-running"></i>
-    </button>
-
-    <button class="pill cat-pill" data-cat="spiritual" title="Spiritual">
-        <i class="fa fa-mosque"></i>
-    </button>
-
-</div>
+            {{-- Category filter --}}
+            <div class="cat-wrap fu d2" id="categoryPills">
+                <button class="pill cat-pill on" data-cat="all">All</button>
+                <button class="pill cat-pill" data-cat="social" title="Social"><i class="fa fa-users"></i></button>
+                <button class="pill cat-pill" data-cat="mind" title="Mind"><i class="fa fa-brain"></i></button>
+                <button class="pill cat-pill" data-cat="fitness" title="Fitness"><i class="fa fa-person-running"></i></button>
+                <button class="pill cat-pill" data-cat="spiritual" title="Spiritual"><i class="fa fa-mosque"></i></button>
+            </div>
 
             <div class="panel fu d3" id="progList">
                 <div class="panel-accent"></div>
@@ -1326,194 +1378,191 @@ body {
                         <i class="fa fa-layer-group" style="color:var(--blue);"></i>
                         Programs
                     </div>
-                    <span class="panel-count">{{ $programs->count() }}</span>
+                    <span class="panel-count" id="panelCount">{{ $ongoingCount }}</span>
                 </div>
 
-                @forelse($programs as $program)
-                @php
-                    $dotClass = 'dot-' . $program->status;
-                    $sbClass  = match($program->status){
-                        'ongoing'     => 'sb-ongoing',
-                        'completed'   => 'sb-completed',
-                        'rescheduled' => 'sb-rescheduled',
-                        default       => 'sb-upcoming',
-                    };
-                    $roleTypes = array_keys(App\Models\MeritClaim::$meritPoints);
-                @endphp
+                <div class="list-toolbar">
+                    <div id="resultsSummary">Showing results…</div>
+                    <div class="page-size-select">
+                        <span>Per page</span>
+                        <select id="pageSizeSelect">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
 
-                <div class="prog-item"
-                     data-status="{{ $program->status }}"
-                     data-category="{{ strtolower($program->category) }}"
-                     data-title="{{ strtolower($program->title) }}">
+                <div id="progListBody">
+                    @forelse($programs as $program)
+                    @php
+                        $dotClass = 'dot-' . $program->status;
+                        $sbClass  = match($program->status){
+                            'ongoing'     => 'sb-ongoing',
+                            'completed'   => 'sb-completed',
+                            'rescheduled' => 'sb-rescheduled',
+                            default       => 'sb-upcoming',
+                        };
+                        $roleTypes = array_keys(App\Models\MeritClaim::$meritPoints);
+                    @endphp
 
-                    {{-- Header row --}}
-                    <div class="prog-row" onclick="toggleProgram({{ $program->id }})">
-                        <div class="d-flex align-items-start gap-2" style="flex:1;min-width:0;">
-                            <div class="prog-dot {{ $dotClass }}"></div>
-                            <div style="min-width:0;">
-                                <div class="prog-name">{{ $program->title }}</div>
-                                <div class="prog-meta">
-                                    <span><i class="fa fa-building me-1"></i>{{ $program->department->name ?? '—' }}</span>
-                                    <span><i class="fa fa-location-dot me-1"></i>{{ $program->venue }}</span>
-                                    <span><i class="fa fa-calendar me-1"></i>{{ $program->start_date->format('d M Y') }} – {{ $program->end_date->format('d M Y') }}</span>
+                    <div class="program-card"
+                         data-status="{{ $program->status }}"
+                         data-category="{{ strtolower($program->category) }}"
+                         data-title="{{ strtolower($program->title) }}">
+
+                        {{-- Header row --}}
+                        <div class="prog-row" onclick="toggleProgram({{ $program->id }})">
+                            <div class="d-flex align-items-start gap-2" style="flex:1;min-width:0;">
+                                <div class="prog-dot {{ $dotClass }}"></div>
+                                <div style="min-width:0;">
+                                    <div class="prog-name">{{ $program->title }}</div>
+                                    <div class="prog-meta">
+                                        <span><i class="fa fa-building me-1"></i>{{ $program->department->name ?? '—' }}</span>
+                                        <span><i class="fa fa-location-dot me-1"></i>{{ $program->venue }}</span>
+                                        <span><i class="fa fa-calendar me-1"></i>{{ $program->start_date->format('d M Y') }} – {{ $program->end_date->format('d M Y') }}</span>
+                                        @php
+                                            $categoryIcon = match($program->category) {
+                                                'social' => 'fa-users',
+                                                'mind' => 'fa-brain',
+                                                'fitness' => 'fa-person-running',
+                                                'spiritual' => 'fa-mosque',
+                                                default => 'fa-folder'
+                                            };
+                                        @endphp
+                                        <span>
+                                            <i class="fa {{ $categoryIcon }}"></i>
+                                            {{ ucfirst($program->category ?? '—') }}
+                                        </span>
+                                    </div>
+                                    <div class="prog-meta mt-1">
+                                        <span><i class="fa fa-user me-1"></i>{{ $program->staffInCharge->name ?? '—' }}</span>
+                                        <span><i class="fa fa-envelope me-1"></i>{{ $program->staffInCharge->email ?? '—' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                <span class="sb {{ $sbClass }}">{{ ucfirst($program->status) }}</span>
+                                <i class="fa fa-chevron-down chevron" id="chevron-{{ $program->id }}"></i>
+                            </div>
+                        </div>
+
+                        {{-- Expandable claim form --}}
+                        <div class="claim-form-wrap" id="form-{{ $program->id }}">
+                            <div class="form-section-label">Select your role</div>
+
+                            @php
+                                $isCompleted = $program->status === 'completed';
+                                $isUpcoming = $program->status === 'upcoming';
+                            @endphp
+
+                            <form method="POST"
+                                  action="{{ route('portal.claim') }}"
+                                  enctype="multipart/form-data"
+                                  class="claimForm">
+                                @csrf
+                                <input type="hidden" name="staff_id"   value="{{ $staff->id }}">
+                                <input type="hidden" name="program_id" value="{{ $program->id }}">
+                                <input type="hidden" name="claim_type" id="claimType-{{ $program->id }}" value="">
+
+                                <div class="role-grid">
+                                    @foreach($roleTypes as $role)
                                     @php
-                                        $categoryIcon = match($program->category) {
-                                            'social' => 'fa-users',
-                                            'mind' => 'fa-brain',
-                                            'fitness' => 'fa-person-running',
-                                            'spiritual' => 'fa-mosque',
-                                            default => 'fa-folder'
-                                        };
+                                        $key         = $program->id . '_' . $role;
+                                        $existing    = $claims->where('program_id', $program->id)->where('claim_type', $role)->first();
+                                        $isClaimed   = isset($claimedKeys[$key]) && $claimedKeys[$key] !== 'rejected';
+                                        $claimStatus = $existing?->status;
                                     @endphp
 
-                                    <span>
-                                        <i class="fa {{ $categoryIcon }}"></i>
-                                        {{ ucfirst($program->category ?? '—') }}
-                                    </span>
+                                    <label class="role-card {{ $isClaimed ? ($claimStatus === 'rejected' ? 'claimed-rejected' : 'claimed') : '' }} {{ $isCompleted || $isUpcoming ? 'disabled-role' : '' }}"
+                                           onclick="{{ ($isClaimed || $isCompleted || $isUpcoming) ? 'return false' : "selectRole('{$program->id}','{$role}', this)" }}" >
+
+                                        @if($isClaimed)
+                                        <span class="role-card-badge {{ $claimStatus === 'approved' ? 'badge-approved' : ($claimStatus === 'rejected' ? 'badge-rejected' : 'badge-pending') }}">
+                                            {{ ucfirst($claimStatus) }}
+                                        </span>
+                                        @endif
+
+                                        <i class="fa {{ App\Models\MeritClaim::$claimIcons[$role] ?? 'fa-user' }} role-card-icon"
+                                           style="color:{{ $isClaimed ? '#c4cad6' : 'var(--blue)' }};"></i>
+                                        <span class="role-card-label">{{ App\Models\MeritClaim::$claimLabels[$role] }}</span>
+                                        <span class="role-card-pts">{{ App\Models\MeritClaim::$meritPoints[$role] }} pts</span>
+
+                                    </label>
+                                    @endforeach
                                 </div>
-                                {{-- PIC Information --}}
-                                <div class="prog-meta mt-1">
-                                    <span><i class="fa fa-user me-1"></i>{{ $program->staffInCharge->name ?? '—' }}</span>
-                                    <span><i class="fa fa-envelope me-1"></i>{{ $program->staffInCharge->email ?? '—' }}</span>
-                                </div>
 
-                                   
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                            <span class="sb {{ $sbClass }}">{{ ucfirst($program->status) }}</span>
-                            <i class="fa fa-chevron-down chevron" id="chevron-{{ $program->id }}"></i>
-                        </div>
-                    </div>
+                                <div id="uploadWrapper-{{ $program->id }}">
 
-                    {{-- Expandable claim form --}}
-                    <div class="claim-form-wrap" id="form-{{ $program->id }}">
-                        <div class="form-section-label">Select your role</div>
+                                    <div class="upload-area"
+                                        onclick="document.getElementById('proof-{{ $program->id }}-0').click()">
 
-                        @php
-                            $isCompleted = $program->status === 'completed';
-                            $isUpcoming = $program->status === 'upcoming';
-                        @endphp
+                                        <input type="file"
+                                            id="proof-{{ $program->id }}-0"
+                                            name="proof[]"
+                                            multiple
+                                            {{ $isCompleted || $isUpcoming? 'disabled' : '' }}
+                                            accept=".jpg,.jpeg,.png,.pdf"
+                                            onchange="addNewInput('{{ $program->id }}', this)"
+                                            hidden>
 
-                        <form method="POST" 
-                              action="{{ route('portal.claim') }}" 
-                              enctype="multipart/form-data"
-                              class="claimForm">
-                            @csrf
-                            <input type="hidden" name="staff_id"   value="{{ $staff->id }}">
-                            <input type="hidden" name="program_id" value="{{ $program->id }}">
-                            <input type="hidden" name="claim_type" id="claimType-{{ $program->id }}" value="">
-
-                            <div class="role-grid">
-                                @foreach($roleTypes as $role)
-                                @php
-                                    $key         = $program->id . '_' . $role;
-                                    $existing    = $claims->where('program_id', $program->id)->where('claim_type', $role)->first();
-                                    $isClaimed   = isset($claimedKeys[$key]) && $claimedKeys[$key] !== 'rejected';
-                                    $claimStatus = $existing?->status;
-                                @endphp
-
-                               <label class="role-card {{ $isClaimed ? ($claimStatus === 'rejected' ? 'claimed-rejected' : 'claimed') : '' }} {{ $isCompleted || $isUpcoming ? 'disabled-role' : '' }}"
-                                       onclick="{{ ($isClaimed || $isCompleted || $isUpcoming) ? 'return false' : "selectRole('{$program->id}','{$role}', this)" }}" >
-
-                                    @if($isClaimed)
-                                    <span class="role-card-badge {{ $claimStatus === 'approved' ? 'badge-approved' : ($claimStatus === 'rejected' ? 'badge-rejected' : 'badge-pending') }}">
-                                        {{ ucfirst($claimStatus) }}
-                                    </span>
-                                    @endif
-
-                                    <i class="fa {{ App\Models\MeritClaim::$claimIcons[$role] ?? 'fa-user' }} role-card-icon"
-                                       style="color:{{ $isClaimed ? '#c4cad6' : 'var(--blue)' }};"></i>
-                                    <span class="role-card-label">{{ App\Models\MeritClaim::$claimLabels[$role] }}</span>
-                                    <span class="role-card-pts">{{ App\Models\MeritClaim::$meritPoints[$role] }} pts</span>
-
-                                </label>
-                                @endforeach
-                            </div>
-
-                            {{-- <div class="upload-area"
-                                 onclick="document.getElementById('proof-{{ $program->id }}').click()">
-                                <input type="file"
-                                       id="proof-{{ $program->id }}"
-                                       name="proof[]"
-                                       multiple
-                                       {{ $isCompleted || $isUpcoming ? 'disabled' : '' }}
-                                       accept=".jpg,.jpeg,.png,.pdf"
-                                       onchange="showPreview('{{ $program->id }}', this)" required>
-                                <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
-                                <div class="upload-area-text">Upload Proof (required)</div>
-                                <div class="upload-area-sub">JPG · PNG · PDF &nbsp;·&nbsp; Max 5 MB</div>
-                                <div class="upload-preview" id="preview-{{ $program->id }}"></div>
-                            </div> --}}
-
-                            <div id="uploadWrapper-{{ $program->id }}">
-
-                                <div class="upload-area"
-                                    onclick="document.getElementById('proof-{{ $program->id }}-0').click()">
-
-                                    <input type="file"
-                                        id="proof-{{ $program->id }}-0"
-                                        name="proof[]"
-                                        multiple
-                                        {{ $isCompleted || $isUpcoming? 'disabled' : '' }}
-                                        accept=".jpg,.jpeg,.png,.pdf"
-                                        onchange="addNewInput('{{ $program->id }}', this)"
-                                        hidden>
-
-                                    <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
-
-                                    <div class="upload-area-text">
-                                        Upload Proof (Required)
+                                        <i class="fa fa-cloud-arrow-up upload-area-icon"></i>
+                                        <div class="upload-area-text">Upload Proof (Required)</div>
+                                        <div class="upload-area-sub">JPG · PNG · PDF</div>
                                     </div>
 
-                                    <div class="upload-area-sub">
-                                        JPG · PNG · PDF
-                                    </div>
+                                    <div id="previewList-{{ $program->id }}"></div>
 
                                 </div>
 
-                                <div id="previewList-{{ $program->id }}"></div>
+                                <button type="submit"
+                                        class="btn-submit"
+                                        id="submitBtn-{{ $program->id }}"
+                                        disabled>
+                                    <i class="fa fa-paper-plane"></i> Submit Claim
+                                </button>
+                            </form>
 
-                            </div>
+                            @if($isCompleted)
+                                <div class="alert alert-danger mt-3">
+                                    Merit claim submission is closed because this program has been completed.
+                                </div>
+                            @endif
+                            @if($isUpcoming)
+                                <div class="alert alert-warning mt-3">
+                                    Merit claim submission is closed because this program is upcoming.
+                                </div>
+                            @endif
+                        </div>
 
-                            <button type="submit"
-                                    class="btn-submit"
-                                    id="submitBtn-{{ $program->id }}"
-                                    disabled>
-                                <i class="fa fa-paper-plane"></i> Submit Claim
-                            </button>
-                        </form>
-
-                        @if($isCompleted)
-                            <div class="alert alert-danger mt-3">
-                                Merit claim submission is closed because this program has been completed.
-                            </div>
-                        @endif
-                        @if($isUpcoming)
-                            <div class="alert alert-warning mt-3">
-                                Merit claim submission is closed because this program is upcoming.
-                            </div>
-                        @endif
                     </div>
+                    @empty
+                    <div class="empty">
+                        <i class="fa fa-calendar-xmark"></i>
+                        <p>No programs available at the moment.</p>
+                    </div>
+                    @endforelse
+                </div>
 
+                <div class="empty" id="noResults" style="display:none;">
+                    <i class="fa fa-magnifying-glass"></i>
+                    <p>No programs match your filters.<br>Try a different tab, category, or search term.</p>
                 </div>
-                @empty
-                <div class="empty">
-                    <i class="fa fa-calendar-xmark"></i>
-                    <p>No programs available at the moment.</p>
-                </div>
-                @endforelse
             </div>
+
+            {{-- Pagination --}}
+            <div class="pagination-bar" id="paginationBar"></div>
         </div>
 
         {{-- RIGHT: Claims & history ─────────────────── --}}
         <div class="col-lg-5">
 
             <div class="sec-head fu d1">
-                <div class="sec-head-icon" style="background:var(--green-lt);">
-                    <i class="fa fa-list-check" style="color:var(--green);"></i>
+                <div class="sec-head-left">
+                    <div class="sec-head-icon" style="background:var(--green-lt);">
+                        <i class="fa fa-list-check" style="color:var(--green);"></i>
+                    </div>
+                    My Claims &amp; History
                 </div>
-                My Claims &amp; History
             </div>
 
             {{-- Claims list --}}
@@ -1526,6 +1575,7 @@ body {
                     </div>
                 </div>
 
+                <div class="claim-list-scroll">
                 @forelse($claims as $claim)
                 <div class="claim-row">
                     <div class="claim-icon"
@@ -1568,43 +1618,13 @@ body {
                                 <i class="fa fa-cloud-arrow-up"></i> Upload Proof
                             </button>
                         </form>
-                        {{-- @elseif($claim->proof_path)
-                        <div style="font-size:11px;color:var(--green);margin-top:5px;">
-                            <i class="fa fa-file-circle-check me-1"></i>
-                            {{ $claim->proof_original_name ?? 'Proof uploaded' }}
-                        </div> --}}
                         @endif
 
-                        {{-- @if($claim->files->count())
-
-                            @foreach($claim->files as $file)
-
-                                <div class="mb-1">
-
-                                    <a href="{{ asset('storage/' . $file->file_path) }}"
-                                    target="_blank">
-
-                                        <i class="fa fa-file me-1"></i>
-
-                                        {{ $file->original_name }}
-
-                                    </a>
-
-                                </div>
-
-                            @endforeach
-
-                        @endif --}}
-
                         @if($claim->files->count())
-
                             <div class="proof-files-wrapper">
-
                                 @foreach($claim->files as $file)
-
                                     @php
                                         $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
-
                                         $icon = match($extension) {
                                             'pdf' => 'fa-file-pdf',
                                             'jpg', 'jpeg', 'png' => 'fa-file-image',
@@ -1613,39 +1633,27 @@ body {
                                     @endphp
 
                                     <a href="{{ asset('storage/' . $file->file_path) }}"
-                                    target="_blank"
-                                    class="proof-file-card">
-
+                                       target="_blank"
+                                       class="proof-file-card">
                                         <div class="proof-file-left">
-
                                             <div class="proof-file-icon">
                                                 <i class="fa {{ $icon }}"></i>
                                             </div>
-
                                             <div class="proof-file-info">
-
                                                 <div class="proof-file-name">
                                                     {{ Str::limit($file->original_name, 38) }}
                                                 </div>
-
                                                 <div class="proof-file-meta">
                                                     {{ strtoupper($extension) }} File
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                         <div class="proof-file-action">
                                             <i class="fa fa-arrow-up-right-from-square"></i>
                                         </div>
-
                                     </a>
-
                                 @endforeach
-
                             </div>
-
                         @endif
                     </div>
 
@@ -1660,6 +1668,7 @@ body {
                     <p>No claims yet.<br>Select a program on the left to get started.</p>
                 </div>
                 @endforelse
+                </div>
             </div>
 
             {{-- Merit breakdown by role --}}
@@ -1754,33 +1763,13 @@ body {
       </div>
       <div>
         <div class="footer-col-title">Quick Links</div>
-        {{-- <ul class="footer-links">
-          <li><a href="{{ route('Portal.index') }}"><i class="fa fa-house"></i> Portal Home</a></li>
-          <li><a href="{{ route('public.calendar') }}"><i class="fa fa-calendar-days"></i> Programme Calendar</a></li>
-          <li><a href="#"><i class="fa fa-building"></i> </a></li>
-          <li><a href="#"><i class="fa fa-circle-info"></i> About</a></li>
-        </ul> --}}
-
-         <ul class="footer-links">
+        <ul class="footer-links">
           <li><a href="{{ url('/') }}"><i class="fa fa-arrow-right-from-bracket"></i> Exit Portal</a></li>
           <li><a href="{{ route('Portal.index') }}"><i class="fa fa-house"></i> Staff Portal</a></li>
           <li><a href="#"><i class="fa fa-calendar-days"></i> Programme Calendar</a></li>
-          {{-- system login --}}
           <li><a href="{{ route('login') }}"><i class="fa fa-lock"></i> System Login</a></li>
-          {{-- <li><a href="#"><i class="fa fa-building"></i> Departments</a></li> --}}
-          {{-- <li><a href="#"><i class="fa fa-circle-info"></i> About</a></li> --}}
         </ul>
       </div>
-      {{-- <div>
-        <div class="footer-col-title">Event Status Guide</div>
-        <ul class="footer-links">
-          <li><a href="#"><i class="fa fa-circle" style="color:#4f46e5;opacity:1"></i> Upcoming</a></li>
-          <li><a href="#"><i class="fa fa-circle" style="color:#16a34a;opacity:1"></i> Ongoing</a></li>
-          <li><a href="#"><i class="fa fa-circle" style="color:#7c3aed;opacity:1"></i> Completed</a></li>
-          <li><a href="#"><i class="fa fa-circle" style="color:#dc2626;opacity:1"></i> Cancelled</a></li>
-          <li><a href="#"><i class="fa fa-circle" style="color:#d97706;opacity:1"></i> Rescheduled</a></li>
-        </ul>
-      </div> --}}
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">&copy; {{ date('Y') }} <strong>AmazingTrack</strong>. All rights reserved. University Public Portal.</div>
@@ -1792,7 +1781,9 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-/* toggle program accordion */
+/* ═══════════════════════════════════════════════════════════
+   Claim form accordion / role select / uploads (unchanged logic)
+═══════════════════════════════════════════════════════════ */
 function toggleProgram(id) {
     const wrap    = document.getElementById('form-' + id);
     const chevron = document.getElementById('chevron-' + id);
@@ -1807,7 +1798,6 @@ function toggleProgram(id) {
     }
 }
 
-/* select role card */
 function selectRole(programId, role, card) {
     card.closest('.role-grid')
         .querySelectorAll('.role-card:not(.claimed):not(.claimed-rejected)')
@@ -1817,24 +1807,6 @@ function selectRole(programId, role, card) {
     document.getElementById('submitBtn-' + programId).disabled = false;
 }
 
-/* file preview */
-// function showPreview(programId, input) {
-//     const preview = document.getElementById('preview-' + programId);
-//     if (input.files && input.files[0]) {
-//         // preview.textContent = '✓ ' + input.files[0].name;
-//         let html = '';
-
-//         for(let i = 0; i < input.files.length; i++){
-
-//             html += '✓ ' + input.files[i].name + '<br>';
-
-//         }
-
-//         preview.innerHTML = html;
-//     }
-// }
-
-
 let uploadIndex = {};
 
 function addNewInput(programId, input){
@@ -1843,17 +1815,13 @@ function addNewInput(programId, input){
         uploadIndex[programId] = 1;
     }
 
-    const previewList = document.getElementById(
-        'previewList-' + programId
-    );
+    const previewList = document.getElementById('previewList-' + programId);
 
     if(input.files[0]){
 
         const currentInputId = input.id;
 
-        // Preview item
         const div = document.createElement('div');
-
         div.style.marginTop = '8px';
 
         div.innerHTML = `
@@ -1867,342 +1835,252 @@ function addNewInput(programId, input){
                 align-items:center;
                 justify-content:space-between;
             ">
-
-                <div style="
-                    display:flex;
-                    align-items:center;
-                    gap:8px;
-                    overflow:hidden;
-                ">
-                    <i class="fa fa-file"
-                       style="color:#2563eb;"></i>
-
-                    <span style="
-                        white-space:nowrap;
-                        overflow:hidden;
-                        text-overflow:ellipsis;
-                    ">
+                <div style="display:flex;align-items:center;gap:8px;overflow:hidden;">
+                    <i class="fa fa-file" style="color:#2563eb;"></i>
+                    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                         ${input.files[0].name}
                     </span>
                 </div>
-
                 <button type="button"
-                    style="
-                        border:none;
-                        background:#fee2e2;
-                        color:#dc2626;
-                        width:26px;
-                        height:26px;
-                        border-radius:50%;
-                        font-size:14px;
-                        cursor:pointer;
-                        flex-shrink:0;
-                    "
+                    style="border:none;background:#fee2e2;color:#dc2626;width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0;"
                     onclick="removeFile('${programId}','${currentInputId}',this)"
-                >
-                    ×
-                </button>
-
+                >×</button>
             </div>
         `;
 
         previewList.appendChild(div);
 
-
-        // Create next hidden input
         const newInput = document.createElement('input');
-
         newInput.type='file';
-
         newInput.name='proof[]';
-
         newInput.accept='.jpg,.jpeg,.png,.pdf';
-
         newInput.hidden=true;
 
         const currentIndex=uploadIndex[programId];
-
         newInput.id=`proof-${programId}-${currentIndex}`;
+        newInput.onchange=function(){ addNewInput(programId,this); };
 
-        newInput.onchange=function(){
-            addNewInput(programId,this);
-        };
+        document.getElementById('uploadWrapper-'+programId).appendChild(newInput);
 
-        document
-        .getElementById('uploadWrapper-'+programId)
-        .appendChild(newInput);
-
-
-        document
-        .querySelector(
-            `#uploadWrapper-${programId} .upload-area`
-        )
-        .setAttribute(
-            'onclick',
-            `document.getElementById(
-                'proof-${programId}-${currentIndex}'
-            ).click()`
-        );
+        document.querySelector(`#uploadWrapper-${programId} .upload-area`)
+            .setAttribute('onclick', `document.getElementById('proof-${programId}-${currentIndex}').click()`);
 
         uploadIndex[programId]++;
-
     }
-
 }
 
-
-// remove file from preview and delete corresponding hidden input (18/5/2026) - Hidayah
 function removeFile(programId,inputId,btn){
-
-    // remove preview card
     btn.closest('div').parentElement.remove();
-
-    // remove hidden input
     const fileInput=document.getElementById(inputId);
-
-    if(fileInput){
-        fileInput.remove();
-    }
-
+    if(fileInput){ fileInput.remove(); }
 }
 
-// form submission confirmation 
-// document.querySelectorAll('.claimForm').forEach(form=>{
-
-//     form.addEventListener('submit',function(e){
-
-//         e.preventDefault();
-
-//         const role = this.querySelector(
-//             'input[name="claim_type"],input[id^="claimType"]'
-//         )?.value;
-
-//         if(!role){
-//             alert("Please select your role before submitting.");
-//             return;
-//         }
-
-//         const confirm1 = confirm(
-//             "Are you sure you want to submit this merit claim?"
-//         );
-
-//         if(!confirm1) return;
-
-//         const confirm2 = confirm(
-//             "Final confirmation.\n\nAfter submission, your claim will be sent for review.\nContinue?"
-//         );
-
-//         if(!confirm2) return;
-
-//         this.submit();
-
-//     });
-
-// });
-
-// Enhanced form submission confirmation with SweetAlert2
+/* Enhanced form submission confirmation with SweetAlert2 */
 document.querySelectorAll('.claimForm').forEach(form=>{
-
     form.addEventListener('submit', async function(e){
-
         e.preventDefault();
 
-        const role = this.querySelector(
-            '[id^="claimType"]'
-        )?.value;
+        const role = this.querySelector('[id^="claimType"]')?.value;
 
         if(!role){
-
             Swal.fire({
                 icon:'warning',
                 title:'Role Required',
                 text:'Please select your role before submitting.',
                 confirmButtonColor:'#1847f0',
-                background:'#fff',
-                borderRadius:'18px'
+                background:'#fff'
             });
-
             return;
         }
 
-        // First confirmation
         const first = await Swal.fire({
-
             title:'Submit Merit Claim?',
-            html:`
-                <div style="font-size:14px;color:#6b7280">
-                Please review your details before submission.
-                </div>
-            `,
-
+            html:`<div style="font-size:14px;color:#6b7280">Please review your details before submission.</div>`,
             icon:'question',
-
             showCancelButton:true,
-
             confirmButtonText:'Continue',
-
             cancelButtonText:'Cancel',
-
             confirmButtonColor:'#1847f0',
-
             cancelButtonColor:'#d1d5db',
-
             reverseButtons:true,
-
             background:'#fff',
-
-            borderRadius:'20px',
-
-            backdrop:`
-                rgba(17,24,39,.55)
-                blur(6px)
-            `,
-
-            showClass:{
-                popup:'animate__animated animate__zoomIn'
-            }
-
+            backdrop:`rgba(17,24,39,.55) blur(6px)`,
+            showClass:{ popup:'animate__animated animate__zoomIn' }
         });
 
         if(!first.isConfirmed) return;
 
-
-        // Final confirmation
         const second = await Swal.fire({
-
             title:'Final Confirmation',
-
             html:`
             <div style="line-height:1.8">
-
-                <div style="
-                    width:65px;
-                    height:65px;
-                    margin:auto;
-                    background:#e8effe;
-                    border-radius:50%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    margin-bottom:15px;
-                ">
-                    <i class="fa fa-paper-plane"
-                    style="
-                    color:#1847f0;
-                    font-size:24px;
-                    "></i>
+                <div style="width:65px;height:65px;margin:auto;background:#e8effe;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:15px;">
+                    <i class="fa fa-paper-plane" style="color:#1847f0;font-size:24px;"></i>
                 </div>
-
                 Your claim will be submitted for review.<br>
                 You cannot edit it after submission.
-
             </div>
             `,
-
             showCancelButton:true,
-
             confirmButtonText:'Submit Now',
-
             cancelButtonText:'Go Back',
-
             confirmButtonColor:'#10b981',
-
             cancelButtonColor:'#d1d5db',
-
             background:'#fff',
-
-            borderRadius:'20px',
-
-            backdrop:`
-                rgba(17,24,39,.55)
-                blur(6px)
-            `
-
+            backdrop:`rgba(17,24,39,.55) blur(6px)`
         });
-
 
         if(second.isConfirmed){
-
             Swal.fire({
-
                 title:'Submitting...',
                 html:'Please wait',
-
                 allowOutsideClick:false,
-
-                didOpen:()=>{
-
-                    Swal.showLoading();
-
-                }
-
+                didOpen:()=>{ Swal.showLoading(); }
             });
-
             this.submit();
         }
-
-    });
-
-});
-
-/* search */
-document.getElementById('progSearch').addEventListener('input', function () {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll('.prog-item').forEach(item => {
-        item.style.display = (item.dataset.title || '').includes(q) ? '' : 'none';
     });
 });
 
-/* filter pills */
-document.querySelectorAll('.pill').forEach(pill => {
-    pill.addEventListener('click', function () {
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-        this.classList.add('on');
-        const f = this.dataset.f;
-        document.querySelectorAll('.prog-item').forEach(item => {
-            item.style.display = (f === 'all' || item.dataset.status === f) ? '' : 'none';
+/* ═══════════════════════════════════════════════════════════
+   Tabs + category filter + search + pagination
+═══════════════════════════════════════════════════════════ */
+(function(){
+    const allCards   = Array.from(document.querySelectorAll('#progListBody .program-card'));
+    const statusTabs = document.querySelectorAll('#statusTabs .tab-btn');
+    const catPills    = document.querySelectorAll('#categoryPills .cat-pill');
+    const searchInput = document.getElementById('progSearch');
+    const clearBtn    = document.getElementById('clearSearch');
+    const pageSizeSel = document.getElementById('pageSizeSelect');
+    const paginationBar = document.getElementById('paginationBar');
+    const resultsSummary = document.getElementById('resultsSummary');
+    const noResults   = document.getElementById('noResults');
+    const panelCount  = document.getElementById('panelCount');
+
+    if (!allCards.length) return;
+
+    let state = {
+        status: 'ongoing',
+        category: 'all',
+        search: '',
+        page: 1,
+        pageSize: parseInt(pageSizeSel.value, 10) || 5
+    };
+
+    function matches(card){
+        const statusOk   = state.status === 'all' || card.dataset.status === state.status;
+        const categoryOk = state.category === 'all' || card.dataset.category === state.category;
+        const searchOk   = !state.search || card.dataset.title.includes(state.search);
+        return statusOk && categoryOk && searchOk;
+    }
+
+    function render(){
+        const filtered = allCards.filter(matches);
+        const total = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+
+        if (state.page > totalPages) state.page = totalPages;
+        if (state.page < 1) state.page = 1;
+
+        const start = (state.page - 1) * state.pageSize;
+        const end = start + state.pageSize;
+        const pageItems = filtered.slice(start, end);
+
+        allCards.forEach(card => card.style.display = 'none');
+        pageItems.forEach(card => card.style.display = '');
+
+        noResults.style.display = total === 0 ? '' : 'none';
+        panelCount.textContent = total;
+
+        if (total === 0){
+            resultsSummary.textContent = 'No programs found';
+        } else {
+            resultsSummary.innerHTML = `Showing <strong>${start + 1}–${Math.min(end, total)}</strong> of <strong>${total}</strong>`;
+        }
+
+        renderPagination(totalPages, total);
+    }
+
+    function renderPagination(totalPages, total){
+        paginationBar.innerHTML = '';
+        if (total === 0 || totalPages <= 1) return;
+
+        const makeBtn = (label, page, opts = {}) => {
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (opts.active ? ' active' : '');
+            btn.innerHTML = label;
+            btn.disabled = !!opts.disabled;
+            btn.addEventListener('click', () => { state.page = page; render(); scrollToTop(); });
+            return btn;
+        };
+
+        paginationBar.appendChild(makeBtn('<i class="fa fa-chevron-left"></i>', state.page - 1, { disabled: state.page === 1 }));
+
+        const addEllipsis = () => {
+            const span = document.createElement('span');
+            span.className = 'page-ellipsis';
+            span.textContent = '…';
+            paginationBar.appendChild(span);
+        };
+
+        const pages = new Set([1, totalPages, state.page, state.page - 1, state.page + 1]);
+        let prev = 0;
+        Array.from(pages).filter(p => p >= 1 && p <= totalPages).sort((a,b) => a-b).forEach(p => {
+            if (prev && p - prev > 1) addEllipsis();
+            paginationBar.appendChild(makeBtn(p, p, { active: p === state.page }));
+            prev = p;
+        });
+
+        paginationBar.appendChild(makeBtn('<i class="fa fa-chevron-right"></i>', state.page + 1, { disabled: state.page === totalPages }));
+    }
+
+    function scrollToTop(){
+        document.getElementById('progList').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    statusTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            statusTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            state.status = tab.dataset.status;
+            state.page = 1;
+            render();
         });
     });
-});
 
-const statusButtons = document.querySelectorAll('[data-f]');
-const categoryButtons = document.querySelectorAll('[data-cat]');
-const cards = document.querySelectorAll('.prog-item');
-
-let currentStatus = 'all';
-let currentCategory = 'all';
-
-function filterCards() {
-    cards.forEach(card => {
-        const status = card.dataset.status;
-        const category = card.dataset.category;
-
-        const statusMatch = currentStatus === 'all' || status === currentStatus;
-        const categoryMatch = currentCategory === 'all' || category === currentCategory;
-
-        card.style.display = statusMatch && categoryMatch ? 'block' : 'none';
+    catPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            catPills.forEach(p => p.classList.remove('on'));
+            pill.classList.add('on');
+            state.category = pill.dataset.cat;
+            state.page = 1;
+            render();
+        });
     });
-}
 
-statusButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        statusButtons.forEach(b => b.classList.remove('on'));
-        btn.classList.add('on');
-
-        currentStatus = btn.dataset.f;
-        filterCards();
+    searchInput.addEventListener('input', function(){
+        state.search = this.value.trim().toLowerCase();
+        clearBtn.classList.toggle('show', state.search.length > 0);
+        state.page = 1;
+        render();
     });
-});
 
-categoryButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        categoryButtons.forEach(b => b.classList.remove('on'));
-        btn.classList.add('on');
-
-        currentCategory = btn.dataset.cat;
-        filterCards();
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        state.search = '';
+        clearBtn.classList.remove('show');
+        state.page = 1;
+        render();
     });
-});
+
+    pageSizeSel.addEventListener('change', function(){
+        state.pageSize = parseInt(this.value, 10) || 5;
+        state.page = 1;
+        render();
+    });
+
+    render();
+})();
 </script>
 
 </body>

@@ -653,7 +653,7 @@
                     <i class="fa fa-clock-rotate-left" style="background:#eff6ff;color:#1a56db;"></i>
                     Recent Activity
                 </div>
-                <a href="{{ route('admin.staff.index') }}" class="panel-link">
+                <a href="{{ route('admin.programs.index') }}" class="panel-link">
                     View all <i class="fa fa-arrow-right" style="font-size:11px;"></i>
                 </a>
             </div>

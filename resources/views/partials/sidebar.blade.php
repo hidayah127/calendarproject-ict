@@ -67,6 +67,10 @@
             <i class="fa fa-file-alt me-2"></i> Amazing Reports
         </a>
 
+        <a href="{{ route('vc.gallery') }}" class="{{ Request::routeIs('vc.gallery') ? 'active' : '' }}">
+            <i class="fa fa-image me-2"></i> Amazing Gallery
+        </a>
+
     @endif 
 
 
@@ -80,16 +84,26 @@
         </a>
 
         <a href="{{ route('admin.staff.index') }}" class="{{ Request::routeIs('admin.staff*') ? 'active' : '' }}">
-            <i class="fa fa-user-tie me-2"></i> Staff
+            <i class="fa fa-user-tie me-2"></i> Staff Management
         </a>
 
+         {{-- <a href="{{ route('admin.users.index') }}" class="{{ Request::routeIs('admin.users*') ? 'active' : '' }}">
+            <i class="fa fa-user-shield me-2"></i> Roles Access Management
+        </a> --}}
+
         <a href="{{ route('admin.users.index') }}" class="{{ Request::routeIs('admin.users*') ? 'active' : '' }}">
-            <i class="fa fa-key me-2"></i> System Users
+            <i class="fa fa-key me-2"></i> System Users Management
         </a>
 
         <a href="{{ route('admin.departments.index') }}" class="{{ Request::routeIs('admin.departments*') ? 'active' : '' }}">
-            <i class="fa fa-building me-2"></i> Departments
+            <i class="fa fa-building me-2"></i> Departments Management
         </a>
+
+        <a href="{{ route('admin.programs.index') }}" class="{{ Request::routeIs('admin.programs*') ? 'active' : '' }}">
+            <i class="fa fa-calendar-check me-2"></i> Programs Management
+        </a>
+
+
 
     @endif
 
@@ -132,15 +146,44 @@
     @endif
 
     {{-- Head of Department --}}
-    @if($user?->role == 'ld')
+    {{-- @if($user?->role == 'ld') --}}
+    @if(in_array($user?->role, ['ld','dv','rd','bs','dc']))
 
-        <a href="{{ route('ld.dashboard') }}" class="{{ Request::routeIs('ld.dashboard*') ? 'active' : '' }}">
+        <a href="{{ route('leader.overview') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.overview') ? 'active' : '' }}">
             <i class="fa fa-home me-2"></i> Dashboard
         </a>
 
-        <a href="{{ route('ld.programs') }}" class="{{ Request::routeIs('ld.programs*') ? 'active' : '' }}">
-            <i class="fa fa-calendar-check me-2"></i> My Program Reports   
+        <a href="{{ route('leader.dashboard', ['tab' => 'programs']) }}" class="d-block text-white mb-3 {{ request('tab') === 'programs' ? 'active' : '' }}">
+            <i class="fa fa-calendar-check me-2"></i> My Programs
         </a>
+
+        <a href="{{ route('leader.calendar.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.calendar.*') ? 'active' : '' }}">
+            <i class="fa fa-calendar-days me-2"></i> Calendar
+        </a>
+
+        <a href="{{ route('leader.departments.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.departments.*') ? 'active' : '' }}">
+            <i class="fa fa-building me-2"></i> My Departments
+        </a>
+
+        <a href="{{ route('leader.staff.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.staff.*') ? 'active' : '' }}">
+            <i class="fa fa-address-book me-2"></i> Staff Directory
+        </a>
+
+        <a href="{{ route('leader.dashboard', ['tab' => 'reports']) }}" class="d-block text-white mb-3 {{ request('tab') === 'reports' ? 'active' : '' }}">
+            <i class="fa fa-chart-column me-2"></i> Monthly Report
+        </a>
+
+        <a href="{{ route('leader.dashboard', ['tab' => 'weekend']) }}" class="d-block text-white mb-3 {{ request('tab') === 'weekend' ? 'active' : '' }}">
+            <i class="fa fa-people-roof me-2"></i> Weekend Staff
+        </a>
+
+        {{-- <a href="{{ route('leader.notifications.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.notifications.*') ? 'active' : '' }}">
+            <i class="fa fa-bell me-2"></i> Notifications
+            @if(($unreadNotifCount ?? 0) > 0)
+                <span class="badge bg-danger rounded-pill ms-1">{{ $unreadNotifCount }}</span>
+            @endif
+        </a> --}}
+
     @endif
 
 </nav>
@@ -219,15 +262,19 @@
             </a>
 
             <a href="{{ route('admin.staff.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('admin.staff*') ? 'active' : '' }}">
-                <i class="fa fa-user-tie me-2"></i> Staff
+                <i class="fa fa-user-tie me-2"></i> Staff Management
             </a>
 
             <a href="{{ route('admin.users.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('admin.users*') ? 'active' : '' }}">
-                <i class="fa fa-key me-2"></i> System Users
+                <i class="fa fa-key me-2"></i> System Users Management
             </a>
 
             <a href="{{ route('admin.departments.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('admin.departments*') ? 'active' : '' }}">
-                <i class="fa fa-building me-2"></i> Departments
+                <i class="fa fa-building me-2"></i> Departments Management
+            </a>
+
+              <a href="{{ route('admin.programs.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('admin.programs*') ? 'active' : '' }}">
+                <i class="fa fa-calendar-check me-2"></i> Programs Management
             </a>
 
         @endif
@@ -269,15 +316,42 @@
         
 
         {{-- Head of Department --}}
-        @if($user?->role == 'ld')
+        {{-- @if($user?->role == 'ld') --}}
+        @if(in_array($user?->role, ['ld','dv','rd','bs','dc']))
 
-            <a href="{{ route('ld.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('ld.dashboard*') ? 'active' : '' }}">
+            <a href="{{ route('leader.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-home me-2"></i> Dashboard
             </a>
 
-            <a href="{{ route('ld.programs') }}" class="d-block text-white mb-3 {{ Request::routeIs('ld.programs*') ? 'active' : '' }}">
-                <i class="fa fa-calendar-check me-2"></i> My Program Reports
+            <a href="{{ route('leader.dashboard', ['tab' => 'programs']) }}" class="d-block text-white mb-3 {{ request('tab') === 'programs' ? 'active' : '' }}">
+                <i class="fa fa-calendar-check me-2"></i> My Programs
             </a>
+
+            <a href="{{ route('leader.calendar.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.calendar.*') ? 'active' : '' }}">
+                <i class="fa fa-calendar-days me-2"></i> Calendar
+            </a>
+
+            <a href="{{ route('leader.departments.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.departments.*') ? 'active' : '' }}">
+                <i class="fa fa-building me-2"></i> My Departments
+            </a>
+
+            <a href="{{ route('leader.staff.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.staff.*') ? 'active' : '' }}">
+                <i class="fa fa-address-book me-2"></i> Staff Directory
+            </a>
+
+            <a href="{{ route('leader.dashboard', ['tab' => 'reports']) }}" class="d-block text-white mb-3 {{ request('tab') === 'reports' ? 'active' : '' }}">
+                <i class="fa fa-chart-column me-2"></i> Monthly Report
+            </a>
+
+            <a href="{{ route('leader.dashboard', ['tab' => 'weekend']) }}" class="d-block text-white mb-3 {{ request('tab') === 'weekend' ? 'active' : '' }}">
+                <i class="fa fa-people-roof me-2"></i> Weekend Staff
+            </a>
+
+
+
+            {{-- <a href="{{ route('leader.programs') }}" class="d-block text-white mb-3 {{ Request::routeIs('leader.programs*') ? 'active' : '' }}">
+                <i class="fa fa-calendar-check me-2"></i> My Program Reports
+            </a> --}}
         @endif
 
     </div>
