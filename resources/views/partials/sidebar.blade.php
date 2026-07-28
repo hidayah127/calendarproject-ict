@@ -248,6 +248,10 @@
                 <i class="fa fa-file-alt me-2"></i> Amazing Reports
             </a>
 
+            <a href="{{ route('vc.gallery') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.gallery') ? 'active' : '' }}">
+                <i class="fa fa-image me-2"></i> Amazing Gallery
+            </a>
+
         @endif
 
 
