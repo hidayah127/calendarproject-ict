@@ -182,7 +182,7 @@ class ProgramController extends Controller
             'end_date'           => 'required|date|after_or_equal:start_date',
             'created_by'         => 'required|exists:users,id',
             'staff_in_charge_id' => 'nullable|exists:staff,id',
-            'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event',
+            'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event,Workshop',
         ];
 
         $validated = $request->validate($rules);
@@ -257,7 +257,7 @@ class ProgramController extends Controller
             'end_date'           => 'required|date|after_or_equal:start_date',
             'created_by'         => 'required|exists:users,id',
             'staff_in_charge_id' => 'nullable|exists:staff,id',
-            'category'           => 'required|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event',
+            'category'           => 'required|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event,Workshop',
         ];
 
         $validated = $request->validate($rules);

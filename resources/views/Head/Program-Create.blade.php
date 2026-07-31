@@ -385,6 +385,11 @@ textarea.form-control {
                                 {{ old('category') == 'event' ? 'selected' : '' }}>
                                 Event
                             </option>
+
+                             <option value="Workshop"
+                                {{ old('category') == 'workshop' ? 'selected' : '' }}>
+                                Workshop/Training
+                            </option>
                             
 
                         </select>

@@ -376,6 +376,20 @@
         'secretary'=>'fa-pen-clip','treasurer'=>'fa-coins',
         'facilitator'=>'fa-chalkboard-user','committee_member'=>'fa-user',
     ];
+
+    // Category value -> friendly display label (DB keeps storing the raw value,
+    // this is purely for how it renders in dropdowns)
+    $categoryLabels = [
+        'mind'      => 'Be an Amazing You (Mind)',
+        'fitness'   => 'Be an Amazing You (Fitness)',
+        'spiritual' => 'Be an Amazing You (Spiritual)',
+        'social'    => 'Be an Amazing You (Social)',
+        'Marketing' => 'Marketing',
+        'inmeeting' => 'Meeting - Internal',
+        'exmeeting' => 'Meeting - External',
+        'Event'     => 'Event',
+        'Workshop'  => 'Workshop/Training',
+    ];
 @endphp
 
 {{-- Hero --}}
@@ -495,6 +509,7 @@
                     <th width="44">#</th>
                     <th>Program</th>
                     <th>Department</th>
+                    <th>Category</th>
                     <th>Staff in Charge</th>
                     <th>Start</th>
                     <th>End</th>
@@ -526,6 +541,12 @@
                         <span class="dept-tag">
                             <i class="fa fa-building" style="font-size:10px;"></i>
                             {{ $p->department->name ?? '—' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="dept-tag">
+                            {{ $categoryLabels[$p->category] ?? ucfirst($p->category) }}
                         </span>
                     </td>
 
@@ -584,6 +605,7 @@
                                                 data-end="{{ $p->end_date->format('d M Y, h:i A') }}"
                                                 data-status="{{ $p->status }}"
                                                 data-sic="{{ $p->staffInCharge->name ?? '—' }}"
+                                                data-category="{{ $categoryLabels[$p->category] ?? ucfirst($p->category) }}"
                                                 data-desc="{{ $p->description ?? '' }}">
                                             <i class="fa fa-eye"></i> View Details
                                         </button>
@@ -639,7 +661,7 @@
 
                 @empty
                 <tr>
-                    <td colspan="8" style="text-align:center;padding:52px 20px;color:#94a3b8;">
+                    <td colspan="9" style="text-align:center;padding:52px 20px;color:#94a3b8;">
                         <i class="fa fa-calendar-xmark" style="font-size:38px;display:block;margin-bottom:12px;color:#cbd5e1;"></i>
                         No programs found.
                     </td>
@@ -662,7 +684,7 @@
     @php $memberCount = $p->committee ? $p->committee->count() : 0; @endphp
     <table style="width:100%;"><tbody>
         <tr class="cm-expand-row" id="cm-row-{{ $p->id }}">
-            <td colspan="8">
+            <td colspan="9">
                 <div class="cm-expand-panel">
                     <div class="cm-expand-header">
                         <i class="fa fa-users-gear"></i>
@@ -726,6 +748,7 @@
             </div>
             <div class="modal-body">
                 <div class="d-row"><div class="d-key">Department</div><div class="d-val" id="mDept"></div></div>
+                <div class="d-row"><div class="d-key">Category</div><div class="d-val" id="mCategory"></div></div>
                 <div class="d-row"><div class="d-key">Venue</div><div class="d-val" id="mVenue"></div></div>
                 <div class="d-row"><div class="d-key">Start</div><div class="d-val" id="mStart"></div></div>
                 <div class="d-row"><div class="d-key">End</div><div class="d-val" id="mEnd"></div></div>
@@ -819,9 +842,15 @@
                         <div class="col-md-6">
                             <label class="form-label-sm">Category</label>
                             <select name="category" id="edCategory" class="form-control-modern" required>
-                                @foreach(['mind','fitness','spiritual','social','Marketing','inmeeting','exmeeting','Event'] as $cat)
-                                <option value="{{ $cat }}">{{ $cat }}</option>
-                                @endforeach
+                                <option value="mind">Be an Amazing You (Mind)</option>
+                                <option value="fitness">Be an Amazing You (Fitness)</option>
+                                <option value="spiritual">Be an Amazing You (Spiritual)</option>
+                                <option value="social">Be an Amazing You (Social)</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="inmeeting">Meeting - Internal</option>
+                                <option value="exmeeting">Meeting - External</option>
+                                <option value="Event">Event</option>
+                                <option value="Workshop">Workshop/Training</option>
                             </select>
                         </div>
                     </div>
@@ -1048,7 +1077,7 @@ $(document).ready(function () {
                     var id = btn.attr('id').replace('cm-btn-', '');
                     if (_cmRows[id]) {
                         $(this).after(
-                            $('<tr class="cm-expand-row" id="cm-row-' + id + '" style="display:none;"><td colspan="8" style="padding:0!important;border-bottom:2px solid #e0e7ff!important;background:transparent!important;"></td></tr>')
+                            $('<tr class="cm-expand-row" id="cm-row-' + id + '" style="display:none;"><td colspan="9" style="padding:0!important;border-bottom:2px solid #e0e7ff!important;background:transparent!important;"></td></tr>')
                         );
                         $('#cm-row-' + id + ' td').append(
                             _cmRows[id].find('td > div.cm-expand-panel').clone(true)
@@ -1136,6 +1165,7 @@ document.getElementById('detailModal').addEventListener('show.bs.modal', functio
     document.getElementById('mTitle').textContent        = b.dataset.title;
     document.getElementById('mStripe').style.background  = stripes[s] || '#1a56db';
     document.getElementById('mDept').textContent         = b.dataset.dept;
+    document.getElementById('mCategory').textContent     = b.dataset.category;
     document.getElementById('mVenue').textContent        = b.dataset.venue;
     document.getElementById('mStart').textContent        = b.dataset.start;
     document.getElementById('mEnd').textContent          = b.dataset.end;

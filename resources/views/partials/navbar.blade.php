@@ -418,7 +418,7 @@
         {{-- ── Notification bell ── --}}
         <div class="nav-dropdown-wrap" id="notifWrap">
             <button class="nav-icon-btn" id="notifBtn" title="Notifications">
-                <i class="fa fa-bell"></i>
+                {{-- <i class="fa fa-bell"></i> --}}
                 <span class="notif-badge" id="notifBadge"></span>
             </button>
 

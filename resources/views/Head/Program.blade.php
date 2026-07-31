@@ -593,6 +593,7 @@ nav[role="navigation"] p {
                             'Marketing' => '#db2777',
                             'Meeting' => '#0ea5e9',
                             'Event' => '#db2777',
+                            'Workshop' => '#f59e0b',
                         ];
                         @endphp
 
@@ -747,6 +748,7 @@ nav[role="navigation"] p {
                                 <option value="Marketing">Marketing</option>
                                 <option value="Meeting">Meeting</option>
                                 <option value="Event">Event</option>
+                                <option value="Workshop">Workshop/Training</option>
 
                             </select>
                         </div>
