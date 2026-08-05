@@ -141,7 +141,7 @@ class ProgramController extends Controller
         $users = User::with('staff.department')->orderBy('name')->get(); // NEW
 
 
-        return view('Admin.Program-Create', compact( 'departments','staffList', 'users'));
+        return view('Admin.Program-create', compact( 'departments','staffList', 'users'));
     }
 
     /*

@@ -344,14 +344,14 @@ body {
                 </div>
 
                 {{-- Forgot Password --}}
-                {{-- <div class="mb-4 text-end">
-                    <a href="{{ route('forgot-password') }}"
+                <div class="mb-4 text-end">
+                    <a href="{{ route('forgot.password') }}"
                     style="font-size:13px; color:#1a56db; text-decoration:none; font-weight:500;">
                         Forgot password?
                     </a>
 
                     
-                </div> --}}
+                </div>
 
                 {{-- Submit --}}
                 <button type="submit" class="btn-login">

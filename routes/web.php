@@ -27,16 +27,17 @@ Route::get('/forgot-password',        [AuthController::class, 'forgotPassword'])
 // Route::post('/forgot-password',       [AuthController::class, 'forgotPasswordProcess'])->name('forgot.password.process');
 Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('reset.password');
 Route::post('/reset-password',        [AuthController::class, 'resetPasswordProcess'])->name('reset.password.process');
+Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
 
-use App\Http\Controllers\ForgotPasswordController;
+// use App\Http\Controllers\ForgotPasswordController;
 
 
 // Forgot Password Page
-Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])
-    ->name('forgot-password');
-// Send Forgot Password Request Email
-Route::post('/forgot-password/send', [ForgotPasswordController::class, 'send'])
-    ->name('forgot-password.send');
+// Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])
+//     ->name('forgot-password');
+// // Send Forgot Password Request Email
+// Route::post('/forgot-password/send', [ForgotPasswordController::class, 'send'])
+//     ->name('forgot-password.send');
 
 //portal routes
 use App\Http\Controllers\Portal\PublicPortalController;
