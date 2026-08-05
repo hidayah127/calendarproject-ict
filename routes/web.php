@@ -27,7 +27,7 @@ Route::get('/forgot-password',        [AuthController::class, 'forgotPassword'])
 // Route::post('/forgot-password',       [AuthController::class, 'forgotPasswordProcess'])->name('forgot.password.process');
 Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('reset.password');
 Route::post('/reset-password',        [AuthController::class, 'resetPasswordProcess'])->name('reset.password.process');
-Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
+Route::view('/forgot-password', 'Auth.forgot-password')->name('forgot.password');
 
 // use App\Http\Controllers\ForgotPasswordController;
 
