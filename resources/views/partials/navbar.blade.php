@@ -512,9 +512,9 @@
                     {{-- <a href="#" class="user-dropdown-item">
                         <i class="fa fa-user"></i> Profile
                     </a> --}}
-                    {{-- <a href="{{ route('change.password') }}" class="user-dropdown-item">
+                    <a href="{{ route('change.password') }}" class="user-dropdown-item">
                         <i class="fa fa-key"></i> Change Password
-                    </a> --}}
+                    </a>
                 </div>
 
                 <div class="user-dropdown-divider"></div>

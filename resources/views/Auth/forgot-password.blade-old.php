@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reset Password | UniManage</title>
+<title>Forgot Password | UniManage</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -25,15 +25,15 @@
     .form-label { font-size:13.5px; font-weight:600; color:#374151; margin-bottom:6px; }
     .form-control { border-radius:10px!important; border:1.5px solid #e2e8f0!important; padding:11px 14px!important; font-size:14.5px!important; font-family:inherit; color:#1e293b; transition:border-color .2s,box-shadow .2s; background:#f8faff!important; }
     .form-control:focus { border-color:var(--blue-mid)!important; box-shadow:0 0 0 3px rgba(26,86,219,0.12)!important; background:#fff!important; outline:none; }
-    .pw-wrap { position:relative; }
-    .pw-wrap .form-control { padding-right:46px!important; }
-    .pw-toggle { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; cursor:pointer; padding:0; transition:color .2s; }
-    .pw-toggle:hover { color:var(--blue-mid); }
     .btn-login { background:linear-gradient(135deg,var(--blue-dark),var(--blue-mid)); color:#fff; border:none; border-radius:10px; padding:12px; font-size:15px; font-weight:600; font-family:inherit; width:100%; cursor:pointer; box-shadow:0 6px 20px rgba(26,86,219,0.32); transition:transform .2s,box-shadow .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .btn-login:hover { transform:translateY(-2px); }
+    .btn-login:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(26,86,219,0.38); }
     .alert-danger { border-radius:10px!important; font-size:13.5px; border:none!important; background:#fef2f2!important; color:#b91c1c!important; padding:10px 14px!important; display:flex; align-items:center; gap:8px; }
+    .alert-success { border-radius:10px!important; font-size:13.5px; border:none!important; background:#f0fdf4!important; color:#15803d!important; padding:10px 14px!important; display:flex; align-items:center; gap:8px; }
     .login-footer { text-align:center; margin-top:22px; font-size:12.5px; color:rgba(255,255,255,0.55); }
-    .password-hint { font-size:12px; color:#94a3b8; margin-top:5px; }
+    .back-link { font-size:13.5px; color:#1a56db; text-decoration:none; font-weight:500; display:inline-flex; align-items:center; gap:6px; }
+    .back-link:hover { text-decoration:underline; }
+    .hint-box { font-size:12.5px; color:#64748b; background:#f8faff; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:20px; display:flex; gap:8px; align-items:flex-start; }
+    .hint-box i { color:var(--blue-mid); margin-top:2px; }
 </style>
 </head>
 <body>
@@ -44,10 +44,10 @@
 
             <div class="text-center mb-4">
                 <div class="brand-icon">
-                    <i class="fa fa-lock-open"></i>
+                    <i class="fa fa-key"></i>
                 </div>
-                <h4 class="logo">Reset Password</h4>
-                <p class="subtitle">Enter your new password below</p>
+                <h4 class="logo">Forgot Password</h4>
+                <p class="subtitle">Enter your username to request a reset</p>
             </div>
 
             @if(session('error'))
@@ -56,43 +56,38 @@
             </div>
             @endif
 
-            @error('password')
-            <div class="alert alert-danger mb-3">
-                <i class="fa fa-circle-exclamation"></i> {{ $message }}
+            @if(session('success'))
+            <div class="alert alert-success mb-3">
+                <i class="fa fa-circle-check"></i> {{ session('success') }}
             </div>
-            @enderror
+            @endif
 
-            <form method="POST" action="{{ route('reset.password.process') }}">
+            <div class="hint-box">
+                <i class="fa fa-circle-info"></i>
+                <span>Your request will be reviewed by ICT. Once approved, you'll be contacted with a link to set a new password.</span>
+            </div>
+
+            <form method="POST" action="{{ route('forgot.password.process') }}">
                 @csrf
-                <input type="hidden" name="token" value="{{ $token }}">
-
-                <div class="mb-3">
-                    <label class="form-label">New Password</label>
-                    <div class="pw-wrap">
-                        <input type="password" id="newPassword" name="password"
-                               class="form-control" placeholder="Min. 8 characters" required>
-                        <button type="button" class="pw-toggle" onclick="togglePw('newPassword', 'icon1')">
-                            <i class="fa fa-eye" id="icon1"></i>
-                        </button>
-                    </div>
-                    <p class="password-hint">Minimum 8 characters</p>
-                </div>
-
                 <div class="mb-4">
-                    <label class="form-label">Confirm New Password</label>
-                    <div class="pw-wrap">
-                        <input type="password" id="confirmPassword" name="password_confirmation"
-                               class="form-control" placeholder="Re-enter new password" required>
-                        <button type="button" class="pw-toggle" onclick="togglePw('confirmPassword', 'icon2')">
-                            <i class="fa fa-eye" id="icon2"></i>
-                        </button>
-                    </div>
-                    <div id="matchMsg" style="font-size:12px; margin-top:5px;"></div>
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control"
+                           placeholder="Enter your username"
+                           value="{{ old('username') }}" required autofocus>
+                    @error('username')
+                        <div class="text-danger" style="font-size:12.5px;margin-top:6px;">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <button type="submit" class="btn-login">
-                    <i class="fa fa-check"></i> Reset Password
+                <button type="submit" class="btn-login mb-3">
+                    <i class="fa fa-paper-plane"></i> Submit Request
                 </button>
+
+                <div class="text-center">
+                    <a href="{{ route('login') }}" class="back-link">
+                        <i class="fa fa-arrow-left"></i> Back to Sign In
+                    </a>
+                </div>
             </form>
 
         </div>
@@ -101,31 +96,5 @@
         &copy; {{ date('Y') }} AmazingTrack — All rights reserved<br>
         Developed by Information & Communication Technology Department UPTM
     </p></div>
-
-<script>
-    function togglePw(inputId, iconId) {
-        const input = document.getElementById(inputId);
-        const icon  = document.getElementById(iconId);
-        const show  = input.type === 'password';
-        input.type  = show ? 'text' : 'password';
-        icon.className = show ? 'fa fa-eye-slash' : 'fa fa-eye';
-    }
-
-    // Live password match check
-    const newPw  = document.getElementById('newPassword');
-    const confPw = document.getElementById('confirmPassword');
-    const msg    = document.getElementById('matchMsg');
-
-    [newPw, confPw].forEach(el => el.addEventListener('input', () => {
-        if (confPw.value === '') { msg.textContent = ''; return; }
-        if (newPw.value === confPw.value) {
-            msg.textContent = '✓ Passwords match';
-            msg.style.color = '#15803d';
-        } else {
-            msg.textContent = '✗ Passwords do not match';
-            msg.style.color = '#b91c1c';
-        }
-    }));
-</script>
 </body>
 </html>

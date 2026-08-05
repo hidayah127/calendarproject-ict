@@ -24,9 +24,19 @@ Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 // Password Reset Routes
 Route::get('/forgot-password',        [AuthController::class, 'forgotPassword'])->name('forgot.password');
-Route::post('/forgot-password',       [AuthController::class, 'forgotPasswordProcess'])->name('forgot.password.process');
+// Route::post('/forgot-password',       [AuthController::class, 'forgotPasswordProcess'])->name('forgot.password.process');
 Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('reset.password');
 Route::post('/reset-password',        [AuthController::class, 'resetPasswordProcess'])->name('reset.password.process');
+
+use App\Http\Controllers\ForgotPasswordController;
+
+
+// Forgot Password Page
+Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])
+    ->name('forgot-password');
+// Send Forgot Password Request Email
+Route::post('/forgot-password/send', [ForgotPasswordController::class, 'send'])
+    ->name('forgot-password.send');
 
 //portal routes
 use App\Http\Controllers\Portal\PublicPortalController;
@@ -95,6 +105,9 @@ Route::prefix('admin')
 
     // Remove system access
     Route::delete('staff/{id}/remove-access', [StaffController::class, 'removeAccess'])->name('staff.removeAccess');
+
+    // NEW — reset a forgotten password back to the shared default
+    Route::patch('/users/{user}/reset-password-default', [AccessUserController::class, 'resetPasswordToDefault'])->name('users.reset-password-default');
 
 });
 

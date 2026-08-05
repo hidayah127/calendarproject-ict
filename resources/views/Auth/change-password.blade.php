@@ -146,7 +146,10 @@
         </div>
     </div>
 
-    <p class="footer">&copy; {{ date('Y') }} UniManage — All rights reserved</p>
+    <p class="footer">
+            &copy; {{ date('Y') }} AmazingTrack — All rights reserved<br>
+        Developed by Information & Communication Technology Department UPTM
+    </p>
 </div>
 
 <script>

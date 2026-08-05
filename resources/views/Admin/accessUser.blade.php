@@ -39,6 +39,46 @@
 .breadcrumb-item a { color: #1a56db; text-decoration: none; font-size: 13px; }
 .breadcrumb-item.active { font-size: 13px; color: #64748b; }
 
+/* ── Pending resets banner ── */
+.reset-alert {
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 22px;
+}
+.reset-alert-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: #92400e;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+.reset-alert-head .badge-count {
+    background: #f59e0b;
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 2px 9px;
+    border-radius: 20px;
+}
+.reset-req-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+}
+.reset-req-row:last-child { margin-bottom: 0; }
+.reset-req-user { font-weight: 700; color: #0f172a; }
+.reset-req-time { font-size: 12px; color: #94a3b8; margin-left: 8px; }
+
 /* ── Stat strip ── */
 .stat-strip {
     display: grid;
@@ -265,7 +305,7 @@
     gap: 5px;
 }
 
-/* ── Revoke button ── */
+/* ── Action buttons ── */
 .btn-revoke {
     background: #fee2e2;
     color: #b91c1c;
@@ -305,6 +345,31 @@
     background: #bfdbfe;
     transform: scale(1.04);
 }
+
+.btn-reset-pw {
+    background: #fef3c7;
+    color: #92400e;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all .18s;
+    font-family: inherit;
+}
+.btn-reset-pw:hover {
+    background: #fde68a;
+    transform: scale(1.04);
+}
+.btn-reset-pw.has-pending {
+    background: #f59e0b;
+    color: #fff;
+}
+.btn-reset-pw.has-pending:hover { background: #d97706; }
 
 
 /* ── Footer ── */
@@ -372,6 +437,25 @@
 .danger-zone p { margin: 0; font-size: 13.5px; color: #374151; line-height: 1.5; }
 .danger-zone strong { color: #b91c1c; }
 
+.info-zone {
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.info-zone i { color: #d97706; font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.info-zone p { margin: 0; font-size: 13.5px; color: #374151; line-height: 1.5; }
+.info-zone code {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+
 .btn-modal-cancel {
     background: #f1f5f9; color: #64748b;
     border: none; border-radius: 10px;
@@ -392,6 +476,17 @@
     transition: all .2s;
 }
 .btn-modal-danger:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(239,68,68,0.35); }
+
+.btn-modal-warning {
+    background: linear-gradient(135deg,#b45309,#f59e0b);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 10px 22px; font-size: 13.5px;
+    font-weight: 700; cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.28);
+    transition: all .2s;
+}
+.btn-modal-warning:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(245,158,11,0.35); }
 
 /* DT overrides */
 .dataTables_wrapper .dataTables_filter,
@@ -426,6 +521,8 @@
     $dvCount     = collect($users)->where('role','dv')->count();
     $bsCount     = collect($users)->where('role','bs')->count();
     $rdCount     = collect($users)->where('role','rd')->count();
+
+    $pendingUserIds = ($pendingResets ?? collect())->pluck('user_id')->all();
 @endphp
 
 {{-- Page Header --}}
@@ -443,6 +540,35 @@
         </nav>
     </div>
 </div>
+
+{{-- Pending Password Reset Requests --}}
+@if(isset($pendingResets) && $pendingResets->count())
+<div class="reset-alert">
+    <div class="reset-alert-head">
+        <i class="fa fa-bell"></i>
+        Password reset requests
+        <span class="badge-count">{{ $pendingResets->count() }}</span>
+    </div>
+    @foreach($pendingResets as $req)
+        <div class="reset-req-row">
+            <div>
+                <span class="reset-req-user">{{ $req->username }}</span>
+                <span class="reset-req-time">requested {{ $req->created_at->diffForHumans() }}</span>
+            </div>
+            @if($req->user)
+                <button
+                    class="btn-reset-pw has-pending"
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPasswordModal"
+                    data-id="{{ $req->user->id }}"
+                    data-name="{{ $req->user->name }}">
+                    <i class="fa fa-key"></i> Reset to Default
+                </button>
+            @endif
+        </div>
+    @endforeach
+</div>
+@endif
 
 {{-- Stat Strip --}}
 <div class="stat-strip">
@@ -685,6 +811,16 @@
                             <i class="fa fa-building"></i> Access
                         </button>
 
+                        {{-- reset password to default --}}
+                        <button
+                            class="btn-reset-pw {{ in_array($user->id, $pendingUserIds) ? 'has-pending' : '' }}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#resetPasswordModal"
+                            data-id="{{ $user->id }}"
+                            data-name="{{ $user->name }}">
+                            <i class="fa fa-key"></i> Reset PW
+                        </button>
+
                         {{-- revoke access --}}
                         <button class="btn-revoke"
                                 data-bs-toggle="modal"
@@ -750,6 +886,53 @@
                     </button>
                     <button type="submit" class="btn-modal-danger">
                         <i class="fa fa-user-slash me-1"></i> Revoke Access
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ── Reset Password Modal ── --}}
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b);"></div>
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span class="modal-icon" style="background:#fef3c7;color:#92400e;">
+                        <i class="fa fa-key"></i>
+                    </span>
+                    Reset Password
+                </h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="POST" id="resetPasswordForm">
+                @csrf
+                @method('PATCH')
+
+                <div class="modal-body">
+                    <div class="info-zone">
+                        <i class="fa fa-circle-info"></i>
+                        <p>
+                            This will reset the password for
+                            <strong id="resetPwUserName">this user</strong>
+                            to the default password: <code>Free@gaza</code>.
+                            Please inform them to log in and change it immediately.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modal-warning">
+                        <i class="fa fa-key me-1"></i> Reset to Default
                     </button>
                 </div>
 
@@ -863,6 +1046,12 @@ document.getElementById('removeAccessModal').addEventListener('show.bs.modal', f
     var btn = e.relatedTarget;
     document.getElementById('revokeUserName').textContent = btn.dataset.name ?? 'this user';
     document.getElementById('removeAccessForm').action = '/admin/users/' + btn.dataset.id;
+});
+
+document.getElementById('resetPasswordModal').addEventListener('show.bs.modal', function (e) {
+    var btn = e.relatedTarget;
+    document.getElementById('resetPwUserName').textContent = btn.dataset.name ?? 'this user';
+    document.getElementById('resetPasswordForm').action = '/admin/users/' + btn.dataset.id + '/reset-password-default';
 });
 
 document.getElementById('departmentAccessModal').addEventListener('show.bs.modal', function (e) {
