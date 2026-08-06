@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ $staff->name }} — AmazingTrack Portal</title>
+<link rel="icon" type="image/png" href="{{ asset('logo/icon.png') }}">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -747,6 +748,17 @@ body {
     overflow-y: auto;
 }
 
+/* ─── Category breakdown scroll ──────────────────────────── */
+.breakdown-table-scroll {
+    max-height: 340px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+.breakdown-table-scroll .merit-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 .claim-row {
     display: flex;
     align-items: flex-start;
@@ -1709,7 +1721,7 @@ body {
                     </div>
                 </div>
 
-                <div style="overflow-x:auto;">
+                <div class="breakdown-table-scroll">
                     <table class="merit-table">
                         <thead>
                             <tr>
