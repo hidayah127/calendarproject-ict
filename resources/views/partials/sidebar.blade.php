@@ -116,9 +116,9 @@
             <i class="fa fa-home me-2"></i> Dashboard
         </a>
 
-        <a href="{{ route('head.staff.index') }}" class="{{ Request::routeIs('head.staff*') ? 'active' : '' }}">
+        {{-- <a href="{{ route('head.staff.index') }}" class="{{ Request::routeIs('head.staff*') ? 'active' : '' }}">
             <i class="fa fa-users me-2"></i> Department Staff
-        </a>
+        </a> --}}
 
         <a href="{{ route('head.calendar.index') }}" class="{{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
              <i class="fa fa-calendar-alt me-2"></i> Calendar
@@ -236,8 +236,8 @@
                 <i class="fa fa-calendar me-2"></i> All Programs
             </a>
 
-            <a href="{{ route('vc.non-weekend-staff') }}" class="{{ Request::routeIs('vc.non-weekend-staff') ? 'active' : '' }}">
-                <i class="fa fa-calendar-week"></i> Non-Weekend Staff
+            <a href="{{ route('vc.weekend-staff') }}" class="{{ Request::routeIs('vc.weekend-staff') ? 'active' : '' }}">
+                <i class="fa fa-calendar-week"></i> Weekend Staff
             </a>
 
             <a href="{{ route('vc.non-weekend-staff') }}" class="d-block text-white mb-3 {{ Request::routeIs('vc.non-weekend-staff*') ? 'active' : '' }}">
@@ -291,9 +291,9 @@
             <a href="{{ route('head.dashboard') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.dashboard*') ? 'active' : '' }}">
                 <i class="fa fa-users me-2"></i> Dashboard
             </a>
-            <a href="{{ route('head.staff.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.staff*') ? 'active' : '' }}">
+            {{-- <a href="{{ route('head.staff.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.staff*') ? 'active' : '' }}">
                 <i class="fa fa-users me-2"></i> Department Staff
-            </a>
+            </a> --}}
 
             <a href="{{ route('head.calendar.index') }}" class="d-block text-white mb-3 {{ Request::routeIs('head.calendar*') ? 'active' : '' }}">
                 <i class="fa fa-calendar-alt me-2"></i> Calendar
