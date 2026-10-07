@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Head;
 use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\Staff;
+use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
@@ -12,67 +14,85 @@ use Carbon\Carbon;
 
 class ProgramController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Helper — amt_scc can see and manage programs from ALL departments
+    |--------------------------------------------------------------------------
+    */
+    private function isScc(): bool
+    {
+        return Auth::user()?->username === 'amt_scc';
+    }
 
+    /* Users amt_scc can assign a program to (department comes from their staff record) */
+    private function assignableUsers()
+    {
+        return $this->isScc()
+            ? User::with('staff.department')->orderBy('name')->get()
+            : collect();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Index — list programs
+    |--------------------------------------------------------------------------
+    */
     public function index(Request $request)
     {
         /* ── Selected Filters ── */
-
         $selectedYear  = $request->input('year', now()->year);
         $selectedMonth = $request->input('month', '');
 
-
-        /* ── Build Query ── */
-
-        $query = Program::with(['staffInCharge'])
-            ->where('created_by', Auth::id())
+        /* ── Base query (filters + scope), shared by the list and the counts ── */
+        $base = Program::query()
             ->whereYear('start_date', $selectedYear);
 
-
-        if ($selectedMonth) {
-
-            $query->whereMonth(
-                'start_date',
-                $selectedMonth
-            );
-
+        // Normal users only see their own programs; amt_scc sees everything
+        if (!$this->isScc()) {
+            $base->where('created_by', Auth::id());
         }
 
+        if ($selectedMonth) {
+            $base->whereMonth('start_date', $selectedMonth);
+        }
 
-        $programs = $query
+        /* ── Summary counts across ALL matching programs (not just this page) ── */
+        // withStatus() is the Program scope that mirrors getStatusAttribute() in SQL
+        $counts = [
+            'total'       => (clone $base)->count(),
+            'upcoming'    => (clone $base)->withStatus('upcoming')->count(),
+            'ongoing'     => (clone $base)->withStatus('ongoing')->count(),
+            'completed'   => (clone $base)->withStatus('completed')->count(),
+            'rescheduled' => (clone $base)->withStatus('rescheduled')->count(),
+            'cancelled'   => (clone $base)->withStatus('cancelled')->count(),
+        ];
+
+        $programs = (clone $base)
+            ->with(['staffInCharge', 'department'])
             ->latest()
             ->paginate(9)
             ->withQueryString();
 
-
         /* ── Year Options ── */
-
         $currentYear = now()->year;
-
         $yearOptions = [];
 
         for ($y = $currentYear; $y >= $currentYear - 4; $y--) {
-
             $yearOptions[] = $y;
-
         }
 
-
         /* ── Month Options ── */
-
         $monthOptions = [];
 
         for ($m = 1; $m <= 12; $m++) {
-
             $monthOptions[] = [
                 'value' => $m,
-                'label' => date(
-                    'F',
-                    mktime(0,0,0,$m,1)
-                )
+                'label' => date('F', mktime(0, 0, 0, $m, 1)),
             ];
-
         }
 
+        $isScc = $this->isScc();
+        $users = $this->assignableUsers();
 
         return view(
             'Head.Program',
@@ -81,11 +101,14 @@ class ProgramController extends Controller
                 'yearOptions',
                 'monthOptions',
                 'selectedYear',
-                'selectedMonth'
+                'selectedMonth',
+                'isScc',
+                'users',
+                'counts'
             )
         );
     }
-  
+
     /*
     |--------------------------------------------------------------------------
     | Create — show create form
@@ -94,8 +117,10 @@ class ProgramController extends Controller
     public function create()
     {
         $staffList = Staff::orderBy('name')->get();
+        $isScc     = $this->isScc();
+        $users     = $this->assignableUsers();
 
-        return view('Head.Program-Create', compact('staffList'));
+        return view('Head.Program-Create', compact('staffList', 'isScc', 'users'));
     }
 
     /*
@@ -103,53 +128,62 @@ class ProgramController extends Controller
     | Store — save new program
     |--------------------------------------------------------------------------
     */
-
     public function store(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    $rules = [
-        'title'              => 'required|string|max:255',
-        'description'        => 'nullable|string',
-        'venue'              => 'required|string|max:255',
-        'start_date'         => 'required|date',
-        'end_date'           => 'required|date|after_or_equal:start_date',
-        'staff_in_charge_id' => 'nullable|exists:staff,id',
-        'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event,Workshop',
-    ];
+        $rules = [
+            'title'              => 'required|string|max:255',
+            'description'        => 'nullable|string',
+            'venue'              => 'required|string|max:255',
+            'start_date'         => 'required|date',
+            'end_date'           => 'required|date|after_or_equal:start_date',
+            'staff_in_charge_id' => 'nullable|exists:staff,id',
+            'category'           => 'nullable|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event,Workshop',
+        ];
 
-    $validated = $request->validate($rules);
+        // amt_scc must pick the user the program is assigned to
+        if ($this->isScc()) {
+            $rules['created_by'] = 'required|exists:users,id';
+        }
 
-    $now = Carbon::now();
+        $validated = $request->validate($rules);
 
-    // Determine status
-    if ($now->between(
-        Carbon::parse($validated['start_date']),
-        Carbon::parse($validated['end_date'])
-    )) {
-        $status = 'ongoing';
-    } elseif ($now->lt(Carbon::parse($validated['start_date']))) {
-        $status = 'upcoming';
-    } else {
-        $status = 'completed';
+        // Owner = assigned user (amt_scc) or the logged-in user (everyone else)
+        $owner = $this->isScc()
+            ? User::with('staff')->findOrFail($validated['created_by'])
+            : $user;
+
+        $now = Carbon::now();
+
+        // Determine status
+        if ($now->between(
+            Carbon::parse($validated['start_date']),
+            Carbon::parse($validated['end_date'])
+        )) {
+            $status = 'ongoing';
+        } elseif ($now->lt(Carbon::parse($validated['start_date']))) {
+            $status = 'upcoming';
+        } else {
+            $status = 'completed';
+        }
+
+        $program = Program::create([
+            ...Arr::except($validated, ['created_by']),
+
+            'category'      => $request->category,
+            'created_by'    => $owner->id,
+            'department_id' => $owner->staff->department_id ?? null,
+            'status'        => $status,
+        ]);
+
+        NotificationService::programCreated($owner->id, $program->title, $program->id);
+
+        return redirect()
+            ->route('head.programs.index')
+            ->with('success', 'Program created successfully.');
     }
 
-    $program = Program::create([
-        ...$validated,
-
-        'category'      => $request->category,
-        'created_by'    => $user->id,
-        'department_id' => $user->staff->department_id ?? null,
-        'status'        => $status,
-    ]);
-
-    NotificationService::programCreated(Auth::id(), $program->title, $program->id);
-
-    return redirect()
-        ->route('head.programs.index')
-        ->with('success', 'Program created successfully.');
-}
-    
     public function edit(Program $program)
     {
         $this->authorise($program);
@@ -164,111 +198,58 @@ class ProgramController extends Controller
     | Update — save edited program details
     |--------------------------------------------------------------------------
     */
-    // public function update(Request $request, Program $program)
-    // {
-    //     $this->authorise($program);
-
-    //     $validated = $request->validate([
-    //         'title'              => 'required|string|max:255',
-    //         'description'        => 'nullable|string',
-    //         'venue'              => 'required|string|max:255',
-    //         'start_date'         => 'required|date',
-    //         'end_date'           => 'required|date|after_or_equal:start_date',
-    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
-    //     ]);
-
-    //     $program->update($validated);
-
-    //     return redirect()
-    //         ->route('head.programs.index')
-    //         ->with('success', 'Program updated successfully.');
-    // }
-
-    // public function update(Request $request, Program $program)
-    // {
-    //     $this->authorise($program);
-
-    //     $user = Auth::user();
-
-    //     /* ── Validation Rules ── */
-
-    //     $rules = [
-    //         'title'              => 'required|string|max:255',
-    //         'description'        => 'nullable|string',
-    //         'venue'              => 'required|string|max:255',
-    //         'start_date'         => 'required|date',
-    //         'end_date'           => 'required|date|after_or_equal:start_date',
-    //         'staff_in_charge_id' => 'nullable|exists:staff,id',
-    //     ];
-
-    //     /* Only AZ role needs category */
-    //     // if ($user->role === 'az') {
-    //     //     $rules['category'] = 'required|in:mind,fitness,spiritual,social';
-    //     // }
-
-    //     /* Category required for ALL roles */
-    //     $rules['category'] = 'required|in:mind,fitness,spiritual,social,Marketing,Meeting,Event';
-
-    //     $validated = $request->validate($rules);
-
-    //     /* ── Update Program ── */
-
-    //     $program->update([
-    //         ...$validated,
-
-    //         // Save category only for AZ
-    //         // 'category' => $user->role === 'az'
-    //         //                 ? $request->category
-    //         //                 : null,
-
-    //         'category' => $request->category,
-    //     ]);
-
-    //     return redirect()
-    //         ->route('head.programs.index')
-    //         ->with('success', 'Program updated successfully.');
-    // }
-
     public function update(Request $request, Program $program)
-{
-    $this->authorise($program);
+    {
+        $this->authorise($program);
 
-    $user = Auth::user();
+        $rules = [
+            'title'              => 'required|string|max:255',
+            'description'        => 'nullable|string',
+            'venue'              => 'required|string|max:255',
+            'start_date'         => 'required|date',
+            'end_date'           => 'required|date|after_or_equal:start_date',
+            'staff_in_charge_id' => 'nullable|exists:staff,id',
+            'category'           => 'required|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event,Workshop',
+        ];
 
-    $rules = [
-        'title'              => 'required|string|max:255',
-        'description'        => 'nullable|string',
-        'venue'              => 'required|string|max:255',
-        'start_date'         => 'required|date',
-        'end_date'           => 'required|date|after_or_equal:start_date',
-        'staff_in_charge_id' => 'nullable|exists:staff,id',
-        'category'           => 'required|in:mind,fitness,spiritual,social,Marketing,inmeeting,exmeeting,Event,Workshop',
-    ];
+        if ($this->isScc()) {
+            $rules['created_by'] = 'required|exists:users,id';
+        }
 
-    $validated = $request->validate($rules);
+        $validated = $request->validate($rules);
 
-    $now = Carbon::now();
-    $startDate = Carbon::parse($validated['start_date']);
-    $endDate = Carbon::parse($validated['end_date']);
+        $now       = Carbon::now();
+        $startDate = Carbon::parse($validated['start_date']);
+        $endDate   = Carbon::parse($validated['end_date']);
 
-    if ($now->between($startDate, $endDate)) {
-        $status = 'ongoing';
-    } elseif ($now->lt($startDate)) {
-        $status = 'upcoming';
-    } else {
-        $status = 'completed';
+        if ($now->between($startDate, $endDate)) {
+            $status = 'ongoing';
+        } elseif ($now->lt($startDate)) {
+            $status = 'upcoming';
+        } else {
+            $status = 'completed';
+        }
+
+        $data = [
+            ...Arr::except($validated, ['created_by']),
+            'category' => $request->category,
+            'status'   => $status,
+        ];
+
+        // amt_scc can re-assign the program; department follows the new user
+        if ($this->isScc()) {
+            $owner = User::with('staff')->findOrFail($validated['created_by']);
+
+            $data['created_by']    = $owner->id;
+            $data['department_id'] = $owner->staff->department_id ?? null;
+        }
+
+        $program->update($data);
+
+        return redirect()
+            ->route('head.programs.index')
+            ->with('success', 'Program updated successfully.');
     }
-
-    $program->update([
-        ...$validated,
-        'category' => $request->category,
-        'status'   => $status,
-    ]);
-
-    return redirect()
-        ->route('head.programs.index')
-        ->with('success', 'Program updated successfully.');
-}
 
     /*
     |--------------------------------------------------------------------------
@@ -296,7 +277,6 @@ class ProgramController extends Controller
 
         NotificationService::programRescheduled(Auth::id(), $program->title, $program->id);
 
-
         return redirect()
             ->route('head.programs.index')
             ->with('success', 'Program rescheduled successfully.');
@@ -322,8 +302,6 @@ class ProgramController extends Controller
         return redirect()
             ->route('head.programs.index')
             ->with('success', 'Program has been cancelled.');
-
-        
     }
 
     /*
@@ -342,24 +320,32 @@ class ProgramController extends Controller
             ->with('success', 'Program deleted successfully.');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Committee overview
+    |--------------------------------------------------------------------------
+    */
     public function committee()
     {
-        $programs = Program::where('created_by', Auth::id())
-            ->with(['department', 'staffInCharge', 'committee'])
+        $programs = Program::with(['department', 'staffInCharge', 'committee'])
+            ->when(!$this->isScc(), fn ($q) => $q->where('created_by', Auth::id()))
             ->orderBy('start_date', 'desc')
             ->get();
 
         return view('Head.programs-committee', compact('programs'));
     }
 
- 
     /*
     |--------------------------------------------------------------------------
-    | Helper — ensure head owns the program
+    | Helper — ensure head owns the program (amt_scc bypasses)
     |--------------------------------------------------------------------------
     */
     private function authorise(Program $program): void
     {
+        if ($this->isScc()) {
+            return;
+        }
+
         if ($program->created_by !== Auth::id()) {
             abort(403, 'Unauthorised action.');
         }

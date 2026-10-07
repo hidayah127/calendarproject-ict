@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('page-title','My Calendar')
+{{-- @section('page-title','My Calendar') --}}
+@section('page-title', $isScc ? 'All Programs Calendar' : 'My Calendar')
 
 @push('styles')
 {{-- FullCalendar --}}
@@ -279,7 +280,8 @@
 {{-- Page Header --}}
 <div class="page-header">
     <div>
-        <h2><i class="text-primary"></i>My Calendar</h2>
+        {{-- <h2><i class="text-primary"></i>My Calendar</h2> --}}
+        <h2>{{ $isScc ? 'All Programs Calendar' : 'My Calendar' }}</h2>
         <nav aria-label="breadcrumb" class="mt-1">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('head.dashboard') }}"
@@ -335,6 +337,10 @@
         <div class="popup-row">
             <i class="fa fa-location-dot"></i>
             <span id="popupVenue"></span>
+        </div>
+        <div class="popup-row" id="popupDeptRow" style="display:none;">
+            <i class="fa fa-building"></i>
+            <span id="popupDept"></span>
         </div>
         <div class="popup-row">
             <i class="fa fa-calendar"></i>
@@ -415,6 +421,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </span>`;
 
         popupVenue.textContent = ep.venue || '—';
+
+        const deptRow = document.getElementById('popupDeptRow');
+        if (ep.department) {
+            document.getElementById('popupDept').textContent = ep.department;
+            deptRow.style.display = 'flex';
+        } else {
+            deptRow.style.display = 'none';
+        }
+
         popupStart.textContent = fmt(info.event.startStr);
         popupEnd.textContent   = fmt(info.event.endStr || info.event.startStr);
 

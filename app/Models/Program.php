@@ -84,5 +84,28 @@ class Program extends Model
         return $value; // upcoming or rescheduled
     }
 
+    public function scopeWithStatus($query, string $status)
+    {
+        $now = now();
+
+        return match ($status) {
+            'cancelled' => $query->where('status', 'cancelled'),
+
+            'completed' => $query->where('status', '!=', 'cancelled')
+                                ->where('end_date', '<', $now),
+
+            'ongoing'   => $query->where('status', '!=', 'cancelled')
+                                ->where('start_date', '<=', $now)
+                                ->where('end_date', '>=', $now),
+
+            // not cancelled, not started yet, and the stored value is upcoming/rescheduled
+            'upcoming',
+            'rescheduled' => $query->where('status', $status)
+                                ->where('start_date', '>', $now),
+
+            default     => $query,
+        };
+    }
+
     
 }

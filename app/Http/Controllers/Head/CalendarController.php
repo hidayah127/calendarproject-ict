@@ -10,8 +10,11 @@ class CalendarController extends Controller
 {
     public function index()
     {
+        $isScc = Auth::user()->username === 'amt_scc';
+
         // Pass programs as JSON for FullCalendar
-        $programs = Program::where('created_by', Auth::id())
+        $programs = Program::with('department')
+            ->when(!$isScc, fn ($q) => $q->where('created_by', Auth::id()))
             ->get()
             ->map(function ($p) {
                 return [
@@ -22,9 +25,12 @@ class CalendarController extends Controller
                     'status'          => $p->status,
                     'venue'           => $p->venue,
                     'description'     => $p->description,
-                    // 'edit_url'        => route('head.programs.index', $p->id),
-                    // Redirect to index with a query param, then auto-open the edit modal via JS
-                    'edit_url' => route('head.programs.index') . '?edit=' . $p->id,
+                    'department'      => $p->department->name ?? null,
+                    // Index filters by year, so pass the program's year or the edit modal won't be found
+                    'edit_url'        => route('head.programs.index', [
+                        'edit' => $p->id,
+                        'year' => $p->start_date->year,
+                    ]),
                     'backgroundColor' => match($p->status) {
                         'upcoming'    => '#3b82f6',
                         'ongoing'     => '#16a34a',
@@ -45,6 +51,6 @@ class CalendarController extends Controller
                 ];
             });
 
-        return view('Head.Calendar', compact('programs'));
+        return view('Head.Calendar', compact('programs', 'isScc'));
     }
 }

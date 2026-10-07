@@ -141,6 +141,11 @@
         <a href="{{ route('head.merit-claims') }}" class="{{ Request::routeIs('head.merit-claims*') ? 'active' : '' }}">
             <i class="fa fa-trophy me-2"></i> Amazing Merit Claims
         </a>
+
+        <a href="{{ route('vc.reports') }}" class="{{ Request::routeIs('vc.reports*') ? 'active' : '' }}">
+            <i class="fa fa-file-alt me-2"></i> Amazing Reports
+        </a>
+
         @endif
 
     @endif

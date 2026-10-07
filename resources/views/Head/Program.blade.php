@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page-title','My Programs')
+@section('page-title', ($isScc ?? false) ? 'All Programs' : 'My Programs')
 
 @push('styles')
 <style>
@@ -350,12 +350,12 @@ nav[role="navigation"] p {
 {{-- Page Header --}}
 <div class="page-header">
     <div>
-        <h2><i class="text-primary"></i>My Programs</h2>
+        <h2>{{ ($isScc ?? false) ? 'All Programs' : 'My Programs' }}</h2>
         <nav aria-label="breadcrumb" class="mt-1">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('head.dashboard') }}"
                     class="text-decoration-none">Dashboard</a></li>
-                <li class="breadcrumb-item active">My Programs</li>
+                <li class="breadcrumb-item active">{{ ($isScc ?? false) ? 'All Programs' : 'My Programs' }}</li>
             </ol>
         </nav>
     </div>
@@ -366,21 +366,6 @@ nav[role="navigation"] p {
     </a>
 </div>
 
-{{-- Flash Messages --}}
-{{-- @if(session('success'))
-    <div class="alert d-flex align-items-center gap-2 mb-4"
-         style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;color:#15803d;font-size:14px;padding:12px 16px;">
-        <i class="fa fa-circle-check"></i> {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert d-flex align-items-center gap-2 mb-4"
-         style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;color:#b91c1c;font-size:14px;padding:12px 16px;">
-        <i class="fa fa-circle-exclamation"></i> {{ session('error') }}
-    </div>
-@endif --}}
-  
 {{-- Summary strip --}}
 <div class="row g-3 mb-4">
     @php
@@ -534,7 +519,9 @@ nav[role="navigation"] p {
         <div class="empty-state">
             <i class="fa fa-calendar-xmark"></i>
             <h5 style="color:#475569;font-weight:600;">No programs yet</h5>
-            <p style="font-size:14px;max-width:340px;margin:8px auto 0;">Programs you create will appear here.</p>
+            <p style="font-size:14px;max-width:340px;margin:8px auto 0;">
+                {{ ($isScc ?? false) ? 'Programs from all departments will appear here.' : 'Programs you create will appear here.' }}
+            </p>
         </div>
     </div>
 @else
@@ -583,26 +570,35 @@ nav[role="navigation"] p {
 
                     {{-- Meta chips --}}
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        {{-- Category Badge (Only for AZ programs) --}}
-                       @php
+                        {{-- Category Badge (currently disabled) --}}
+                        @php
                         $categoryColors = [
                             'mind' => '#2563eb',
                             'fitness' => '#16a34a',
                             'spiritual' => '#7c3aed',
                             'social' => '#ea580c',
                             'Marketing' => '#db2777',
-                            'Meeting' => '#0ea5e9',
+                            'inmeeting' => '#0ea5e9',
+                            'exmeeting' => '#0284c7',
                             'Event' => '#db2777',
                             'Workshop' => '#f59e0b',
                         ];
                         @endphp
 
-                        @if($program->category)
+                        {{-- @if($program->category)
                         <span class="date-chip">
                             <i class="fa fa-layer-group"
                             style="color:{{ $categoryColors[$program->category] ?? '#64748b' }};">
                             </i>
                             {{ ucfirst($program->category) }}
+                        </span>
+                        @endif --}}
+
+                        {{-- Department (amt_scc only) --}}
+                        @if(($isScc ?? false) && $program->department)
+                        <span class="date-chip">
+                            <i class="fa fa-building" style="color:#1a56db;"></i>
+                            {{ $program->department->name }}
                         </span>
                         @endif
 
@@ -642,7 +638,8 @@ nav[role="navigation"] p {
                                 data-category="{{ $program->category }}"
                                 data-start="{{ $program->start_date->format('Y-m-d\TH:i') }}"
                                 data-end="{{ $program->end_date->format('Y-m-d\TH:i') }}"
-                                data-staff="{{ $program->staff_in_charge_id }}">
+                                data-staff="{{ $program->staff_in_charge_id }}"
+                                data-owner="{{ $program->created_by }}">
                             <i class="fa fa-pen"></i> Edit
                         </button>
 
@@ -685,8 +682,6 @@ nav[role="navigation"] p {
                         style="background:#e0e7ff;color:#3730a3;text-decoration:none;">
                             <i class="fa fa-users"></i> Committee
                         </a>
-
-
 
                     </div>
                 </div>
@@ -731,13 +726,13 @@ nav[role="navigation"] p {
                             <input type="text" name="venue" id="edit_venue" class="form-control" required>
                         </div>
 
-                        {{-- @if(auth()->user()->role === 'az') --}}
                         <div class="col-12">
                             <label class="form-label">Category</label>
 
                             <select name="category"
                                     id="edit_category"
-                                    class="form-select">
+                                    class="form-select"
+                                    required>
 
                                 <option value="">— Select Category —</option>
 
@@ -746,13 +741,13 @@ nav[role="navigation"] p {
                                 <option value="spiritual">Be an Amazing You (Spiritual)</option>
                                 <option value="social">Be an Amazing You (Social)</option>
                                 <option value="Marketing">Marketing</option>
-                                <option value="Meeting">Meeting</option>
+                                <option value="inmeeting">Meeting - Internal</option>
+                                <option value="exmeeting">Meeting - External</option>
                                 <option value="Event">Event</option>
                                 <option value="Workshop">Workshop/Training</option>
 
                             </select>
                         </div>
-                        {{-- @endif --}}
 
                         <div class="col-md-6">
                             <label class="form-label">Start Date & Time</label>
@@ -762,6 +757,27 @@ nav[role="navigation"] p {
                             <label class="form-label">End Date & Time</label>
                             <input type="datetime-local" name="end_date" id="edit_end" class="form-control" required>
                         </div>
+
+                        {{-- amt_scc only: re-assign user, department follows automatically --}}
+                        @if($isScc ?? false)
+                        <div class="col-md-6">
+                            <label class="form-label">Assign User</label>
+                            <select name="created_by" id="edit_created_by" class="form-select" required>
+                                <option value="">— Select user —</option>
+                                @foreach($users as $u)
+                                    <option value="{{ $u->id }}"
+                                        data-department-name="{{ $u->staff->department->name ?? '—' }}">
+                                        {{ $u->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department (auto-filled)</label>
+                            <input type="text" id="edit_department_display" class="form-control" disabled>
+                        </div>
+                        @endif
+
                         <div class="col-12">
                             <label class="form-label">Staff in Charge</label>
                             <select name="staff_in_charge_id" id="edit_staff" class="form-select">
@@ -913,6 +929,20 @@ document.addEventListener('DOMContentLoaded', () => {
        Modal wiring
     ══════════════════════════════════════════ */
 
+    // amt_scc: department follows the selected user (elements only exist for amt_scc)
+    const ownerSelect = document.getElementById('edit_created_by');
+    const deptDisplay = document.getElementById('edit_department_display');
+
+    function syncDepartment() {
+        if (!ownerSelect || !deptDisplay) return;
+        const opt = ownerSelect.options[ownerSelect.selectedIndex];
+        deptDisplay.value = opt?.dataset.departmentName || '';
+    }
+
+    if (ownerSelect) {
+        ownerSelect.addEventListener('change', syncDepartment);
+    }
+
     document.getElementById('editModal').addEventListener('show.bs.modal', e => {
         const btn  = e.relatedTarget;
         const form = document.getElementById('editForm');
@@ -926,6 +956,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('edit_category')) {
             document.getElementById('edit_category').value =
                 btn.dataset.category;
+        }
+        if (ownerSelect) {
+            ownerSelect.value = btn.dataset.owner;
+            syncDepartment();
         }
     });
 

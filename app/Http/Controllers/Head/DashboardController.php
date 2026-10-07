@@ -11,20 +11,24 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user  = Auth::user();
+        $isScc = $user->username === 'amt_scc';
 
-        $programs = Program::where('created_by', $user->id);
+        // amt_scc sees programs from all departments; everyone else only their own
+        $programs = Program::query()
+            ->when(!$isScc, fn ($q) => $q->where('created_by', $user->id));
 
-        $totalPrograms = $programs->count();
-        $upcoming      = (clone $programs)->where('status', 'upcoming')->count();
-        $ongoing       = (clone $programs)->where('status', 'ongoing')->count();
-        $completed     = (clone $programs)->where('status', 'completed')->count();
-        $rescheduled   = (clone $programs)->where('status', 'rescheduled')->count();
-        $cancelled     = (clone $programs)->where('status', 'cancelled')->count();
+        // withStatus() mirrors Program::getStatusAttribute() in SQL
+        $totalPrograms = (clone $programs)->count();
+        $upcoming      = (clone $programs)->withStatus('upcoming')->count();
+        $ongoing       = (clone $programs)->withStatus('ongoing')->count();
+        $completed     = (clone $programs)->withStatus('completed')->count();
+        $rescheduled   = (clone $programs)->withStatus('rescheduled')->count();
+        $cancelled     = (clone $programs)->withStatus('cancelled')->count();
 
-        $recentPrograms = Program::where('created_by', $user->id)
-            ->with('staffInCharge')
-            ->latest()  
+        $recentPrograms = (clone $programs)
+            ->with(['staffInCharge', 'department'])
+            ->latest()
             ->take(5)
             ->get();
 
@@ -36,6 +40,7 @@ class DashboardController extends Controller
             'rescheduled',
             'cancelled',
             'recentPrograms',
+            'isScc',
         ));
     }
 }

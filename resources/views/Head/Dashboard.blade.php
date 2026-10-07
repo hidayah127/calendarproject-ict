@@ -301,7 +301,8 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
             <h2>{{ $greetIcon }} {{ $greeting }}, {{ $user->name }}!</h2>
-            <p>Here's an overview of your programs today.</p>
+            {{-- <p>Here's an overview of your programs today.</p> --}}
+            <p>{{ $isScc ? "Here's an overview of programs across all departments." : "Here's an overview of your programs today." }}</p>
         </div>
         <div class="greeting-date">
             <i class="fa fa-calendar-days"></i>
@@ -424,6 +425,9 @@
                     <div class="program-info">
                         <div class="program-name">{{ $program->title }}</div>
                         <div class="program-meta">
+                            @if($isScc && $program->department)
+                                <span><i class="fa fa-building me-1"></i>{{ $program->department->name }}</span>
+                            @endif
                             <span><i class="fa fa-location-dot me-1"></i>{{ $program->venue }}</span>
                             <span><i class="fa fa-calendar me-1"></i>{{ $program->start_date->format('d M Y') }}</span>
                         </div>
@@ -499,7 +503,8 @@
                     <i class="fa fa-list-check" style="color:#15803d;"></i>
                 </div>
                 <div class="quick-action-text">
-                    <strong>My Programs</strong>
+                    {{-- <strong>My Programs</strong> --}}
+                    <strong>{{ $isScc ? 'All Programs' : 'My Programs' }}</strong>
                     <span>View & manage programs</span>
                 </div>
                 <i class="fa fa-chevron-right quick-action-arrow"></i>

@@ -84,7 +84,6 @@ textarea.form-control {
     min-height: 100px;
 }
 
-
 /* validation errors */
 .form-control.is-invalid,
 .form-select.is-invalid {
@@ -232,7 +231,7 @@ textarea.form-control {
         <nav aria-label="breadcrumb" class="mt-1">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('head.dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('head.programs.index') }}">My Programs</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('head.programs.index') }}">{{ ($isScc ?? false) ? 'All Programs' : 'My Programs' }}</a></li>
                 <li class="breadcrumb-item active">Create</li>
             </ol>
         </nav>
@@ -256,7 +255,7 @@ textarea.form-control {
                     Program Details
                 </h5>
                 <p style="font-size:13px;color:#64748b;margin-top:4px;">
-                    Fill in all required fields to create a new program for your department.
+                    Fill in all required fields to create a new program{{ ($isScc ?? false) ? '' : ' for your department' }}.
                 </p>
             </div>
 
@@ -297,14 +296,14 @@ textarea.form-control {
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label">Description<span class="req">*</span></label>
+                        <label class="form-label">Description</label>
                         <textarea name="description"
                                   class="form-control @error('description') is-invalid @enderror"
                                   placeholder="Briefly describe the program objectives, audience, or agenda...">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                    </div>  
+                    </div>
 
                     <div class="mb-4">
                         <label class="form-label">Venue <span class="req">*</span></label>
@@ -325,12 +324,8 @@ textarea.form-control {
                         @enderror
                     </div>
 
-                    {{-- @php
-                        $role = auth()->user()->role;
-                    @endphp
-
-                    @if ($role == 'az') --}}
-                          <p class="section-label">
+                    {{-- ── Category ── --}}
+                    <p class="section-label">
                         <i class="fa fa-layer-group" style="color:#1a56db;"></i>
                         Program Category
                     </p>
@@ -346,63 +341,28 @@ textarea.form-control {
 
                             <option value="">— Select Category —</option>
 
-                            <option value="mind"
-                                {{ old('category') == 'mind' ? 'selected' : '' }}>
-                                Be an Amazing You (Mind)
-                            </option>
-
-                            <option value="fitness"
-                                {{ old('category') == 'fitness' ? 'selected' : '' }}>
-                                Be an Amazing You (Fitness)
-                            </option>
-
-                            <option value="spiritual"
-                                {{ old('category') == 'spiritual' ? 'selected' : '' }}>
-                                Be an Amazing You (Spiritual)
-                            </option>
-
-                            <option value="social"
-                                {{ old('category') == 'social' ? 'selected' : '' }}>
-                                Be an Amazing You (Social)
-                            </option>
-
-                             <option value="Marketing"
-                                {{ old('category') == 'marketing' ? 'selected' : '' }}>
-                                Marketing
-                            </option>
-
-                             <option value="inmeeting"
-                                {{ old('category') == 'inmeeting' ? 'selected' : '' }}>
-                                Meeting - Internal
-                            </option>
-
-                              <option value="exmeeting"
-                                {{ old('category') == 'exmeeting' ? 'selected' : '' }}>
-                                Meeting - External
-                            </option>
-                                
-                            <option value="Event"
-                                {{ old('category') == 'event' ? 'selected' : '' }}>
-                                Event
-                            </option>
-
-                             <option value="Workshop"
-                                {{ old('category') == 'workshop' ? 'selected' : '' }}>
-                                Workshop/Training
-                            </option>
-                            
+                            @foreach([
+                                'mind'      => 'Be an Amazing You (Mind)',
+                                'fitness'   => 'Be an Amazing You (Fitness)',
+                                'spiritual' => 'Be an Amazing You (Spiritual)',
+                                'social'    => 'Be an Amazing You (Social)',
+                                'Marketing' => 'Marketing',
+                                'inmeeting' => 'Meeting - Internal',
+                                'exmeeting' => 'Meeting - External',
+                                'Event'     => 'Event',
+                                'Workshop'  => 'Workshop/Training',
+                            ] as $value => $label)
+                                <option value="{{ $value }}" {{ old('category') == $value ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
 
                         </select>
 
                         @error('category')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    {{-- @endif --}}
-                    {{-- category section --}}
-                  
 
                     {{-- ── Schedule ── --}}
                     <p class="section-label"><i class="fa fa-calendar" style="color:#1a56db;"></i> Schedule</p>
@@ -440,7 +400,43 @@ textarea.form-control {
                     </div>
 
                     {{-- ── Staff ── --}}
-                    <p class="section-label"><i class="fa fa-user-tie" style="color:#1a56db;"></i> Staff Assignment</p>
+                    <p class="section-label">
+                        <i class="fa fa-user-tie" style="color:#1a56db;"></i>
+                        {{ ($isScc ?? false) ? 'Department & Staff Assignment' : 'Staff Assignment' }}
+                    </p>
+
+                    {{-- amt_scc only: assign the program to a user, department follows automatically --}}
+                    @if($isScc ?? false)
+                    <div class="mb-4">
+                        <label class="form-label">Assign User <span class="req">*</span></label>
+                        <select name="created_by"
+                                id="created_by"
+                                class="form-select select-search @error('created_by') is-invalid @enderror"
+                                required>
+                            <option value="">— Select user —</option>
+                            @foreach($users as $u)
+                                <option value="{{ $u->id }}"
+                                    data-department-name="{{ $u->staff->department->name ?? '—' }}"
+                                    {{ old('created_by') == $u->id ? 'selected' : '' }}>
+                                    {{ $u->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('created_by')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Department (auto-filled)</label>
+                        <input type="text"
+                               id="department_display"
+                               class="form-control"
+                               value=""
+                               disabled
+                               placeholder="Select a user first">
+                    </div>
+                    @endif
 
                     <div class="mb-4">
                         <label class="form-label">Staff in Charge</label>
@@ -502,8 +498,8 @@ textarea.form-control {
             </h6>
             <div style="display:flex;flex-direction:column;gap:8px;">
                 @foreach([
-                    ['Upcoming',      '#dbeafe','#1d4ed8', 'Program will be upcoming.'],
-                    ['Ongoing',      '#f0fdf4','#15803d', 'Program is live and upcoming.'],
+                    ['Upcoming',    '#dbeafe','#1d4ed8', 'Program will be upcoming.'],
+                    ['Ongoing',     '#f0fdf4','#15803d', 'Program is live and upcoming.'],
                     ['Rescheduled', '#fefce8','#b45309', 'Dates have been moved.'],
                     ['Cancelled',   '#fef2f2','#b91c1c', 'Program will not proceed.'],
                     ['Completed',   '#e0e7ff','#3730a3', 'Program has concluded.'],
@@ -529,13 +525,20 @@ textarea.form-control {
 
     $(document).ready(function() {
         $('.select-search').select2({
-            placeholder: "— Search for a staff member —",
+            placeholder: "— Search —",
             allowClear: true,
             width: '100%'
         });
+
+        // amt_scc: auto-fill department from the selected user
+        $('#created_by').on('change', function () {
+            const selected = $(this).find('option:selected');
+            $('#department_display').val(selected.data('department-name') || '');
+        });
+
+        $('#created_by').trigger('change'); // handles old() re-render after validation failure
     });
 
-    
     document.addEventListener('DOMContentLoaded', function() {
         const startDateInput = document.getElementById('start_date');
         const endDateInput = document.getElementById('end_date');
@@ -547,7 +550,7 @@ textarea.form-control {
         const day = String(now.getDate()).padStart(2, '0');
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        
+
         const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
 
         // 2. Set min attribute for Start Date to "now"
@@ -556,16 +559,14 @@ textarea.form-control {
         // 3. When Start Date changes, update the min attribute for End Date
         startDateInput.addEventListener('change', function() {
             if (startDateInput.value) {
-                // Set the minimum end date to match the start date
                 endDateInput.setAttribute('min', startDateInput.value);
-                
-                // If the current end date value is now invalid (earlier than new start), clear it
+
                 if (endDateInput.value && endDateInput.value < startDateInput.value) {
                     endDateInput.value = startDateInput.value;
                 }
             }
         });
-        
+
         // Handle case where old() values exist (validation failed)
         if (startDateInput.value) {
             endDateInput.setAttribute('min', startDateInput.value);
