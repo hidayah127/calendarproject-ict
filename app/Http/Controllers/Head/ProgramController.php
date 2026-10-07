@@ -327,12 +327,16 @@ class ProgramController extends Controller
     */
     public function committee()
     {
+        // Latest program first (newest created on top)
         $programs = Program::with(['department', 'staffInCharge', 'committee'])
             ->when(!$this->isScc(), fn ($q) => $q->where('created_by', Auth::id()))
-            ->orderBy('start_date', 'desc')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->get();
 
-        return view('Head.programs-committee', compact('programs'));
+        $isScc = $this->isScc();
+
+        return view('Head.programs-committee', compact('programs', 'isScc'));
     }
 
     /*

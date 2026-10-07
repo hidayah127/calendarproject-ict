@@ -72,17 +72,29 @@
 /* ── Search / filter bar ── */
 .filter-bar {
     display:flex; align-items:center; justify-content:space-between;
-    flex-wrap:wrap; gap:12px; margin-bottom:20px;
+    flex-wrap:wrap; gap:12px; margin-bottom:12px;
 }
 .filter-left  { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .filter-right { display:flex; align-items:center; gap:8px; }
+
+.filter-sub {
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    margin-bottom:16px;
+}
+.filter-sub-label { font-size:12px; font-weight:700; color:#94a3b8; }
 
 .f-pill {
     background:#fff; border:1.5px solid #e2e8f0; border-radius:20px;
     padding:6px 14px; font-size:12.5px; font-weight:700; color:#475569;
     cursor:pointer; transition:all .18s; font-family:inherit;
+    display:inline-flex; align-items:center; gap:6px;
 }
 .f-pill:hover, .f-pill.on { background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8; }
+.f-pill .cnt {
+    background:#f1f5f9; color:#64748b; font-size:11px; font-weight:800;
+    padding:1px 7px; border-radius:20px;
+}
+.f-pill.on .cnt { background:#dbeafe; color:#1d4ed8; }
 
 .search-wrap { position:relative; }
 .search-wrap i { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:13px; pointer-events:none; }
@@ -94,6 +106,25 @@
 }
 .search-inp:focus { border-color:#1a56db; box-shadow:0 0 0 3px rgba(26,86,219,.10); background:#fff; }
 
+/* ── Scrollable list: about 10 programs tall, scroll for the rest ── */
+.prog-scroll {
+    max-height: 1020px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 4px 8px 4px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #bfdbfe #f1f5f9;
+}
+.prog-scroll::-webkit-scrollbar { width: 8px; }
+.prog-scroll::-webkit-scrollbar-track { background:#f1f5f9; border-radius:20px; }
+.prog-scroll::-webkit-scrollbar-thumb { background:#bfdbfe; border-radius:20px; }
+.prog-scroll::-webkit-scrollbar-thumb:hover { background:#93c5fd; }
+
+.scroll-hint {
+    font-size:12px; color:#94a3b8; margin:0 0 10px;
+    display:flex; align-items:center; gap:6px;
+}
+
 /* ── Program cards ── */
 .prog-list { display:flex; flex-direction:column; gap:16px; }
 
@@ -104,6 +135,7 @@
     overflow:hidden;
     box-shadow:0 2px 14px rgba(15,45,110,.06);
     transition:box-shadow .22s;
+    flex-shrink:0;
 }
 .prog-block:hover { box-shadow:0 8px 28px rgba(15,45,110,.11); }
 
@@ -295,10 +327,27 @@
 
 @php
     $programs    = $programs ?? collect();
+    $isScc       = $isScc ?? false;
     $totalProgs  = $programs->count();
     $totalMembers= $programs->sum(fn($p) => $p->committee->count());
     $withCommit  = $programs->filter(fn($p) => $p->committee->count() > 0)->count();
     $noCommit    = $totalProgs - $withCommit;
+
+    // Status filter pills (order: All, Ongoing, Completed, Upcoming, Cancelled, Rescheduled)
+    $statusPills = [
+        'all'         => 'All',
+        'ongoing'     => 'Ongoing',
+        'completed'   => 'Completed',
+        'upcoming'    => 'Upcoming',
+        'cancelled'   => 'Cancelled',
+        'rescheduled' => 'Rescheduled',
+    ];
+    $statusCounts = ['all' => $totalProgs];
+    foreach (array_keys($statusPills) as $st) {
+        if ($st !== 'all') {
+            $statusCounts[$st] = $programs->where('status', $st)->count();
+        }
+    }
 
     $dotColor = [
         'upcoming'=>'#3b82f6','ongoing'=>'#16a34a',
@@ -339,7 +388,7 @@
     <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
         <div>
             <h1><i class="fa fa-users-gear me-2" style="color:#f59e0b;"></i>Programs & Committee</h1>
-            <p>Overview of all your programs and their assigned committee members.</p>
+            <p>{{ $isScc ? 'Overview of programs from all departments and their assigned committee members.' : 'Overview of all your programs and their assigned committee members.' }}</p>
             <div class="hero-meta">
                 <span class="hero-chip"><i class="fa fa-layer-group"></i>{{ $totalProgs }} programs</span>
                 <span class="hero-chip"><i class="fa fa-users"></i>{{ $totalMembers }} total members</span>
@@ -378,13 +427,15 @@
     </div>
 </div>
 
-{{-- Filter bar --}}
+{{-- Filter bar: status pills + search --}}
 <div class="filter-bar fu d2">
     <div class="filter-left">
         <span style="font-size:13.5px;font-weight:700;color:#0f172a;">Programs</span>
-        <button class="f-pill on" data-f="all">All</button>
-        <button class="f-pill" data-f="has-committee">Has Committee</button>
-        <button class="f-pill" data-f="no-committee">No Committee</button>
+        @foreach($statusPills as $key => $label)
+            <button class="f-pill status-pill {{ $key === 'all' ? 'on' : '' }}" data-status="{{ $key }}">
+                {{ $label }} <span class="cnt">{{ $statusCounts[$key] }}</span>
+            </button>
+        @endforeach
     </div>
     <div class="filter-right">
         <div class="search-wrap">
@@ -392,6 +443,14 @@
             <input type="text" id="pcSearch" class="search-inp" placeholder="Search programs…">
         </div>
     </div>
+</div>
+
+{{-- Committee filter --}}
+<div class="filter-sub fu d2">
+    <span class="filter-sub-label">Committee:</span>
+    <button class="f-pill committee-pill on" data-f="all">All</button>
+    <button class="f-pill committee-pill" data-f="has-committee">Has Committee</button>
+    <button class="f-pill committee-pill" data-f="no-committee">No Committee</button>
 </div>
 
 {{-- Programs list --}}
@@ -408,7 +467,14 @@
     </a>
 </div>
 @else
-<div class="prog-list fu d3" id="progList">
+
+<p class="scroll-hint fu d3">
+    <i class="fa fa-arrow-down-long"></i>
+    Showing <strong id="visibleCount">{{ $totalProgs }}</strong> of {{ $totalProgs }} programs, latest first. Scroll to see more.
+</p>
+
+<div class="prog-scroll fu d3" id="progScroll">
+<div class="prog-list" id="progList">
 
     @foreach($programs as $program)
     @php
@@ -418,6 +484,7 @@
 
     <div class="prog-block"
          data-has-committee="{{ $hasCommittee ? '1' : '0' }}"
+         data-status="{{ $program->status }}"
          data-title="{{ strtolower($program->title) }}">
 
         {{-- Status stripe --}}
@@ -549,6 +616,14 @@
     </div>
     @endforeach
 
+    {{-- No results (JS controlled) --}}
+    <div id="pcNoResults" class="empty-page" style="display:none;">
+        <i class="fa fa-magnifying-glass"></i>
+        <h5 style="font-weight:800;color:#475569;margin-bottom:8px;">No programs found</h5>
+        <p style="font-size:13.5px;color:#94a3b8;margin:0;">Try a different status, committee filter or search.</p>
+    </div>
+
+</div>
 </div>
 @endif
 
@@ -573,50 +648,63 @@ function toggleBlock(programId) {
     }
 }
 
-/* ── Filter pills ── */
-var currentFilter = 'all';
+/* ── Filters: status pills + committee pills + search ── */
+var currentStatus    = 'all';
+var currentCommittee = 'all';
 
-document.querySelectorAll('.f-pill').forEach(function (pill) {
+document.querySelectorAll('.status-pill').forEach(function (pill) {
     pill.addEventListener('click', function () {
-        document.querySelectorAll('.f-pill').forEach(function (p) { p.classList.remove('on'); });
+        document.querySelectorAll('.status-pill').forEach(function (p) { p.classList.remove('on'); });
         this.classList.add('on');
-        currentFilter = this.dataset.f;
+        currentStatus = this.dataset.status;
         applyFilter();
     });
 });
 
-/* ── Search ── */
-document.getElementById('pcSearch').addEventListener('input', function () {
-    applyFilter();
+document.querySelectorAll('.committee-pill').forEach(function (pill) {
+    pill.addEventListener('click', function () {
+        document.querySelectorAll('.committee-pill').forEach(function (p) { p.classList.remove('on'); });
+        this.classList.add('on');
+        currentCommittee = this.dataset.f;
+        applyFilter();
+    });
 });
 
+document.getElementById('pcSearch').addEventListener('input', applyFilter);
+
 function applyFilter() {
-    var query   = document.getElementById('pcSearch').value.toLowerCase();
-    var blocks  = document.querySelectorAll('.prog-block');
+    var query  = document.getElementById('pcSearch').value.toLowerCase().trim();
+    var blocks = document.querySelectorAll('.prog-block');
+    var shown  = 0;
 
     blocks.forEach(function (block) {
         var title        = block.dataset.title || '';
+        var status       = block.dataset.status || '';
         var hasCommittee = block.dataset.hasCommittee === '1';
 
-        var matchFilter =
-            currentFilter === 'all' ||
-            (currentFilter === 'has-committee'  && hasCommittee) ||
-            (currentFilter === 'no-committee'   && !hasCommittee);
+        var matchStatus = currentStatus === 'all' || status === currentStatus;
+
+        var matchCommittee =
+            currentCommittee === 'all' ||
+            (currentCommittee === 'has-committee' && hasCommittee) ||
+            (currentCommittee === 'no-committee'  && !hasCommittee);
 
         var matchSearch = title.includes(query);
 
-        block.style.display = (matchFilter && matchSearch) ? '' : 'none';
+        var visible = matchStatus && matchCommittee && matchSearch;
+        block.style.display = visible ? '' : 'none';
+        if (visible) shown++;
     });
-}
 
-/* ── Auto-expand programs without a committee (highlight attention needed) ── */
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.prog-block').forEach(function (block) {
-        if (block.dataset.hasCommittee === '0') {
-            var id = block.querySelector('.committee-section').id.replace('committee-section-', '');
-            // Don't auto-open — just leave collapsed
-        }
-    });
-});
+    var countEl = document.getElementById('visibleCount');
+    if (countEl) countEl.textContent = shown;
+
+    var noRes = document.getElementById('pcNoResults');
+    if (noRes) noRes.style.display = shown === 0 ? 'block' : 'none';
+
+    // jump back to the top of the list after changing a filter
+    var scrollBox = document.getElementById('progScroll');
+    if (scrollBox) scrollBox.scrollTop = 0;
+}
 </script>
 @endpush
